@@ -1,0 +1,1013 @@
+/* =========================================
+   1. BASIS & VARIABELEN
+========================================= */
+:root {
+    --primary-blue: #1a2c49;
+    --accent-orange: #ff7a00;
+    --accent-orange-hover: #e06b00;
+    --text-dark: #1a2c49;
+    --text-light: #666666;
+    --text-white: #ffffff;
+    --bg-light: #f4f7fa;
+    --font-stack: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --header-height: 80px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-stack);
+    color: var(--text-dark);
+    line-height: 1.6;
+    overflow-x: hidden;
+    background-color: #ffffff;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* TYPOGRAFIE */
+h1,
+h2,
+h3 {
+    color: var(--primary-blue);
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+h1 {
+    font-size: 2.4rem;
+    margin-bottom: 1rem;
+}
+
+h2 {
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+}
+
+p {
+    margin-bottom: 1rem;
+    color: var(--text-light);
+}
+
+.section-sub {
+    text-align: center;
+    max-width: 650px;
+    margin: 0 auto 2rem auto;
+    color: var(--text-light);
+}
+
+/* BUTTONS */
+.btn {
+    display: inline-block;
+    padding: 12px 26px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: all 0.25s ease;
+    text-align: center;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.btn-primary {
+    background-color: var(--accent-orange);
+    color: var(--text-white);
+    border-color: var(--accent-orange);
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-orange-hover);
+    border-color: var(--accent-orange-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(255, 122, 0, 0.3);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--primary-blue);
+    border-color: var(--primary-blue);
+}
+
+.btn-secondary:hover {
+    background-color: var(--primary-blue);
+    color: var(--text-white);
+}
+
+.btn-sm {
+    padding: 9px 18px;
+    font-size: 0.85rem;
+}
+
+/* SECTIES */
+section {
+    padding: 70px 0;
+}
+
+/* =========================================
+   2. HEADER & NAVIGATIE
+========================================= */
+header {
+    background-color: #ffffff;
+    height: var(--header-height);
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* tekstlogo + evt. image-logo */
+.logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--primary-blue);
+    z-index: 1001;
+    text-decoration: none;
+}
+
+.logo span {
+    color: var(--accent-orange);
+}
+
+.logo img {
+    max-height: 42px;
+    width: auto;
+    object-fit: contain;
+}
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 24px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-dark);
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+}
+
+.nav-links a:hover {
+    color: var(--accent-orange);
+}
+
+.nav-cta {
+    font-size: 0.9rem;
+}
+
+/* HAMBURGER */
+.hamburger {
+    display: none;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.bar {
+    display: block;
+    width: 24px;
+    height: 3px;
+    margin: 4px auto;
+    background-color: var(--primary-blue);
+    transition: all 0.3s ease-in-out;
+}
+
+/* =========================================
+   3. HERO
+========================================= */
+.hero {
+    position: relative;
+    min-height: 65vh; /* kleiner */
+    padding-top: var(--header-height);
+    padding-bottom: 60px;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(
+            115deg,
+            rgba(26, 44, 73, 0.96) 0%,
+            rgba(26, 44, 73, 0.82) 42%,
+            rgba(26, 44, 73, 0.55) 100%
+        ),
+        url("../img/hero/hero-bg.jpg") no-repeat center center / cover;
+    color: var(--text-white);
+}
+
+.hero-content {
+    max-width: 640px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* klein lijntje boven de titel */
+.hero-eyebrow {
+    font-size: 0.78rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #cbd5f5;
+    margin-bottom: 0.4rem;
+}
+
+.hero-title {
+    font-size: 2.2rem;
+    line-height: 1.15;
+    margin-bottom: 0.75rem;
+    color: #ffffff;
+}
+
+.hero-sub {
+    font-size: 1rem;
+    color: #e0e7ff;
+    margin-bottom: 1.2rem;
+    max-width: 540px;
+}
+
+/* HERO USP BADGES – rechthoekig, duidelijk KeylessGo */
+.hero-usps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 1.2rem;
+    margin-bottom: 0.8rem;
+}
+
+.hero-usp-pill {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8px 14px;
+    border-radius: 8px;              /* rechthoekig */
+    background: rgba(15, 23, 42, 0.92);
+    border: 1px solid rgba(148, 163, 184, 0.9);
+    min-width: 200px;
+}
+
+.hero-usp-label {
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: #f9fafb;
+}
+
+.hero-usp-desc {
+    font-size: 0.78rem;
+    color: #cbd5f5;
+}
+
+/* kleuraccent per badge met KeylessGo-oranje */
+.hero-usp-keyless {
+    border-left: 4px solid var(--accent-orange);
+}
+.hero-usp-direct {
+    border-left: 4px solid #facc15;
+}
+.hero-usp-safe {
+    border-left: 4px solid #22c55e;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 1rem 0 0.6rem;
+}
+
+.hero-buttons .btn {
+    min-width: 200px;
+}
+
+.hero .hero-btn-secondary {
+    background-color: transparent;
+    color: #ffffff;
+    border-color: #ffffff;
+}
+
+.hero .hero-btn-secondary:hover {
+    background-color: #ffffff;
+    color: var(--primary-blue);
+}
+
+/* Mobile: centreren */
+@media (max-width: 768px) {
+    .hero {
+        text-align: center;
+        justify-content: center;
+    }
+
+    .hero-content {
+        align-items: center;
+        text-align: center;
+    }
+
+    .hero-usps {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+    }
+
+    .hero-usp-pill {
+        width: 100%;
+    }
+
+    .hero-buttons {
+        justify-content: center;
+    }
+}
+
+/* mobile: alles mooi onder elkaar centreren */
+@media (max-width: 768px) {
+    .hero-content {
+        align-items: center;
+        text-align: center;
+    }
+
+    .hero-usps {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .hero-usp-pill {
+        width: 100%;
+    }
+}
+/* =========================================
+   5. ONZE VLOOT – 2 rijen x 3
+========================================= */
+
+.fleet-section {
+    background-color: #ffffff;
+}
+
+.fleet-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr)); /* 3 kolommen desktop */
+    gap: 26px;
+}
+
+.fleet-card {
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+}
+
+.fleet-card img {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+}
+
+.fleet-card-body {
+    display: flex;
+    flex-direction: column;
+    padding: 18px;
+    height: 100%;
+}
+
+/* Badges vloot */
+.badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 8px 0 12px 0;
+}
+
+.badge {
+    font-size: 0.78rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: 1px solid #dadce0;
+    background: #f8f9fa;
+}
+
+.badge-keyless {
+    background: #e9fbe7;
+    border-color: #8ed69e;
+    color: #157a2d;
+}
+
+.badge-direct {
+    background: #ffe8d6;
+    border-color: #ffb98a;
+    color: #a65314;
+}
+
+.badge-emission {
+    background: #e3efff;
+    border-color: #96baff;
+    color: #1b56d4;
+}
+
+/* onderkant netjes uitgelijnd */
+.fleet-bottom {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.price {
+    display: flex;
+    flex-direction: column;
+    color: #6b7280;
+    font-size: 0.85rem;
+}
+
+.price .amount {
+    font-size: 1.3rem;
+    color: var(--primary-blue);
+    font-weight: 800;
+    margin-top: -2px;
+}
+
+/* =========================================
+   6. MAP / LOCATIES
+========================================= */
+.map-section {
+    background-color: var(--bg-light);
+}
+
+.map-filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.search-input {
+    flex: 1;
+    min-width: 220px;
+    max-width: 320px;
+    padding: 11px 12px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    font-size: 0.95rem;
+}
+
+.type-select {
+    min-width: 180px;
+    padding: 11px 12px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    font-size: 0.95rem;
+    background-color: #ffffff;
+}
+
+.map-reset-btn {
+    padding: 10px 18px;
+    font-size: 0.9rem;
+}
+
+/* layout kaart + sidebar */
+.location-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 2.1fr) minmax(0, 1.2fr);
+    gap: 24px;
+    align-items: flex-start;
+}
+
+.map-wrapper {
+    position: relative;
+    width: 100%;
+    height: 540px; /* iets groter op laptop */
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 12px 35px rgba(15, 23, 42, 0.25);
+}
+
+/* Leaflet container */
+.leaflet-container {
+    width: 100%;
+    height: 100%;
+}
+
+#kg-map {
+    width: 100%;
+    height: 100%;
+}
+
+/* Sidebar met dichtstbijzijnde voertuigen */
+.location-sidebar {
+    background-color: #ffffff;
+    border-radius: 14px;
+    padding: 16px 16px 18px;
+    box-shadow: 0 12px 35px rgba(15, 23, 42, 0.15);
+    border: 1px solid #e5e7eb;
+    max-height: 540px;
+    display: flex;
+    flex-direction: column;
+}
+
+.location-sidebar h3 {
+    margin-bottom: 4px;
+}
+
+.location-sidebar-sub {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-bottom: 10px;
+}
+
+.location-list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-right: 4px;
+}
+
+/* Scrollbar subtiel */
+.location-list::-webkit-scrollbar {
+    width: 6px;
+}
+.location-list::-webkit-scrollbar-track {
+    background: #f3f4f6;
+}
+.location-list::-webkit-scrollbar-thumb {
+    background-color: #cbd5f5;
+    border-radius: 999px;
+}
+
+/* kaarten in de sidebar */
+.location-card {
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    padding: 12px 13px;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.85rem;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+    cursor: pointer;
+    transition: box-shadow 0.2s ease, transform 0.15s ease, border-color 0.2s ease;
+}
+
+.location-card:hover {
+    border-color: var(--accent-orange);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14);
+    transform: translateY(-1px);
+}
+
+.location-card-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.location-card-title {
+    font-weight: 700;
+    color: var(--primary-blue);
+    font-size: 0.95rem;
+    margin-bottom: 2px;
+}
+
+.location-card-meta {
+    color: #6b7280;
+    font-size: 0.8rem;
+}
+
+/* type-badge in de hoek rechtsboven — zelfde shape als andere badges */
+.location-card-type {
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 9px;
+    border-radius: 6px;
+    border: 1px solid #dadce0;
+    background: #f8f9fa;
+    white-space: nowrap;
+}
+
+/* kleurcode per type, gelijk aan marker-kleur */
+.badge-type-auto {
+    background: #e3efff;
+    border-color: #96baff;
+    color: #1b56d4;
+}
+.badge-type-bus-small {
+    background: #ffe8d6;
+    border-color: #ffb98a;
+    color: #a65314;
+}
+.badge-type-bus-medium {
+    background: #f3e8ff;
+    border-color: #d8b4fe;
+    color: #7c3aed;
+}
+.badge-type-bus-large {
+    background: #fee2e2;
+    border-color: #fca5a5;
+    color: #b91c1c;
+}
+.badge-type-ev {
+    background: #dcfce7;
+    border-color: #86efac;
+    color: #15803d;
+}
+
+/* knoppenblok onderin */
+.location-card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.location-card-actions .btn-sm {
+    padding: 6px 10px;
+    font-size: 0.78rem;
+}
+
+.location-note {
+    margin-top: 14px;
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+/* =========================================
+   7. PARTNER / FOOTER STYLING
+   (voor nette images onderaan de site)
+========================================= */
+
+.partner-why {
+    background-color: #ffffff;
+}
+
+.partner-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.partner-text {
+    flex: 1 1 320px;
+}
+
+.partner-img {
+    flex: 1 1 260px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.partner-logo-img {
+    max-width: 220px;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    border-radius: 12px;
+}
+
+/* als je een foto-badge hebt in de partner-sectie */
+.partner-img img {
+    max-width: 260px;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+/* eenvoudige footer (als je die gebruikt) */
+footer {
+    background: var(--primary-blue);
+    color: #ffffff;
+    padding-top: 40px;
+    margin-top: 40px;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+
+.footer-logo {
+    color: #ffffff;
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.footer-text {
+    font-size: 0.9rem;
+    color: #cbd5f5;
+}
+
+.footer-col h4 {
+    color: #ffffff;
+    margin-bottom: 0.8rem;
+    font-size: 1rem;
+}
+
+.footer-col ul {
+    list-style: none;
+}
+
+.footer-col li {
+    margin-bottom: 6px;
+}
+
+.footer-col a {
+    color: #cbd5f5;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
+}
+
+.footer-col a:hover {
+    color: var(--accent-orange);
+}
+
+.copyright {
+    padding: 14px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #9ca3af;
+}
+
+/* =========================================
+   8. RESPONSIVE LAYOUT
+========================================= */
+
+/* Tablet & kleine laptops */
+@media (max-width: 992px) {
+    h1 {
+        font-size: 2.1rem;
+    }
+
+    .hero {
+        min-height: 60vh;
+    }
+
+    .fleet-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    /* kaart + lijst onder elkaar */
+    .location-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .map-wrapper {
+        height: 420px;
+        order: 1;
+    }
+
+    .location-sidebar {
+        max-height: none;
+        order: 2;
+        margin-top: 12px;
+    }
+
+    .partner-wrapper {
+        flex-direction: column-reverse;
+    }
+}
+
+/* Mobiel */
+@media (max-width: 768px) {
+    /* Header / nav */
+    .hamburger {
+        display: block;
+    }
+
+    .nav-menu {
+        position: fixed;
+        left: -100%;
+        top: var(--header-height);
+        flex-direction: column;
+        background-color: #ffffff;
+        width: 100%;
+        height: calc(100vh - var(--header-height));
+        padding-top: 2rem;
+        transition: left 0.25s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .nav-menu.active {
+        left: 0;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        gap: 16px;
+    }
+
+    .nav-cta {
+        margin-bottom: 2rem;
+    }
+
+    /* Hero */
+    .hero {
+        text-align: center;
+        justify-content: center;
+    }
+
+    .hero-content {
+        margin: 0 auto;
+    }
+
+    .hero-sub {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .hero-buttons {
+        justify-content: center;
+    }
+
+    .trust-badge {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    /* Vloot */
+    .fleet-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Map filters */
+    .map-section {
+        padding-top: 50px;
+        padding-bottom: 60px;
+    }
+
+    .map-filters {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .search-input,
+    .type-select,
+    .map-reset-btn {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .map-wrapper {
+        height: 360px;
+    }
+
+    .location-sidebar {
+        padding: 12px 12px 14px;
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+    }
+
+    .location-card {
+        font-size: 0.84rem;
+    }
+
+    .location-card-title {
+        font-size: 0.9rem;
+    }
+
+    .location-card-actions {
+        width: 100%;
+    }
+
+    .location-card-actions .btn-sm {
+        flex: 1 1 32%;
+        text-align: center;
+        justify-content: center;
+    }
+
+    /* Partner / footer */
+    .partner-wrapper {
+        gap: 24px;
+    }
+
+    footer {
+        padding-top: 32px;
+    }
+}
+/* USP-kaarten onderaan (Waarom huren) – linkslijnig & professioneler */
+.usp-item {
+    background: #ffffff;
+    padding: 24px 22px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.usp-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #1a2c49, #31456d);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #ffffff;
+    margin-bottom: 0.9rem;
+}
+
+/* HOE WERKT HUREN blok */
+.how-section {
+    background-color: #ffffff;
+}
+
+.how-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.how-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 22px 20px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.how-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 32px rgba(15, 23, 42, 0.12);
+    border-color: var(--accent-orange);
+}
+
+.how-icon-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    background: #fff7ed;
+    border: 2px solid var(--accent-orange);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: var(--accent-orange);
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+
+.how-card h3 {
+    margin-bottom: 6px;
+}
