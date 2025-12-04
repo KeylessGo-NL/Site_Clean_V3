@@ -1,404 +1,440 @@
-/* ======================================================
-   1. BASIS & VARIABELEN
-====================================================== */
-:root {
-    --primary-blue: #1a2c49;
-    --accent-orange: #ff7a00;
-    --accent-orange-hover: #e06b00;
-    --text-dark: #1a2c49;
-    --text-light: #666666;
-    --text-white: #ffffff;
-    --bg-light: #f4f7fa;
-    --font-stack: "Montserrat", system-ui, sans-serif;
-    --header-height: 80px;
-}
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8" />
+    <title>KeylessGo – Altijd een auto in de buurt. Helemaal keyless.</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="KeylessGo biedt moderne deelauto’s en busjes met keyless toegang in de regio Utrecht. Boek via SnappCar en stap direct in, zonder sleuteloverdracht.">
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+    <!-- Leaflet CSS -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
 
-body {
-    font-family: var(--font-stack);
-    color: var(--text-dark);
-    background-color: #ffffff;
-    overflow-x: hidden;
-    line-height: 1.6;
-}
+    <!-- Eigen styles -->
+    <link rel="stylesheet" href="data/styles.css" />
+</head>
+<body>
 
-img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-}
+<header>
+    <div class="container header-content">
+        <a href="index.html" class="logo">
+            <img src="img/partner/keylessgo-logo.jpg" alt="KeylessGo logo">
+        </a>
 
-.container {
-    width: 92%;
-    max-width: 1200px;
-    margin: 0 auto;
-}
+        <nav class="nav-menu">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#zoek-en-boek">Vind voertuig</a></li>
+                <li><a href="busje-huren.html">Busje huren</a></li>
+                <li><a href="auto-huren.html">Auto huren</a></li>
+                <li><a href="#onze-vloot">Onze vloot</a></li>
+                <li><a href="#hoe-werkt-huren">Hoe het werkt</a></li>
+                <li><a href="#waarom-keylessgo">Waarom KeylessGo</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <a href="https://www.snappcar.nl" target="_blank" rel="noopener" class="btn btn-primary nav-cta">
+                Direct huren via SnappCar.nl
+            </a>
+        </nav>
 
-/* ======================================================
-   2. TYPOGRAFIE
-====================================================== */
-h1, h2, h3 {
-    color: var(--primary-blue);
-    font-weight: 800;
-    line-height: 1.2;
-}
+        <button class="hamburger" id="hamburger" aria-label="Menu openen" aria-expanded="false">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+    </div>
+</header>
 
-h1 { font-size: 2.3rem; }
-h2 { font-size: 2rem; text-align: center; margin-bottom: 1rem; }
-h3 { font-size: 1.25rem; margin-bottom: 0.6rem; }
+<main>
+    <!-- HERO -->
+    <section class="hero">
+        <div class="container hero-inner">
+            <!-- Kolom links: tekst + knoppen -->
+            <div class="hero-left">
+                <p class="hero-eyebrow">Keyless deelauto’s &amp; busjes in jouw buurt</p>
 
-p { color: var(--text-light); margin-bottom: 1rem; }
+                <h1 class="hero-title">
+                    Altijd een auto in de buurt.<br>
+                    Helemaal keyless.
+                </h1>
 
-.section-sub {
-    text-align: center;
-    max-width: 650px;
-    margin: 0 auto 2rem auto;
-}
+                <p class="hero-sub">
+                    KeylessGo plaatst deelauto’s en busjes op slimme hotspots in jouw wijk. 
+                    Je boekt via SnappCar; wij regelen voertuigen, locaties en professionele support.
+                </p>
 
-/* ======================================================
-   3. HEADER
-====================================================== */
-header {
-    height: var(--header-height);
-    background: #fff;
-    border-bottom: 1px solid #e5e7eb;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-}
+                <div class="hero-buttons">
+                    <a href="#zoek-en-boek" class="btn btn-primary">Vind een voertuig in de buurt</a>
+                    <a href="#hoe-werkt-huren" class="btn hero-btn-secondary">Hoe werkt huren?</a>
+                </div>
 
-.header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+                <div class="trust-badge">
+                    ★★★★★ 4,9/5 – 700+ ritten via SnappCar.nl
+                </div>
+            </div>
 
-.logo img {
-    height: 46px;
-    object-fit: contain;
-}
+            <!-- Kolom rechts: logo + USP-badges -->
+            <div class="hero-right">
+                <div class="hero-logo-card">
+                    <img src="img/partner/keylessgo-logo.jpg" alt="KeylessGo logo" class="hero-logo-img">
+                    <p class="hero-logo-text">
+                        KeylessGo is je vaste vlootpartner in de regio Utrecht. 
+                        Slimme locaties, keyless toegang en support wanneer je het nodig hebt.
+                    </p>
+                </div>
 
-.nav-menu {
-    display: flex;
-    align-items: center;
-    gap: 28px;
-}
+                <div class="hero-usps">
+                    <div class="hero-usp-pill hero-usp-keyless">
+                        <span class="hero-usp-label">Volledig keyless</span>
+                        <span class="hero-usp-desc">Openen &amp; starten via de app</span>
+                    </div>
+                    <div class="hero-usp-pill hero-usp-direct">
+                        <span class="hero-usp-label">Direct boeken</span>
+                        <span class="hero-usp-desc">Geen sleuteloverdracht of wachttijd</span>
+                    </div>
+                    <div class="hero-usp-pill hero-usp-safe">
+                        <span class="hero-usp-label">Betrouwbaar &amp; verzekerd</span>
+                        <span class="hero-usp-desc">SnappCar platform • KeylessGo service</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- EINDE HERO -->
 
-.nav-links {
-    display: flex;
-    list-style: none;
-    gap: 22px;
-}
+    <!-- ZOEK & BOEK – KAART (NU BOVEN ONZE VLOOT) -->
+    <section class="map-section" id="zoek-en-boek">
+        <div class="container">
+            <h2>Zoek &amp; boek een voertuig in jouw buurt</h2>
+            <p class="section-sub">
+                Bekijk waar onze keyless busjes en auto’s staan in de regio Utrecht. 
+                Vind snel een geschikt voertuig, navigeer erheen met Google Maps en boek direct via SnappCar.
+            </p>
 
-.nav-links a {
-    text-decoration: none;
-    color: var(--text-dark);
-    font-weight: 600;
-    font-size: 0.95rem;
-}
-.nav-links a:hover { color: var(--accent-orange); }
+            <div class="map-filters">
+                <input id="location-search" class="search-input" type="text" placeholder="Zoek op plaats, wijk of postcode (bijv. Utrecht, Houten, Amersfoort)">
+                <select id="location-type-filter" class="type-select">
+                    <option value="all">Alle voertuigtypen</option>
+                    <option value="auto">Auto</option>
+                    <option value="bus-small">Busje Small</option>
+                    <option value="bus-medium">Busje Medium</option>
+                    <option value="bus-large">Busje Large</option>
+                    <option value="ev">Elektrisch</option>
+                </select>
+                <button id="location-search-btn" class="btn btn-secondary map-reset-btn">Zoek &amp; zoom</button>
+                <button id="use-my-location" class="btn btn-secondary map-reset-btn">Gebruik mijn locatie</button>
+            </div>
 
-.nav-cta {
-    padding: 10px 20px;
-}
+            <div class="location-layout">
+                <div class="map-wrapper">
+                    <div id="kg-map"></div>
+                </div>
 
-/* Hamburger */
-.hamburger {
-    display: none;
-    flex-direction: column;
-    gap: 4px;
-    cursor: pointer;
-}
-.hamburger .bar {
-    width: 24px;
-    height: 3px;
-    background: var(--primary-blue);
-}
+                <aside class="location-sidebar">
+                    <h3>Dichtstbijzijnde voertuigen</h3>
+                    <p class="location-sidebar-sub">
+                        We tonen de voertuigen die het dichtst bij jouw gekozen locatie staan. 
+                        Kies een voertuig om meer details te zien, op de kaart te tonen of direct via SnappCar te boeken.
+                    </p>
 
-/* ======================================================
-   4. BUTTONS
-====================================================== */
-.btn {
-    display: inline-block;
-    padding: 11px 24px;
-    font-weight: 700;
-    border-radius: 6px;
-    transition: 0.25s ease;
-    border: 2px solid transparent;
-    cursor: pointer;
-    text-align: center;
-}
-.btn-primary {
-    background: var(--accent-orange);
-    color: #fff;
-}
-.btn-primary:hover {
-    background: var(--accent-orange-hover);
-}
-.btn-secondary {
-    background: transparent;
-    border-color: var(--primary-blue);
-    color: var(--primary-blue);
-}
-.btn-secondary:hover {
-    background: var(--primary-blue);
-    color: #fff;
-}
+                    <div class="location-list" data-location-list></div>
 
-.btn-sm { padding: 7px 12px; font-size: 0.8rem; }
+                    <p class="location-note">
+                        Alle boekingen, betalingen en verzekering verlopen veilig via SnappCar. 
+                        KeylessGo beheert de voertuigen, hotspots en service.
+                    </p>
+                </aside>
+            </div>
+        </div>
+    </section>
 
-/* ======================================================
-   5. HERO – NIEUW 2-KOLOMS DESIGN
-====================================================== */
+    <!-- ONZE VLOOT (nu onder de kaart) -->
+    <section class="fleet-section" id="onze-vloot">
+        <div class="container">
+            <h2>Onze vloot</h2>
+            <p class="section-sub">
+                Kies het voertuig dat past bij jouw rit – van compacte stadsauto tot ruime verhuisbus. 
+                Alle voertuigen zijn keyless en direct te boeken via SnappCar.
+            </p>
 
-.hero {
-    display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 40px;
-    align-items: center;
-    padding: calc(var(--header-height) + 20px) 0 40px;
-    min-height: 58vh; /* compact */
-    background:
-        linear-gradient(115deg, rgba(26, 44, 73, 0.9), rgba(26, 44, 73, 0.6)),
-        url("../img/hero/hero-bg.jpg") center/cover no-repeat;
-    color: #fff;
-}
+            <div class="fleet-grid">
+                <!-- Rij 1: busjes -->
+                <article class="fleet-card">
+                    <img src="img/fleet/van-small.jpg" alt="Busje Small – Volkswagen Caddy">
+                    <div class="fleet-card-body">
+                        <h3>Busje Small</h3>
+                        <p>Volkswagen Caddy – perfect voor kleine verhuizingen, klussen en bezorgen in de stad.</p>
+                        <div class="badge-row">
+                            <span class="badge badge-keyless">Keyless</span>
+                            <span class="badge badge-direct">Direct boeken</span>
+                            <span class="badge badge-emission">Euro 6 – milieuzones</span>
+                        </div>
+                        <div class="fleet-bottom">
+                            <div class="price">
+                                <span>Vanaf</span>
+                                <span class="amount">€ 55.-</span>
+                                <span>p/dag (incl. 100 km)</span>
+                            </div>
+                            <a class="btn btn-primary btn-sm" href="https://www.snappcar.nl" target="_blank" rel="noopener">
+                                Nu boeken
+                            </a>
+                        </div>
+                    </div>
+                </article>
 
-.hero-left {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
+                <article class="fleet-card">
+                    <img src="img/fleet/van-medium.jpg" alt="Busje Medium – VW Transporter">
+                    <div class="fleet-card-body">
+                        <h3>Busje Medium</h3>
+                        <p>VW Transporter – ideaal voor meubels, grotere klussen en weekendjes weg met veel bagage.</p>
+                        <div class="badge-row">
+                            <span class="badge badge-keyless">Keyless</span>
+                            <span class="badge badge-direct">Direct boeken</span>
+                            <span class="badge badge-emission">Euro 6 – milieuzones</span>
+                        </div>
+                        <div class="fleet-bottom">
+                            <div class="price">
+                                <span>Vanaf</span>
+                                <span class="amount">€ 65.-</span>
+                                <span>p/dag (incl. 100 km)</span>
+                            </div>
+                            <a class="btn btn-primary btn-sm" href="https://www.snappcar.nl" target="_blank" rel="noopener">
+                                Nu boeken
+                            </a>
+                        </div>
+                    </div>
+                </article>
 
-.hero-eyebrow {
-    font-size: 0.75rem;
-    letter-spacing: 0.14em;
-    opacity: 0.85;
-    text-transform: uppercase;
-}
+                <article class="fleet-card">
+                    <img src="img/fleet/van-large.jpg" alt="Busje Large – VW Crafter">
+                    <div class="fleet-card-body">
+                        <h3>Busje Large</h3>
+                        <p>VW Crafter – maximale laadruimte voor grote verhuizingen, events en zakelijke logistiek.</p>
+                        <div class="badge-row">
+                            <span class="badge badge-keyless">Keyless</span>
+                            <span class="badge badge-direct">Direct boeken</span>
+                            <span class="badge badge-emission">Euro 6 – milieuzones</span>
+                        </div>
+                        <div class="fleet-bottom">
+                            <div class="price">
+                                <span>Vanaf</span>
+                                <span class="amount">€ 75.-</span>
+                                <span>p/dag (incl. 100 km)</span>
+                            </div>
+                            <a class="btn btn-primary btn-sm" href="https://www.snappcar.nl" target="_blank" rel="noopener">
+                                Nu boeken
+                            </a>
+                        </div>
+                    </div>
+                </article>
 
-.hero-title {
-    font-size: 2.2rem;
-    color: #fff;
-}
+                <!-- Rij 2: auto, EV, alle voertuigen -->
+                <article class="fleet-card">
+                    <img src="img/fleet/compact.jpg" alt="Auto – Volkswagen Up!">
+                    <div class="fleet-card-body">
+                        <h3>Auto huren</h3>
+                        <p>Volkswagen Up! – wendbare, zuinige stadsauto voor dagelijkse ritten in en rond de stad.</p>
+                        <div class="badge-row">
+                            <span class="badge badge-keyless">Keyless</span>
+                            <span class="badge badge-direct">Direct boeken</span>
+                        </div>
+                        <div class="fleet-bottom">
+                            <div class="price">
+                                <span>Vanaf</span>
+                                <span class="amount">€ 35.-</span>
+                                <span>p/dag (incl. 100 km)</span>
+                            </div>
+                            <a class="btn btn-primary btn-sm" href="https://www.snappcar.nl" target="_blank" rel="noopener">
+                                Nu boeken
+                            </a>
+                        </div>
+                    </div>
+                </article>
 
-.hero-sub {
-    color: #e0e7ff;
-    max-width: 520px;
-}
+                <article class="fleet-card">
+                    <img src="img/fleet/ev.jpg" alt="Elektrische auto – ID.3">
+                    <div class="fleet-card-body">
+                        <h3>Elektrisch rijden</h3>
+                        <p>ID.3 of vergelijkbaar – duurzaam en stil, ideaal voor emissiezones en bewuste rijders.</p>
+                        <div class="badge-row">
+                            <span class="badge badge-keyless">Keyless</span>
+                            <span class="badge badge-direct">Direct boeken</span>
+                            <span class="badge badge-emission">100% Electric</span>
+                        </div>
+                        <div class="fleet-bottom">
+                            <div class="price">
+                                <span>Vanaf</span>
+                                <span class="amount">€ 45.-</span>
+                                <span>p/dag (incl. 100 km)</span>
+                            </div>
+                            <a class="btn btn-primary btn-sm" href="https://www.snappcar.nl" target="_blank" rel="noopener">
+                                Nu boeken
+                            </a>
+                        </div>
+                    </div>
+                </article>
 
-/* CTA knoppen */
-.hero-buttons {
-    display: flex;
-    gap: 12px;
-    margin-top: 10px;
-}
+                <article class="fleet-card">
+                    <img src="img/fleet/all-vehicles.jpg" alt="Alle voertuigen KeylessGo">
+                    <div class="fleet-card-body">
+                        <h3>Alle voertuigen</h3>
+                        <p>Bekijk het volledige overzicht van alle KeylessGo voertuigen in jouw regio.</p>
+                        <div class="badge-row">
+                            <span class="badge badge-keyless">Keyless</span>
+                            <span class="badge badge-direct">Direct boeken</span>
+                            <span class="badge badge-emission">Busjes &amp; auto’s</span>
+                        </div>
+                        <div class="fleet-bottom">
+                            <div class="price">
+                                <span>Vanaf</span>
+                                <span class="amount">€ 35.-</span>
+                                <span>p/dag (incl. 100 km)</span>
+                            </div>
+                            <a class="btn btn-primary btn-sm" href="https://www.snappcar.nl" target="_blank" rel="noopener">
+                                Bekijk vloot
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
 
-/* Hero USP kolom rechts */
-.hero-right {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
+    <!-- HOE WERKT HUREN -->
+    <section class="how-section" id="hoe-werkt-huren">
+        <div class="container">
+            <h2>Hoe werkt huren bij KeylessGo?</h2>
+            <p class="section-sub">
+                Huren moet simpel zijn. In drie stappen regel je alles: van boeken tot rijden en weer inleveren.
+            </p>
 
-.hero-usp {
-    background: rgba(255,255,255,0.08);
-    padding: 14px 16px;
-    border-radius: 10px;
-    border-left: 4px solid var(--accent-orange);
-    backdrop-filter: blur(4px);
-}
-.hero-usp h4 {
-    font-size: 1rem;
-    font-weight: 700;
-    margin-bottom: 4px;
-    color: #fff;
-}
-.hero-usp p {
-    color: #e0e7ff;
-    font-size: 0.85rem;
-    margin: 0;
-}
+            <div class="how-grid">
+                <article class="how-card">
+                    <div class="how-icon-circle">1</div>
+                    <h3>Zoek &amp; boek online</h3>
+                    <p>
+                        Kies jouw deelauto of busje op SnappCar, selecteer datum en tijd en rond de reservering af. 
+                        Je ziet vooraf duidelijk de kosten, borg en voorwaarden.
+                    </p>
+                </article>
 
-/* Trust badge */
-.trust-badge {
-    margin-top: 8px;
-    background: rgba(0,0,0,0.3);
-    padding: 6px 14px;
-    border-radius: 999px;
-    font-size: 0.85rem;
-}
+                <article class="how-card">
+                    <div class="how-icon-circle">2</div>
+                    <h3>Open via de app</h3>
+                    <p>
+                        Op de dag zelf loop je naar het voertuig, volg je de check-in en foto’s in de app 
+                        en open je de auto volledig keyless. Geen sleuteloverdracht nodig.
+                    </p>
+                </article>
 
-/* ======================================================
-   6. ONZE VLOOT GRID 2x3
-====================================================== */
-.fleet-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 26px;
-}
+                <article class="how-card">
+                    <div class="how-icon-circle">3</div>
+                    <h3>Rijden &amp; weer inleveren</h3>
+                    <p>
+                        Rij je rit, tank of laad indien nodig en breng de auto terug op de vaste locatie. 
+                        Via de app sluit je af met een korte check-out en ben je klaar.
+                    </p>
+                </article>
+            </div>
+        </div>
+    </section>
 
-.fleet-card {
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 10px 26px rgba(0,0,0,0.06);
-}
+    <!-- WAAROM HUREN BIJ KEYLESSGO -->
+    <section class="usp-blocks" id="waarom-keylessgo">
+        <div class="container">
+            <h2>Waarom huren bij KeylessGo?</h2>
+            <p class="section-sub">
+                KeylessGo combineert een professionele vloot met de vertrouwde boekingsflow van SnappCar. 
+                Ideaal voor verhuizen, weekendjes weg en zakelijk gebruik.
+            </p>
 
-.fleet-card img {
-    height: 190px;
-    object-fit: cover;
-}
+            <div class="usp-grid">
+                <article class="usp-item">
+                    <div class="usp-icon">📱</div>
+                    <h3>Volledig via de app</h3>
+                    <p>
+                        Open, vergrendel en start je rit volledig via de app. Geen sleuteloverdracht en geen gedoe
+                        met afspraken of wachttijden.
+                    </p>
+                </article>
 
-.fleet-card-body {
-    padding: 18px;
-    display: flex;
-    flex-direction: column;
-}
+                <article class="usp-item">
+                    <div class="usp-icon">🚐</div>
+                    <h3>Jonge, betrouwbare voertuigen</h3>
+                    <p>
+                        Goed onderhouden auto's en busjes met lage kilometerstand, perfect voor zowel privé- als zakelijk gebruik.
+                    </p>
+                </article>
 
-/* Badges */
-.badge-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin: 8px 0 12px;
-}
+                <article class="usp-item">
+                    <div class="usp-icon">🛡️</div>
+                    <h3>Veilig &amp; verzekerd</h3>
+                    <p>
+                        Boeking, betalingen en verzekering verlopen via SnappCar. 
+                        KeylessGo zorgt voor nette voertuigen, hotspots en support.
+                    </p>
+                </article>
+            </div>
+        </div>
+    </section>
+</main>
 
-.badge {
-    padding: 5px 10px;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    border: 1px solid #dadce0;
-    background: #f8f9fa;
-}
+<!-- FOOTER -->
+<footer>
+    <div class="container footer-grid">
+        <div>
+            <div class="footer-logo">KeylessGo</div>
+            <p class="footer-text">
+                Moderne deelauto's en busjes met keyless toegang. 
+                Vlootbeheer door KeylessGo, boekingen via SnappCar.
+            </p>
+        </div>
+        <div class="footer-col">
+            <h4>Menu</h4>
+            <ul>
+                <li><a href="#zoek-en-boek">Vind voertuig</a></li>
+                <li><a href="#onze-vloot">Onze vloot</a></li>
+                <li><a href="#hoe-werkt-huren">Hoe het werkt</a></li>
+                <li><a href="#waarom-keylessgo">Waarom KeylessGo</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Contact</h4>
+            <ul>
+                <li><a href="contact.html">Contactformulier</a></li>
+                <li><a href="mailto:info@keylessgo.nl">info@keylessgo.nl</a></li>
+                <li><a href="#">Privacy &amp; cookies</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="copyright">
+        © <span id="year"></span> KeylessGo. Boekingen, verificatie en verzekering verlopen via SnappCar.
+    </div>
+</footer>
 
-/* Price block bottom */
-.fleet-bottom {
-    margin-top: auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-}
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-.amount { font-size: 1.3rem; font-weight: 800; color: var(--primary-blue); }
+<!-- Eigen JS -->
+<script src="data/map.js"></script>
+<script src="data/fleet.js"></script>
+<script src="data/find-vehicle.js"></script>
 
-/* ======================================================
-   7. MAP / LOCATIE - LAYOUT
-====================================================== */
-.location-layout {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 24px;
-}
+<script>
+    // jaar in footer
+    document.getElementById("year").textContent = new Date().getFullYear();
 
-.map-wrapper {
-    height: 520px;
-    border-radius: 14px;
-    overflow: hidden;
-    box-shadow: 0 12px 35px rgba(0,0,0,0.2);
-}
+    // hamburger menu
+    const hamburger = document.getElementById("hamburger");
+    const navMenu = document.querySelector(".nav-menu");
 
-/* Sidebar */
-.location-sidebar {
-    background: #fff;
-    border: 1px solid #e5e7eb;
-    padding: 16px;
-    border-radius: 14px;
-    display: flex;
-    flex-direction: column;
-    max-height: 520px;
-}
+    hamburger.addEventListener("click", () => {
+        const isActive = navMenu.classList.toggle("active");
+        hamburger.setAttribute("aria-expanded", isActive ? "true" : "false");
+    });
+</script>
 
-.location-list {
-    overflow-y: auto;
-    margin-top: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-/* ======================================================
-   8. USP / HOE HET WERKT CARDS
-====================================================== */
-
-.usp-item, .how-card {
-    background: #fff;
-    border-radius: 12px;
-    padding: 20px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 8px 22px rgba(0,0,0,0.05);
-}
-
-/* ======================================================
-   9. FOOTER
-====================================================== */
-footer {
-    background: var(--primary-blue);
-    padding: 40px 0 20px;
-    color: #fff;
-}
-
-.footer-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
-    gap: 32px;
-}
-
-/* ======================================================
-   10. RESPONSIVE
-====================================================== */
-
-/* TABLET */
-@media (max-width: 992px) {
-    .hero {
-        grid-template-columns: 1fr;
-        text-align: center;
-        padding-top: 120px;
-    }
-    .hero-left, .hero-right { align-items: center; }
-    .fleet-grid { grid-template-columns: repeat(2,1fr); }
-    .location-layout { grid-template-columns: 1fr; }
-}
-
-/* MOBILE */
-@media (max-width: 768px) {
-
-    /* Header */
-    .hamburger { display: flex; }
-    .nav-menu {
-        position: fixed;
-        background: #fff;
-        flex-direction: column;
-        top: var(--header-height);
-        left: -100%;
-        width: 100%;
-        padding: 30px 0;
-        transition: 0.3s;
-        gap: 20px;
-        border-bottom: 1px solid #eee;
-    }
-    .nav-menu.active { left: 0; }
-
-    /* Hero */
-    .hero { padding: 130px 0 50px; }
-    .hero-buttons { flex-direction: column; width: 100%; }
-    .hero-right { width: 100%; }
-
-    /* Fleet */
-    .fleet-grid { grid-template-columns: 1fr; }
-
-    /* Fix overlapping menu/kaart knoppen */
-    .map-filters { position: relative; z-index: 1; }
-
-}
+</body>
+</html>
