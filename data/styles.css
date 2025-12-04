@@ -339,45 +339,108 @@ header {
     color: #d1d5db;
 }
 
-/* hero usps rechts */
-.hero-usps {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 8px;
-    margin-top: 6px;
-}
-
-.hero-usp-pill {
+/* =========================================
+   UPDATE: HERO RECHTS (USP Cards)
+========================================= */
+.usp-card-container {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    padding: 8px 12px;
+    gap: 16px;
+}
+
+.usp-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: rgba(255, 255, 255, 0.1); /* Glassmorphism */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 16px 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.usp-card:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(-5px);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.usp-icon-box {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    background: rgba(255, 122, 0, 0.2); /* Oranje tint */
+    color: var(--accent-orange);
     border-radius: 10px;
-    background: rgba(15, 23, 42, 0.94);
-    border: 1px solid rgba(148, 163, 184, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
 }
 
-.hero-usp-label {
-    font-size: 0.86rem;
+.usp-icon-box.box-blue {
+    background: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+}
+
+.usp-icon-box.box-green {
+    background: rgba(34, 197, 94, 0.2);
+    color: #4ade80;
+}
+
+.usp-content h4 {
+    color: #ffffff;
+    font-size: 1rem;
+    margin-bottom: 2px;
     font-weight: 700;
-    color: #f9fafb;
 }
 
-.hero-usp-desc {
-    font-size: 0.78rem;
+.usp-content p {
     color: #cbd5f5;
+    font-size: 0.85rem;
+    margin: 0;
+    line-height: 1.4;
 }
 
-.hero-usp-keyless {
-    border-left: 4px solid var(--accent-orange);
-}
-.hero-usp-direct {
-    border-left: 4px solid #facc15;
-}
-.hero-usp-safe {
-    border-left: 4px solid #22c55e;
+/* =========================================
+   UPDATE: MAP MARKERS (Pins met Icoon)
+========================================= */
+/* De container van de marker */
+.kg-marker-pin {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border-radius: 50% 50% 50% 0; /* Druppelvorm */
+    transform: rotate(-45deg); /* Draai zodat punt naar beneden wijst */
+    width: 36px !important; /* Forceer grootte */
+    height: 36px !important;
+    border: 2px solid #ffffff;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.3);
+    transition: transform 0.2s ease;
 }
 
+/* Het icoontje binnenin de marker - terugdraaien zodat het recht staat */
+.kg-marker-pin i {
+    transform: rotate(45deg); 
+    color: #ffffff;
+    font-size: 14px;
+}
+
+/* Hover effect op marker */
+.kg-marker-pin:hover {
+    z-index: 1000 !important;
+    transform: scale(1.1) rotate(-45deg);
+}
+
+/* Specifieke kleuren classes (worden door JS toegevoegd) */
+.marker-auto { background-color: #1b56d4; }
+.marker-ev { background-color: #15803d; }
+.marker-bus { background-color: #a65314; } /* Oranje/Bruin */
+.marker-bus-medium { background-color: #7c3aed; } /* Paars */
+.marker-bus-large { background-color: #b91c1c; } /* Rood */
 /* =========================================
    4. ONZE VLOOT – 2 rijen x 3
 ========================================= */
