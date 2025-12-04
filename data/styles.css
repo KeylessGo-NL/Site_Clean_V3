@@ -131,7 +131,8 @@ section {
 header {
     background-color: #ffffff;
     height: var(--header-height);
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    border-bottom: 1px solid #e5e7eb;
     position: fixed;
     width: 100%;
     top: 0;
@@ -146,7 +147,7 @@ header {
     align-items: center;
 }
 
-/* tekstlogo + evt. image-logo */
+/* tekstlogo + img-logo */
 .logo {
     display: inline-flex;
     align-items: center;
@@ -217,7 +218,7 @@ header {
 ========================================= */
 .hero {
     position: relative;
-    min-height: 65vh; /* kleiner */
+    min-height: 65vh;
     padding-top: var(--header-height);
     padding-bottom: 60px;
     display: flex;
@@ -230,6 +231,11 @@ header {
         ),
         url("../img/hero/hero-bg.jpg") no-repeat center center / cover;
     color: var(--text-white);
+}
+
+.hero > .container {
+    display: flex;
+    align-items: center;
 }
 
 .hero-content {
@@ -277,7 +283,7 @@ header {
     flex-direction: column;
     justify-content: center;
     padding: 8px 14px;
-    border-radius: 8px;              /* rechthoekig */
+    border-radius: 8px;
     background: rgba(15, 23, 42, 0.92);
     border: 1px solid rgba(148, 163, 184, 0.9);
     min-width: 200px;
@@ -327,60 +333,68 @@ header {
     color: var(--primary-blue);
 }
 
-/* Mobile: centreren */
-@media (max-width: 768px) {
-    .hero {
-        text-align: center;
-        justify-content: center;
-    }
-
-    .hero-content {
-        align-items: center;
-        text-align: center;
-    }
-
-    .hero-usps {
-        flex-direction: column;
-        align-items: stretch;
-        width: 100%;
-    }
-
-    .hero-usp-pill {
-        width: 100%;
-    }
-
-    .hero-buttons {
-        justify-content: center;
-    }
+/* trust badge */
+.trust-badge {
+    margin-top: 0.4rem;
+    font-size: 0.9rem;
+    opacity: 0.95;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: rgba(0, 0, 0, 0.25);
+    padding: 6px 12px;
+    border-radius: 999px;
 }
 
-/* mobile: alles mooi onder elkaar centreren */
-@media (max-width: 768px) {
-    .hero-content {
-        align-items: center;
-        text-align: center;
-    }
-
-    .hero-usps {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .hero-usp-pill {
-        width: 100%;
-    }
+/* =========================================
+   4. USP BLOKKEN (Waarom huren)
+========================================= */
+.usp-blocks {
+    background-color: var(--bg-light);
 }
+
+.usp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 26px;
+    margin-top: 20px;
+}
+
+/* professioneel, linkslijnig */
+.usp-item {
+    background: #ffffff;
+    padding: 24px 22px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.usp-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #1a2c49, #31456d);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #ffffff;
+    margin-bottom: 0.9rem;
+}
+
 /* =========================================
    5. ONZE VLOOT – 2 rijen x 3
 ========================================= */
-
 .fleet-section {
     background-color: #ffffff;
 }
 
 .fleet-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr)); /* 3 kolommen desktop */
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 26px;
 }
 
@@ -516,7 +530,7 @@ header {
 .map-wrapper {
     position: relative;
     width: 100%;
-    height: 540px; /* iets groter op laptop */
+    height: 540px;
     border-radius: 14px;
     overflow: hidden;
     box-shadow: 0 12px 35px rgba(15, 23, 42, 0.25);
@@ -676,10 +690,56 @@ header {
 }
 
 /* =========================================
-   7. PARTNER / FOOTER STYLING
-   (voor nette images onderaan de site)
+   7. HOE WERKT HUREN
 ========================================= */
+.how-section {
+    background-color: #ffffff;
+}
 
+.how-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.how-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 22px 20px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.how-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 32px rgba(15, 23, 42, 0.12);
+    border-color: var(--accent-orange);
+}
+
+.how-icon-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    background: #fff7ed;
+    border: 2px solid var(--accent-orange);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: var(--accent-orange);
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+
+.how-card h3 {
+    margin-bottom: 6px;
+}
+
+/* =========================================
+   8. PARTNER / FOOTER STYLING
+========================================= */
 .partner-why {
     background-color: #ffffff;
 }
@@ -719,7 +779,7 @@ header {
     border-radius: 12px;
 }
 
-/* eenvoudige footer (als je die gebruikt) */
+/* footer */
 footer {
     background: var(--primary-blue);
     color: #ffffff;
@@ -780,7 +840,7 @@ footer {
 }
 
 /* =========================================
-   8. RESPONSIVE LAYOUT
+   9. RESPONSIVE LAYOUT
 ========================================= */
 
 /* Tablet & kleine laptops */
@@ -861,11 +921,23 @@ footer {
 
     .hero-content {
         margin: 0 auto;
+        align-items: center;
+        text-align: center;
     }
 
     .hero-sub {
         margin-left: auto;
         margin-right: auto;
+    }
+
+    .hero-usps {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+    }
+
+    .hero-usp-pill {
+        width: 100%;
     }
 
     .hero-buttons {
@@ -940,74 +1012,4 @@ footer {
     footer {
         padding-top: 32px;
     }
-}
-/* USP-kaarten onderaan (Waarom huren) – linkslijnig & professioneler */
-.usp-item {
-    background: #ffffff;
-    padding: 24px 22px;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    text-align: left;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-.usp-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 999px;
-    background: linear-gradient(135deg, #1a2c49, #31456d);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    color: #ffffff;
-    margin-bottom: 0.9rem;
-}
-
-/* HOE WERKT HUREN blok */
-.how-section {
-    background-color: #ffffff;
-}
-
-.how-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 24px;
-    margin-top: 24px;
-}
-
-.how-card {
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 22px 20px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.06);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-}
-
-.how-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 14px 32px rgba(15, 23, 42, 0.12);
-    border-color: var(--accent-orange);
-}
-
-.how-icon-circle {
-    width: 32px;
-    height: 32px;
-    border-radius: 999px;
-    background: #fff7ed;
-    border: 2px solid var(--accent-orange);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    color: var(--accent-orange);
-    margin-bottom: 10px;
-    font-size: 0.9rem;
-}
-
-.how-card h3 {
-    margin-bottom: 6px;
 }
