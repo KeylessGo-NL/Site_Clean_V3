@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <title>KeylessGo – Altijd een auto in de buurt. Helemaal keyless.</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="KeylessGo biedt moderne deelauto’s en busjes met keyless toegang in de regio. Boek via SnappCar en stap direct in, zonder sleuteloverdracht.">
+    <meta name="description" content="KeylessGo biedt moderne deelauto’s en busjes met keyless toegang in de regio Utrecht. Boek via SnappCar en stap direct in, zonder sleuteloverdracht.">
 
     <!-- Leaflet CSS -->
     <link
@@ -26,32 +26,33 @@
         <nav class="nav-menu">
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
-                <li><a href="vind-voertuig.html">Vind voertuig</a></li>
+                <li><a href="#zoek-en-boek">Vind voertuig</a></li>
                 <li><a href="busje-huren.html">Busje huren</a></li>
                 <li><a href="auto-huren.html">Auto huren</a></li>
-                <li><a href="vloot.html">Onze Vloot</a></li>
-                <li><a href="#zoek-en-boek">Locaties</a></li>
-                <li><a href="hoe-werkt-het.html">Hoe het werkt</a></li>
+                <li><a href="#onze-vloot">Onze vloot</a></li>
+                <li><a href="#hoe-werkt-huren">Hoe het werkt</a></li>
+                <li><a href="#waarom-keylessgo">Waarom KeylessGo</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
             <a href="https://www.snappcar.nl" target="_blank" rel="noopener" class="btn btn-primary nav-cta">
-                Naar KeylessGo op SnappCar.nl
+                Direct huren via SnappCar.nl
             </a>
         </nav>
 
-        <div class="hamburger" id="hamburger" aria-label="Menu openen" aria-expanded="false">
+        <button class="hamburger" id="hamburger" aria-label="Menu openen" aria-expanded="false">
             <span class="bar"></span>
             <span class="bar"></span>
             <span class="bar"></span>
-        </div>
+        </button>
     </div>
 </header>
 
 <main>
     <!-- HERO -->
     <section class="hero">
-        <div class="container">
-            <div class="hero-content">
+        <div class="container hero-inner">
+            <!-- Kolom links: tekst + knoppen -->
+            <div class="hero-left">
                 <p class="hero-eyebrow">Keyless deelauto’s &amp; busjes in jouw buurt</p>
 
                 <h1 class="hero-title">
@@ -61,16 +62,29 @@
 
                 <p class="hero-sub">
                     KeylessGo plaatst deelauto’s en busjes op slimme hotspots in jouw wijk. 
-                    Je boekt via SnappCar, wij regelen de voertuigen, locaties en professionele support.
+                    Je boekt via SnappCar; wij regelen voertuigen, locaties en professionele support.
                 </p>
 
-                <!-- KNOPPEN -->
                 <div class="hero-buttons">
                     <a href="#zoek-en-boek" class="btn btn-primary">Vind een voertuig in de buurt</a>
                     <a href="#hoe-werkt-huren" class="btn hero-btn-secondary">Hoe werkt huren?</a>
                 </div>
 
-                <!-- USPs – RECHTHOEKIGE BADGES -->
+                <div class="trust-badge">
+                    ★★★★★ 4,9/5 – 700+ ritten via SnappCar.nl
+                </div>
+            </div>
+
+            <!-- Kolom rechts: logo + USP-badges -->
+            <div class="hero-right">
+                <div class="hero-logo-card">
+                    <img src="img/partner/keylessgo-logo.jpg" alt="KeylessGo logo" class="hero-logo-img">
+                    <p class="hero-logo-text">
+                        KeylessGo is je vaste vlootpartner in de regio Utrecht. 
+                        Slimme locaties, keyless toegang en support wanneer je het nodig hebt.
+                    </p>
+                </div>
+
                 <div class="hero-usps">
                     <div class="hero-usp-pill hero-usp-keyless">
                         <span class="hero-usp-label">Volledig keyless</span>
@@ -85,16 +99,58 @@
                         <span class="hero-usp-desc">SnappCar platform • KeylessGo service</span>
                     </div>
                 </div>
-
-                <div class="trust-badge">
-                    ★★★★★ 4,9/5 – 700+ ritten via SnappCar.nl
-                </div>
             </div>
         </div>
     </section>
     <!-- EINDE HERO -->
 
-    <!-- ONZE VLOOT -->
+    <!-- ZOEK & BOEK – KAART (NU BOVEN ONZE VLOOT) -->
+    <section class="map-section" id="zoek-en-boek">
+        <div class="container">
+            <h2>Zoek &amp; boek een voertuig in jouw buurt</h2>
+            <p class="section-sub">
+                Bekijk waar onze keyless busjes en auto’s staan in de regio Utrecht. 
+                Vind snel een geschikt voertuig, navigeer erheen met Google Maps en boek direct via SnappCar.
+            </p>
+
+            <div class="map-filters">
+                <input id="location-search" class="search-input" type="text" placeholder="Zoek op plaats, wijk of postcode (bijv. Utrecht, Houten, Amersfoort)">
+                <select id="location-type-filter" class="type-select">
+                    <option value="all">Alle voertuigtypen</option>
+                    <option value="auto">Auto</option>
+                    <option value="bus-small">Busje Small</option>
+                    <option value="bus-medium">Busje Medium</option>
+                    <option value="bus-large">Busje Large</option>
+                    <option value="ev">Elektrisch</option>
+                </select>
+                <button id="location-search-btn" class="btn btn-secondary map-reset-btn">Zoek &amp; zoom</button>
+                <button id="use-my-location" class="btn btn-secondary map-reset-btn">Gebruik mijn locatie</button>
+            </div>
+
+            <div class="location-layout">
+                <div class="map-wrapper">
+                    <div id="kg-map"></div>
+                </div>
+
+                <aside class="location-sidebar">
+                    <h3>Dichtstbijzijnde voertuigen</h3>
+                    <p class="location-sidebar-sub">
+                        We tonen de voertuigen die het dichtst bij jouw gekozen locatie staan. 
+                        Kies een voertuig om meer details te zien, op de kaart te tonen of direct via SnappCar te boeken.
+                    </p>
+
+                    <div class="location-list" data-location-list></div>
+
+                    <p class="location-note">
+                        Alle boekingen, betalingen en verzekering verlopen veilig via SnappCar. 
+                        KeylessGo beheert de voertuigen, hotspots en service.
+                    </p>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <!-- ONZE VLOOT (nu onder de kaart) -->
     <section class="fleet-section" id="onze-vloot">
         <div class="container">
             <h2>Onze vloot</h2>
@@ -246,51 +302,6 @@
         </div>
     </section>
 
-    <!-- ZOEK & BOEK – KAART -->
-    <section class="map-section" id="zoek-en-boek">
-        <div class="container">
-            <h2>Zoek &amp; boek een voertuig in jouw buurt</h2>
-            <p class="section-sub">
-                Bekijk waar onze keyless busjes en auto’s staan in de regio Utrecht. 
-                Vind snel een geschikt voertuig en boek direct via SnappCar.
-            </p>
-
-            <div class="map-filters">
-                <input id="location-search" class="search-input" type="text" placeholder="Zoek op plaats, wijk of postcode">
-                <select id="location-type-filter" class="type-select">
-                    <option value="all">Alle voertuigtypen</option>
-                    <option value="auto">Auto</option>
-                    <option value="bus-small">Busje Small</option>
-                    <option value="bus-medium">Busje Medium</option>
-                    <option value="bus-large">Busje Large</option>
-                    <option value="ev">Elektrisch</option>
-                </select>
-                <button id="location-search-btn" class="btn btn-secondary map-reset-btn">Zoek &amp; zoom</button>
-                <button id="use-my-location" class="btn btn-secondary map-reset-btn">Gebruik mijn locatie</button>
-            </div>
-
-            <div class="location-layout">
-                <div class="map-wrapper">
-                    <div id="kg-map"></div>
-                </div>
-
-                <aside class="location-sidebar">
-                    <h3>Dichtstbijzijnde voertuigen</h3>
-                    <p class="location-sidebar-sub">
-                        We tonen de voertuigen die het dichtst bij jouw gekozen locatie staan.
-                    </p>
-
-                    <div class="location-list" data-location-list></div>
-
-                    <p class="location-note">
-                        Alle boekingen en betalingen verlopen veilig via SnappCar. 
-                        KeylessGo beheert de voertuigen, locaties en service.
-                    </p>
-                </aside>
-            </div>
-        </div>
-    </section>
-
     <!-- HOE WERKT HUREN -->
     <section class="how-section" id="hoe-werkt-huren">
         <div class="container">
@@ -313,7 +324,7 @@
                     <div class="how-icon-circle">2</div>
                     <h3>Open via de app</h3>
                     <p>
-                        Op de dag zelf loop je naar het voertuig, volgt de check-in en foto’s in de app 
+                        Op de dag zelf loop je naar het voertuig, volg je de check-in en foto’s in de app 
                         en open je de auto volledig keyless. Geen sleuteloverdracht nodig.
                     </p>
                 </article>
@@ -383,10 +394,10 @@
         <div class="footer-col">
             <h4>Menu</h4>
             <ul>
-                <li><a href="auto-huren.html">Auto huren</a></li>
-                <li><a href="busje-huren.html">Busje huren</a></li>
-                <li><a href="vloot.html">Vloot</a></li>
-                <li><a href="#zoek-en-boek">Locaties</a></li>
+                <li><a href="#zoek-en-boek">Vind voertuig</a></li>
+                <li><a href="#onze-vloot">Onze vloot</a></li>
+                <li><a href="#hoe-werkt-huren">Hoe het werkt</a></li>
+                <li><a href="#waarom-keylessgo">Waarom KeylessGo</a></li>
             </ul>
         </div>
         <div class="footer-col">
@@ -404,9 +415,7 @@
 </footer>
 
 <!-- Leaflet JS -->
-<script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <!-- Eigen JS -->
 <script src="data/map.js"></script>
