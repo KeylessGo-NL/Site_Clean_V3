@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8" />
+    <title>Zoek &amp; boek een voertuig – KeylessGo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Zoek en boek direct een keyless auto of busje van KeylessGo in de regio Utrecht. Filter op voertuigtype, locatie en gebruiksdoel en boek via SnappCar.">
+
+    <!-- Leaflet CSS -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <!-- Eigen styles -->
+    <link rel="stylesheet" href="data/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Optionele pagina-specifieke layout tweaks -->
+    <style>
+        .sub-hero {
+            padding: 4rem 0 2rem;
+            background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 40%, #ffffff 100%);
+            color: #fff;
+        }
+
+        .sub-hero .breadcrumb {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-bottom: 0.75rem;
+        }
+
+        .sub-hero .breadcrumb a {
+            color: #fff;
+            text-decoration: none;
+            opacity: 0.9;
+        }
+
+        .sub-hero .breadcrumb span {
+            opacity: 0.7;
+        }
+
+        .sub-hero-title {
+            font-size: 2.2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .sub-hero-text {
+            max-width: 640px;
+            font-size: 1rem;
+            opacity: 0.95;
+        }
+
+        .search-layout {
+            padding: 2rem 0 3rem;
+        }
+
+        .search-layout-inner {
+            display: grid;
+            grid-template-columns: 280px minmax(0, 1.8fr) minmax(0, 1.2fr);
+            gap: 1.5rem;
+            align-items: flex-start;
+        }
+
+        @media (max-width: 1024px) {
+            .search-layout-inner {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .filters-panel,
+        .results-panel {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+        }
+
+        .filters-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .filters-header h2 {
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .filter-group {
+            margin-bottom: 1rem;
+        }
+
+        .filter-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.35rem;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .filter-row > * {
+            flex: 1;
+        }
+
+        .filter-description {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.25rem;
+        }
+
+        .inline-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-bottom: 0.3rem;
+            font-size: 0.85rem;
+        }
+
+        .inline-checkbox input {
+            margin: 0;
+        }
+
+        .filters-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+        }
+
+        .filters-actions .btn {
+            flex: 1;
+        }
+
+        .map-panel {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 0.75rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            height: 100%;
+        }
+
+        .map-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 0.25rem;
+        }
+
+        .map-panel-header h2 {
+            font-size: 1.05rem;
+            margin: 0;
+        }
+
+        .map-mode-toggle {
+            display: inline-flex;
+            border-radius: 999px;
+            border: 1px solid #dde2eb;
+            overflow: hidden;
+        }
+
+        .map-mode-toggle button {
+            border: none;
+            background: transparent;
+            padding: 0.35rem 0.8rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .map-mode-toggle button.active {
+            background: #0d1b2a;
+            color: #fff;
+        }
+
+        .map-wrapper-full {
+            flex: 1;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .map-wrapper-full #kg-map {
+            width: 100%;
+            height: 520px;
+        }
+
+        .map-panel-footer {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .results-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .results-panel-header h2 {
+            font-size: 1.05rem;
+            margin: 0;
+        }
+
+        .results-meta {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .results-sort {
+            font-size: 0.8rem;
+        }
+
+        .results-sort select {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.35rem;
+        }
+
+        .location-list-extended {
+            max-height: 520px;
+            overflow-y: auto;
+        }
+
+        .vehicle-card {
+            border-bottom: 1px solid #eef1f6;
+            padding: 0.75rem 0;
+        }
+
+        .vehicle-card:last-child {
+            border-bottom: none;
+        }
+
+        .vehicle-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 0.5rem;
+        }
+
+        .vehicle-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .vehicle-distance {
+            font-size: 0.8rem;
+            color: #555;
+        }
+
+        .vehicle-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+            margin: 0.4rem 0;
+            font-size: 0.78rem;
+            color: #555;
+        }
+
+        .vehicle-meta span::before {
+            content: "• ";
+        }
+
+        .vehicle-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .vehicle-badges .badge {
+            font-size: 0.7rem;
+        }
+
+        .vehicle-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.25rem;
+        }
+
+        .vehicle-price {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .vehicle-price span {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: #666;
+        }
+
+        .vehicle-actions {
+            display: flex;
+            gap: 0.35rem;
+        }
+
+        .btn-ghost {
+            border: 1px solid #d0d6e2;
+            background: #fff;
+            color: #1b263b;
+            font-size: 0.75rem;
+            padding: 0.4rem 0.7rem;
+            border-radius: 999px;
+            cursor: pointer;
+        }
+
+        .results-panel-footer {
+            margin-top: 0.75rem;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .sub-hero {
+                padding-top: 3rem;
+            }
+
+            .sub-hero-title {
+                font-size: 1.6rem;
+            }
+
+            .map-wrapper-full #kg-map {
+                height: 380px;
+            }
+
+            .filters-panel {
+                order: -1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container header-content">
+        <a href="index.html" class="logo">
+            <img src="img/partner/keylessgo-logo.jpg" alt="KeylessGo logo">
+        </a>
+
+        <nav class="nav-menu">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <!-- HIER de nieuwe pagina-link -->
+                <li><a href="zoek-en-boek.html" class="active">Zoek &amp; boek</a></li>
+                <li><a href="busje-huren.html">Busje huren</a></li>
+                <li><a href="auto-huren.html">Auto huren</a></li>
+                <li><a href="index.html#onze-vloot">Onze vloot</a></li>
+                <li><a href="index.html#hoe-werkt-huren">Hoe het werkt</a></li>
+                <li><a href="index.html#waarom-keylessgo">Waarom KeylessGo</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <a href="https://www.snappcar.nl" target="_blank" rel="noopener" class="btn btn-primary nav-cta">
+                Direct huren via SnappCar.nl
+            </a>
+        </nav>
+
+        <button class="hamburger" id="hamburger" aria-label="Menu openen" aria-expanded="false">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+    </div>
+</header>
+
+<main>
+    <!-- SUB HERO / INTRO -->
+    <section class="sub-hero">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html">Home</a> <span>/</span> Zoek &amp; boek
+            </div>
+            <h1 class="sub-hero-title">Zoek &amp; boek een voertuig in jouw buurt</h1>
+            <p class="sub-hero-text">
+                Hier zie je de volledige live kaart met alle KeylessGo voertuigen in de regio Utrecht. 
+                Filter op voertuigtype, laadruimte, gebruiksdoel en afstand. Klik op een voertuig in de kaart 
+                of in de lijst om direct via SnappCar te boeken.
+            </p>
+        </div>
+    </section>
+
+    <!-- HOOFDLAY-OUT: FILTERS – KAART – RESULTATEN -->
+    <section class="search-layout">
+        <div class="container">
+            <div class="search-layout-inner">
+                <!-- FILTERS PANEL -->
+                <aside class="filters-panel">
+                    <div class="filters-header">
+                        <h2>Filters verfijnen</h2>
+                        <button id="reset-filters" class="btn-ghost" type="button">
+                            <i class="fa-solid fa-rotate-left"></i> Reset
+                        </button>
+                    </div>
+
+                    <!-- Locatie & voertuigtype (koppelen aan bestaande JS IDs) -->
+                    <div class="filter-group">
+                        <label for="location-search">Zoek locatie</label>
+                        <input id="location-search" class="search-input" type="text" placeholder="Bijv. Utrecht, Houten, Amersfoort">
+                        <p class="filter-description">
+                            Tip: je kunt zoeken op plaats, wijk of postcode (PC4).
+                        </p>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="location-type-filter">Voertuigtype</label>
+                        <select id="location-type-filter" class="type-select">
+                            <option value="all">Alle voertuigtypen</option>
+                            <option value="auto">Auto</option>
+                            <option value="bus-small">Busje Small</option>
+                            <option value="bus-medium">Busje Medium</option>
+                            <option value="bus-large">Busje Large</option>
+                            <option value="ev">Elektrisch</option>
+                        </select>
+                    </div>
+
+                    <!-- Extra filters (optioneel later koppelen in JS) -->
+                    <div class="filter-group">
+                        <label>Gebruik</label>
+                        <div class="filter-row">
+                            <select id="usage-filter">
+                                <option value="all">Alles</option>
+                                <option value="verhuizen">Verhuizen</option>
+                                <option value="klussen">Klussen &amp; bezorgen</option>
+                                <option value="weekend">Weekend weg</option>
+                                <option value="zakelijk">Zakelijk gebruik</option>
+                            </select>
+                        </div>
+                        <p class="filter-description">
+                            Wordt gebruikt voor rapportage / segmentatie; optioneel te koppelen aan scenario’s in je tools.
+                        </p>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Laadruimte (indicatief)</label>
+                        <div class="filter-row">
+                            <select id="cargo-filter">
+                                <option value="all">Alle groottes</option>
+                                <option value="compact">Compact (auto / Caddy)</option>
+                                <option value="medium">Medium (Transporter)</option>
+                                <option value="large">Large (Crafter)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Periode</label>
+                        <div class="filter-row">
+                            <input type="date" id="date-from">
+                            <input type="date" id="date-to">
+                        </div>
+                        <p class="filter-description">
+                            Kan gebruikt worden om straks beschikbaarheid te koppelen aan SnappCar-data of je eigen planningsmodel.
+                        </p>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Budget (dagprijs)</label>
+                        <div class="filter-row">
+                            <input type="number" id="price-min" placeholder="Min €">
+                            <input type="number" id="price-max" placeholder="Max €">
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Extra voorkeuren</label>
+                        <div class="inline-checkbox">
+                            <input type="checkbox" id="only-ev">
+                            <label for="only-ev">Alleen elektrisch</label>
+                        </div>
+                        <div class="inline-checkbox">
+                            <input type="checkbox" id="only-low-emission">
+                            <label for="only-low-emission">Geschikt voor milieuzones</label>
+                        </div>
+                        <div class="inline-checkbox">
+                            <input type="checkbox" id="only-keyless">
+                            <label for="only-keyless">Alleen Keyless voertuigen</label>
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Afstand tot gekozen locatie</label>
+                        <select id="distance-filter">
+                            <option value="any">Geen limiet</option>
+                            <option value="2">Binnen 2 km</option>
+                            <option value="5">Binnen 5 km</option>
+                            <option value="10">Binnen 10 km</option>
+                        </select>
+                    </div>
+
+                    <div class="filters-actions">
+                        <button id="location-search-btn" class="btn btn-secondary" type="button">
+                            <i class="fa-solid fa-magnifying-glass-location"></i> Zoek &amp; zoom
+                        </button>
+                        <button id="use-my-location" class="btn btn-secondary" type="button">
+                            <i class="fa-solid fa-location-crosshairs"></i> Mijn locatie
+                        </button>
+                    </div>
+                </aside>
+
+                <!-- KAART PANEL -->
+                <section class="map-panel">
+                    <div class="map-panel-header">
+                        <h2>Live kaart met voertuigen</h2>
+                        <div class="map-mode-toggle">
+                            <button type="button" class="active" id="map-mode-vehicles">Voertuigen</button>
+                            <button type="button" id="map-mode-hotspots">Hotspots</button>
+                        </div>
+                    </div>
+
+                    <div class="map-wrapper-full">
+                        <!-- BELANGRIJK: zelfde ID als in index.html zodat map.js blijft werken -->
+                        <div id="kg-map"></div>
+                    </div>
+
+                    <div class="map-panel-footer">
+                        Klik op een marker om details te zien, route te openen in Google Maps of direct te boeken via SnappCar.
+                    </div>
+                </section>
+
+                <!-- RESULTATEN PANEL -->
+                <aside class="results-panel">
+                    <div class="results-panel-header">
+                        <div>
+                            <h2>Dichtstbijzijnde voertuigen</h2>
+                            <div class="results-meta">
+                                <span id="results-count">Voertuigen in de buurt van jouw zoeklocatie.</span>
+                            </div>
+                        </div>
+                        <div class="results-sort">
+                            <label for="sort-results">Sorteer op:</label>
+                            <select id="sort-results">
+                                <option value="distance">Afstand</option>
+                                <option value="price-asc">Prijs (laag-hoog)</option>
+                                <option value="price-desc">Prijs (hoog-laag)</option>
+                                <option value="size">Grootte voertuig</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Deze container kan door find-vehicle.js gevuld worden -->
+                    <div class="location-list location-list-extended" data-location-list>
+                        <!-- Voorbeeldkaarten (optioneel, kunnen later door JS worden vervangen) -->
+                        <!--
+                        <div class="vehicle-card">
+                            <div class="vehicle-card-header">
+                                <div class="vehicle-title">VW Crafter Large – Houten</div>
+                                <div class="vehicle-distance">1,2 km</div>
+                            </div>
+                            <div class="vehicle-meta">
+                                <span>Large verhuisbus</span>
+                                <span>Euro 6</span>
+                                <span>Keyless</span>
+                            </div>
+                            <div class="vehicle-badges">
+                                <span class="badge badge-keyless">Keyless</span>
+                                <span class="badge badge-direct">Direct boeken</span>
+                            </div>
+                            <div class="vehicle-card-footer">
+                                <div class="vehicle-price">
+                                    € 75,- p/dag
+                                    <span>incl. 100 km</span>
+                                </div>
+                                <div class="vehicle-actions">
+                                    <button class="btn-ghost">Toon op kaart</button>
+                                    <a class="btn btn-primary btn-sm" href="#" target="_blank" rel="noopener">Boek via SnappCar</a>
+                                </div>
+                            </div>
+                        </div>
+                        -->
+                    </div>
+
+                    <div class="results-panel-footer">
+                        Alle reserveringen, betalingen en verzekering lopen via SnappCar. 
+                        KeylessGo zorgt voor goed onderhouden voertuigen, slimme hotspots en support.
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <!-- Extra info / FAQ (optioneel, voor SEO & uitleg) -->
+    <section class="usp-blocks">
+        <div class="container">
+            <h2>Veelgestelde vragen over voertuigen zoeken &amp; boeken</h2>
+            <p class="section-sub">
+                Een paar korte antwoorden op veelgestelde vragen. Zo weet je precies waar je aan toe bent voordat je boekt.
+            </p>
+
+            <div class="usp-grid">
+                <article class="usp-item">
+                    <div class="usp-icon">📍</div>
+                    <h3>Hoe kies ik de beste locatie?</h3>
+                    <p>
+                        Zoek eerst op je woonplaats of wijk. Kies daarna een voertuig binnen 1–5 km zodat je er makkelijk naartoe kunt lopen of fietsen.
+                    </p>
+                </article>
+
+                <article class="usp-item">
+                    <div class="usp-icon">⏱️</div>
+                    <h3>Kan ik last-minute boeken?</h3>
+                    <p>
+                        Ja, veel voertuigen zijn keyless en direct boekbaar. Vaak kun je binnen enkele minuten na je boeking al vertrekken.
+                    </p>
+                </article>
+
+                <article class="usp-item">
+                    <div class="usp-icon">🧾</div>
+                    <h3>Hoe werkt de prijsopbouw?</h3>
+                    <p>
+                        De basisprijs is per dag inclusief een aantal vrije kilometers. Extra kilometers, brandstof en eventuele extra’s worden achteraf via SnappCar afgerekend.
+                    </p>
+                </article>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- FOOTER -->
+<footer>
+    <div class="container footer-grid">
+        <div>
+            <div class="footer-logo">KeylessGo</div>
+            <p class="footer-text">
+                Moderne deelauto's en busjes met keyless toegang. 
+                Vlootbeheer door KeylessGo, boekingen via SnappCar.
+            </p>
+        </div>
+        <div class="footer-col">
+            <h4>Menu</h4>
+            <ul>
+                <li><a href="zoek-en-boek.html">Zoek &amp; boek</a></li>
+                <li><a href="index.html#onze-vloot">Onze vloot</a></li>
+                <li><a href="index.html#hoe-werkt-huren">Hoe het werkt</a></li>
+                <li><a href="index.html#waarom-keylessgo">Waarom KeylessGo</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Contact</h4>
+            <ul>
+                <li><a href="contact.html">Contactformulier</a></li>
+                <li><a href="mailto:info@keylessgo.nl">info@keylessgo.nl</a></li>
+                <li><a href="#">Privacy &amp; cookies</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="copyright">
+        © <span id="year"></span> KeylessGo. Boekingen, verificatie en verzekering verlopen via SnappCar.
+    </div>
+</footer>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Eigen JS (zelfde als op index) -->
+<script src="data/map.js"></script>
+<script src="data/fleet.js"></script>
+<script src="data/find-vehicle.js"></script>
+
+<script>
+    // jaar in footer
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // hamburger menu
+    const hamburger = document.getElementById("hamburger");
+    const navMenu = document.querySelector(".nav-menu");
+
+    hamburger.addEventListener("click", () => {
+        const isActive = navMenu.classList.toggle("active");
+        hamburger.setAttribute("aria-expanded", isActive ? "true" : "false");
+    });
+
+    // Optioneel: reset filters (alleen UI, koppeling naar JS kun je later uitbreiden)
+    const resetBtn = document.getElementById("reset-filters");
+    if (resetBtn) {
+        resetBtn.addEventListener("click", () => {
+            const idsToReset = [
+                "location-search",
+                "usage-filter",
+                "cargo-filter",
+                "date-from",
+                "date-to",
+                "price-min",
+                "price-max",
+                "distance-filter",
+                "location-type-filter"
+            ];
+            idsToReset.forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                if (el.tagName === "SELECT") {
+                    el.selectedIndex = 0;
+                } else {
+                    el.value = "";
+                }
+            });
+
+            ["only-ev","only-low-emission","only-keyless"].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.checked = false;
+            });
+        });
+    }
+</script>
+
+</body>
+</html>
