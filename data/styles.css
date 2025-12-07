@@ -14,7 +14,7 @@
     --header-height: 76px;
     
     /* NIEUW: zelfde kleur als logo-achtergrond */
-    --header-bg: #041329; /* donker navy; eventueel tweaken naar smaak */
+    --header-bg: #1a2c49; /* donker navy; eventueel tweaken naar smaak */
 }
 
 * {
@@ -180,7 +180,7 @@ header {
 }
 
 .logo img {
-    max-height: 44px; /* iets groter, goed leesbaar maar niet te groot */
+    max-height: 70px; /* iets groter, goed leesbaar maar niet te groot */
     width: auto;
     object-fit: contain;
     display: block;
