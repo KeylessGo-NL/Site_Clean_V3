@@ -18,38 +18,198 @@
 
     <!-- Optionele pagina-specifieke layout tweaks -->
     <style>
-        .sub-hero {
-            padding: 4rem 0 2rem;
-            background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 40%, #ffffff 100%);
-            color: #fff;
-        }
+        /* --- SUB HERO / INTRO (NIEUWE STIJL) --- */
+.sub-hero {
+    background: #f7f9fc;
+    border-bottom: 1px solid #e2e7f0;
+    padding: 3.5rem 0 3rem;
+}
 
-        .sub-hero .breadcrumb {
-            font-size: 0.85rem;
-            opacity: 0.8;
-            margin-bottom: 0.75rem;
-        }
+.sub-hero-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.2fr);
+    gap: 2.5rem;
+    align-items: center;
+}
 
-        .sub-hero .breadcrumb a {
-            color: #fff;
-            text-decoration: none;
-            opacity: 0.9;
-        }
+.sub-hero-eyebrow {
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #5b6b8c;
+    margin-bottom: 0.75rem;
+}
 
-        .sub-hero .breadcrumb span {
-            opacity: 0.7;
-        }
+.sub-hero-title {
+    font-size: 2.2rem;
+    line-height: 1.2;
+    margin: 0 0 0.75rem;
+    color: #0d1b2a;
+}
 
-        .sub-hero-title {
-            font-size: 2.2rem;
-            margin-bottom: 0.75rem;
-        }
+.sub-hero-text {
+    max-width: 600px;
+    font-size: 1rem;
+    color: #4a5670;
+    margin: 0 0 1.25rem;
+}
 
-        .sub-hero-text {
-            max-width: 640px;
-            font-size: 1rem;
-            opacity: 0.95;
-        }
+.sub-hero-quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.chip-button {
+    border: 1px solid #d8dfeb;
+    background: #ffffff;
+    border-radius: 999px;
+    padding: 0.45rem 0.95rem;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+
+.chip-button i {
+    font-size: 0.85rem;
+    color: #ff7a00;
+}
+
+.chip-button:hover {
+    background: #0d1b2a;
+    color: #ffffff;
+    border-color: #0d1b2a;
+    transform: translateY(-1px);
+}
+
+.chip-button:hover i {
+    color: #ffffff;
+}
+
+.sub-hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    font-size: 0.8rem;
+    color: #6b7487;
+    margin-top: 0.5rem;
+}
+
+.sub-hero-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.sub-hero-meta i {
+    color: #16a085;
+}
+
+/* Rechter kaart-achtige kaart */
+.sub-hero-right {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.sub-hero-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 1.5rem 1.4rem;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e1e6f0;
+    max-width: 360px;
+    width: 100%;
+}
+
+.sub-hero-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.card-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #0d1b2a;
+}
+
+.card-pill {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    background: #0d1b2a;
+    color: #ffffff;
+}
+
+.sub-hero-steps {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem;
+    font-size: 0.88rem;
+    color: #4a5670;
+}
+
+.sub-hero-steps li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.4rem;
+    margin-bottom: 0.4rem;
+    position: relative;
+    padding-left: 0.9rem;
+}
+
+.sub-hero-steps li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    top: 0.12rem;
+    color: #ff7a00;
+    font-size: 1rem;
+}
+
+.sub-hero-card-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.sub-hero-card-note {
+    font-size: 0.78rem;
+    color: #7a8396;
+    margin: 0;
+}
+
+/* Responsive tweaks */
+@media (max-width: 992px) {
+    .sub-hero-inner {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .sub-hero {
+        padding: 3rem 0 2.5rem;
+    }
+
+    .sub-hero-right {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 600px) {
+    .sub-hero-title {
+        font-size: 1.7rem;
+    }
+
+    .sub-hero-card {
+        max-width: 100%;
+    }
+}
+        /* --- HOOFDLAY-OUT: FILTERS – KAART – RESULTATEN --- */
 
         .search-layout {
             padding: 2rem 0 3rem;
@@ -372,19 +532,59 @@
 
 <main>
     <!-- SUB HERO / INTRO -->
-    <section class="sub-hero">
-        <div class="container">
-            <div class="breadcrumb">
-                <a href="index.html">Home</a> <span>/</span> Zoek &amp; boek
-            </div>
+    <!-- SUB HERO / INTRO (NIEUW) -->
+<section class="sub-hero">
+    <div class="container sub-hero-inner">
+        <div class="sub-hero-left">
+            <div class="sub-hero-eyebrow">LIVE KAART &amp; ZOEKTOOL</div>
             <h1 class="sub-hero-title">Zoek &amp; boek een voertuig in jouw buurt</h1>
             <p class="sub-hero-text">
-                Hier zie je de volledige live kaart met alle KeylessGo voertuigen in de regio Utrecht. 
-                Filter op voertuigtype, laadruimte, gebruiksdoel en afstand. Klik op een voertuig in de kaart 
-                of in de lijst om direct via SnappCar te boeken.
+                Vind in één overzicht alle KeylessGo-auto’s en busjes in de regio Utrecht. 
+                Filter op voertuigtype, afstand en gebruiksdoel en boek direct via SnappCar.
             </p>
+
+            <div class="sub-hero-quick-actions">
+                <button type="button" class="chip-button" id="chip-utrecht">
+                    <i class="fa-solid fa-location-dot"></i> Bekijk aanbod in Utrecht
+                </button>
+                <button type="button" class="chip-button" id="chip-houten">
+                    <i class="fa-solid fa-location-dot"></i> Houten &amp; omgeving
+                </button>
+                <button type="button" class="chip-button" id="chip-ev">
+                    <i class="fa-solid fa-bolt"></i> Alleen elektrische voertuigen
+                </button>
+            </div>
+
+            <div class="sub-hero-meta">
+                <span><i class="fa-solid fa-circle-check"></i> Keyless toegang</span>
+                <span><i class="fa-solid fa-shield-halved"></i> All-risk verzekerd via SnappCar</span>
+                <span><i class="fa-solid fa-clock"></i> Binnen enkele minuten op weg</span>
+            </div>
         </div>
-    </section>
+
+        <div class="sub-hero-right">
+            <div class="sub-hero-card">
+                <div class="sub-hero-card-header">
+                    <span class="card-label">Snelle start</span>
+                    <span class="card-pill">Stap 1 t/m 3</span>
+                </div>
+                <ol class="sub-hero-steps">
+                    <li><strong>Kies je locatie</strong> – zoek op plaats, wijk of postcode.</li>
+                    <li><strong>Selecteer het juiste voertuig</strong> – busje, auto of EV.</li>
+                    <li><strong>Boek via SnappCar</strong> – volledig keyless en verzekerd.</li>
+                </ol>
+                <div class="sub-hero-card-footer">
+                    <button type="button" class="btn btn-primary" id="sub-hero-scroll-to-search">
+                        Start met zoeken
+                    </button>
+                    <p class="sub-hero-card-note">
+                        Je boekt altijd veilig via SnappCar. KeylessGo beheert de voertuigen en hotspots.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
     <!-- HOOFDLAY-OUT: FILTERS – KAART – RESULTATEN -->
     <section class="search-layout">
