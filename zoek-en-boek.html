@@ -15,6 +15,384 @@
     <!-- Eigen styles -->
     <link rel="stylesheet" href="data/styles.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Pagina-specifieke layout voor hero + filters -->
+    <style>
+        .sub-hero {
+            background-color: #f4f7fa;
+            border-bottom: 1px solid #e5e7eb;
+            padding-top: calc(var(--header-height) + 24px);
+            padding-bottom: 40px;
+        }
+
+        .sub-hero-inner {
+            display: grid;
+            grid-template-columns: minmax(0, 1.7fr) minmax(0, 1.1fr);
+            gap: 28px;
+            align-items: center;
+        }
+
+        .sub-hero-eyebrow {
+            font-size: 0.78rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: #6b7280;
+            margin-bottom: 0.4rem;
+        }
+
+        .sub-hero-title {
+            font-size: 2.1rem;
+            line-height: 1.2;
+            margin-bottom: 0.75rem;
+            color: var(--primary-blue);
+        }
+
+        .sub-hero-text {
+            font-size: 0.98rem;
+            max-width: 620px;
+            color: var(--text-light);
+            margin-bottom: 1.1rem;
+        }
+
+        .sub-hero-quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 0.8rem;
+        }
+
+        .chip-button {
+            border-radius: 999px;
+            border: 1px solid #d1d5db;
+            background-color: #ffffff;
+            padding: 7px 14px;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: background 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .chip-button i {
+            color: var(--accent-orange);
+        }
+
+        .chip-button:hover {
+            background-color: #1a2c49;
+            border-color: #1a2c49;
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        .chip-button:hover i {
+            color: #ffffff;
+        }
+
+        .sub-hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 0.82rem;
+            color: #4b5563;
+        }
+
+        .sub-hero-meta span {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .sub-hero-meta i {
+            color: #16a34a;
+        }
+
+        .sub-hero-right {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .sub-hero-card {
+            background-color: #ffffff;
+            border-radius: 14px;
+            padding: 18px 18px 16px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+            max-width: 360px;
+            width: 100%;
+        }
+
+        .sub-hero-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .card-label {
+            font-size: 0.83rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .card-pill {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background-color: var(--primary-blue);
+            color: #ffffff;
+        }
+
+        .sub-hero-steps {
+            list-style: none;
+            padding-left: 0;
+            margin: 0 0 0.9rem;
+            font-size: 0.88rem;
+            color: var(--text-light);
+        }
+
+        .sub-hero-steps li {
+            margin-bottom: 0.4rem;
+            position: relative;
+            padding-left: 0.9rem;
+        }
+
+        .sub-hero-steps li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            top: 0.1rem;
+            color: var(--accent-orange);
+        }
+
+        .sub-hero-card-note {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin: 0;
+        }
+
+        /* Zoek-layout */
+        .search-layout {
+            padding: 40px 0 70px;
+            background-color: #ffffff;
+        }
+
+        .search-layout-inner {
+            display: grid;
+            grid-template-columns: 280px minmax(0, 1.8fr) minmax(0, 1.2fr);
+            gap: 24px;
+            align-items: flex-start;
+        }
+
+        .filters-panel {
+            background-color: #ffffff;
+            border-radius: 14px;
+            padding: 16px 14px 18px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
+        }
+
+        .filters-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.7rem;
+        }
+
+        .filters-header h2 {
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        .filter-group {
+            margin-bottom: 0.8rem;
+        }
+
+        .filter-group label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--primary-blue);
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .filter-row > * {
+            flex: 1;
+        }
+
+        .filter-description {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+
+        .inline-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.82rem;
+            margin-bottom: 4px;
+        }
+
+        .filters-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 0.7rem;
+        }
+
+        .filters-actions .btn {
+            padding: 9px 12px;
+            font-size: 0.83rem;
+        }
+
+        .map-panel {
+            background-color: #ffffff;
+            border-radius: 14px;
+            padding: 12px 12px 14px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            height: 100%;
+        }
+
+        .map-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .map-panel-header h2 {
+            font-size: 1.02rem;
+            margin: 0;
+        }
+
+        .map-mode-toggle {
+            display: inline-flex;
+            border-radius: 999px;
+            border: 1px solid #d1d5db;
+            overflow: hidden;
+        }
+
+        .map-mode-toggle button {
+            border: none;
+            background-color: transparent;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .map-mode-toggle button.active {
+            background-color: var(--primary-blue);
+            color: #ffffff;
+        }
+
+        .map-wrapper-full {
+            flex: 1;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .map-wrapper-full #kg-map {
+            width: 100%;
+            height: 520px;
+        }
+
+        .map-panel-footer {
+            font-size: 0.78rem;
+            color: #6b7280;
+        }
+
+        .results-panel {
+            background-color: #ffffff;
+            border-radius: 14px;
+            padding: 14px 13px 16px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
+        }
+
+        .results-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0.6rem;
+        }
+
+        .results-panel-header h2 {
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        .results-meta {
+            font-size: 0.78rem;
+            color: #6b7280;
+        }
+
+        .results-sort {
+            font-size: 0.78rem;
+        }
+
+        .results-sort select {
+            font-size: 0.8rem;
+            padding: 4px 6px;
+        }
+
+        .location-list-extended {
+            max-height: 520px;
+            overflow-y: auto;
+        }
+
+        .results-panel-footer {
+            margin-top: 0.7rem;
+            font-size: 0.78rem;
+            color: #6b7280;
+        }
+
+        /* responsief */
+        @media (max-width: 992px) {
+            .sub-hero-inner {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .search-layout-inner {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .filters-panel {
+                order: -1;
+            }
+
+            .map-wrapper-full #kg-map {
+                height: 420px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sub-hero {
+                padding-top: calc(var(--header-height) + 16px);
+                text-align: left;
+            }
+
+            .sub-hero-title {
+                font-size: 1.8rem;
+            }
+
+            .sub-hero-right {
+                justify-content: flex-start;
+            }
+
+            .sub-hero-card {
+                max-width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -26,6 +404,7 @@
 
         <nav class="nav-menu">
             <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
                 <li><a href="zoek-en-boek.html" class="active">Zoek &amp; Boek</a></li>
 
                 <li class="has-submenu">
@@ -34,7 +413,7 @@
                         <li><a href="busje-huren.html">Busje huren</a></li>
                         <li><a href="auto-huren.html">Auto huren</a></li>
                         <li><a href="elektrisch-rijden.html">Elektrisch rijden</a></li>
-                        <li><a href="onze-vloot.html">Onze volledige vloot</a></li>
+                        <li><a href="onze-vloot.html">Onze vloot</a></li>
                     </ul>
                 </li>
 
@@ -57,7 +436,7 @@
 </header>
 
 <main>
-    <!-- SUB HERO / INTRO (NIEUW) -->
+    <!-- SUB HERO -->
     <section class="sub-hero">
         <div class="container sub-hero-inner">
             <div class="sub-hero-left">
@@ -71,7 +450,7 @@
 
                 <div class="sub-hero-quick-actions">
                     <button type="button" class="chip-button" id="chip-utrecht">
-                        <i class="fa-solid fa-location-dot"></i> Bekijk aanbod in Utrecht
+                        <i class="fa-solid fa-location-dot"></i> Utrecht &amp; omgeving
                     </button>
                     <button type="button" class="chip-button" id="chip-houten">
                         <i class="fa-solid fa-location-dot"></i> Houten &amp; omgeving
@@ -112,7 +491,7 @@
         </div>
     </section>
 
-    <!-- HOOFDLAY-OUT: FILTERS – KAART – RESULTATEN -->
+    <!-- LAYOUT FILTERS / KAART / RESULTATEN -->
     <section class="search-layout">
         <div class="container">
             <div class="search-layout-inner">
@@ -120,12 +499,11 @@
                 <aside class="filters-panel">
                     <div class="filters-header">
                         <h2>Filters verfijnen</h2>
-                        <button id="reset-filters" class="btn-ghost" type="button">
-                            <i class="fa-solid fa-rotate-left"></i> Reset
+                        <button id="reset-filters" class="btn btn-secondary btn-sm" type="button">
+                            Reset
                         </button>
                     </div>
 
-                    <!-- Locatie & voertuigtype (koppelen aan bestaande JS IDs) -->
                     <div class="filter-group">
                         <label for="location-search">Zoek locatie</label>
                         <input id="location-search" class="search-input" type="text" placeholder="Bijv. Utrecht, Houten, Amersfoort">
@@ -146,7 +524,6 @@
                         </select>
                     </div>
 
-                    <!-- Extra filters (optioneel later koppelen in JS) -->
                     <div class="filter-group">
                         <label>Gebruik</label>
                         <div class="filter-row">
@@ -159,7 +536,7 @@
                             </select>
                         </div>
                         <p class="filter-description">
-                            Wordt gebruikt voor rapportage / segmentatie; optioneel te koppelen aan scenario’s in je tools.
+                            Optioneel: te koppelen aan scenario’s in je tools.
                         </p>
                     </div>
 
@@ -182,7 +559,7 @@
                             <input type="date" id="date-to">
                         </div>
                         <p class="filter-description">
-                            Kan gebruikt worden om straks beschikbaarheid te koppelen aan SnappCar-data of je eigen planningsmodel.
+                            Later te koppelen aan beschikbaarheid uit SnappCar of je eigen planningsmodel.
                         </p>
                     </div>
 
@@ -269,7 +646,6 @@
                         </div>
                     </div>
 
-                    <!-- Wordt door JS gevuld -->
                     <div class="location-list location-list-extended" data-location-list></div>
 
                     <div class="results-panel-footer">
@@ -281,12 +657,12 @@
         </div>
     </section>
 
-    <!-- Extra info / FAQ -->
+    <!-- FAQ BLOK -->
     <section class="usp-blocks">
         <div class="container">
-            <h2>Veelgestelde vragen over voertuigen zoeken &amp; boeken</h2>
+            <h2>Veelgestelde vragen over zoeken &amp; boeken</h2>
             <p class="section-sub">
-                Een paar korte antwoorden op veelgestelde vragen. Zo weet je precies waar je aan toe bent voordat je boekt.
+                Korte antwoorden op veelgestelde vragen. Zo weet je precies waar je aan toe bent voordat je boekt.
             </p>
 
             <div class="usp-grid">
@@ -331,6 +707,7 @@
         <div class="footer-col">
             <h4>Menu</h4>
             <ul>
+                <li><a href="index.html">Home</a></li>
                 <li><a href="zoek-en-boek.html">Zoek &amp; Boek</a></li>
                 <li><a href="index.html#onze-vloot">Onze vloot</a></li>
                 <li><a href="index.html#hoe-werkt-huren">Hoe het werkt</a></li>
@@ -354,7 +731,7 @@
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-<!-- Eigen JS (zelfde als op index) -->
+<!-- Eigen JS -->
 <script src="data/map.js"></script>
 <script src="data/fleet.js"></script>
 <script src="data/find-vehicle.js"></script>
@@ -384,7 +761,7 @@
         });
     });
 
-    // Quick action chips in sub-hero
+    // Quick action chips
     const searchInput = document.getElementById("location-search");
     const typeFilter = document.getElementById("location-type-filter");
     const onlyEvCheckbox = document.getElementById("only-ev");
