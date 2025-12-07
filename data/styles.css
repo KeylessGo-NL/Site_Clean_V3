@@ -12,6 +12,9 @@
     --bg-section: #f9fafb;
     --font-stack: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     --header-height: 76px;
+    
+    /* NIEUW: zelfde kleur als logo-achtergrond */
+    --header-bg: #041329; /* donker navy; eventueel tweaken naar smaak */
 }
 
 * {
@@ -142,17 +145,21 @@ section + section {
 /* =========================================
    2. HEADER & NAVIGATIE
 ========================================= */
+/* =========================================
+   2. HEADER & NAVIGATIE
+========================================= */
 header {
-    background-color: #ffffff;
+    background-color: var(--header-bg);
     height: var(--header-height);
-    box-shadow: 0 2px 12px rgba(15, 23, 42, 0.06);
-    border-bottom: 1px solid #e5e7eb;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+    border-bottom: 1px solid rgba(15, 23, 42, 0.6);
     position: fixed;
     width: 100%;
     top: 0;
     z-index: 2000;
     display: flex;
     align-items: center;
+    color: var(--text-white);
 }
 
 .header-content {
@@ -161,19 +168,19 @@ header {
     align-items: center;
 }
 
-/* logo (alleen beeldmerk nu) */
+/* logo */
 .logo {
     display: inline-flex;
     align-items: center;
     gap: 8px;
     font-size: 1.4rem;
     font-weight: 800;
-    color: var(--primary-blue);
+    color: #ffffff;
     text-decoration: none;
 }
 
 .logo img {
-    max-height: 40px;
+    max-height: 44px; /* iets groter, goed leesbaar maar niet te groot */
     width: auto;
     object-fit: contain;
     display: block;
@@ -194,19 +201,16 @@ header {
 
 .nav-links a {
     text-decoration: none;
-    color: var(--text-dark);
+    color: #e5e7eb;               /* lichte tekst op donkere header */
     font-weight: 600;
     font-size: 0.93rem;
     transition: color 0.2s ease;
 }
 
-.nav-links a:hover {
-    color: var(--accent-orange);
-}
-
-/* active state voor huidige pagina */
-.nav-links a.active {
-    color: var(--accent-orange);
+.nav-links a:hover,
+.nav-links a.active,
+.nav-links a[aria-current="page"] {
+    color: var(--accent-orange);   /* Keyless oranje voor hover/actief */
 }
 
 .nav-cta {
@@ -284,9 +288,10 @@ header {
     width: 24px;
     height: 3px;
     margin: 4px auto;
-    background-color: var(--primary-blue);
+    background-color: #ffffff; /* was var(--primary-blue) */
     transition: all 0.3s ease-in-out;
 }
+
 
 /* =========================================
    3. HERO (2 kolommen)
@@ -1064,6 +1069,17 @@ footer {
         transition: left 0.25s ease;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         z-index: 2050; /* boven kaart en knoppen */
+        @media (max-width: 768px) {
+    /* ... je bestaande mobiele styles ... */
+
+    .nav-menu .nav-links a {
+        color: var(--text-dark);
+    }
+
+    .nav-menu .nav-links a:hover,
+    .nav-menu .nav-links a.active,
+    .nav-menu .nav-links a[aria-current="page"] {
+        color: var(--accent-orange);
     }
 
     .nav-menu.active {
