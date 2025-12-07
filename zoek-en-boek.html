@@ -179,7 +179,7 @@
 
         .search-layout-inner {
             display: grid;
-            grid-template-columns: 280px minmax(0, 1.8fr) minmax(0, 1.2fr);
+            grid-template-columns: 300px minmax(0, 2.3fr) minmax(0, 1.4fr);
             gap: 24px;
             align-items: flex-start;
         }
@@ -196,7 +196,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 0.7rem;
+            margin-bottom: 0.4rem;
         }
 
         .filters-header h2 {
@@ -204,8 +204,38 @@
             margin: 0;
         }
 
+        .filters-panel.collapsed .filters-body {
+            display: none;
+        }
+
+        .filters-toggle-mobile {
+            display: none;
+            width: 100%;
+            margin: 6px 0 8px;
+            padding: 8px 10px;
+            font-size: 0.85rem;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            background-color: #f9fafb;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .filters-toggle-mobile span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .filters-toggle-mobile i {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
         .filter-group {
-            margin-bottom: 0.9rem;
+            margin-bottom: 0.65rem;
         }
 
         .filter-group label {
@@ -263,12 +293,10 @@
             font-size: 0.86rem;
         }
 
-        .filters-panel input[type="number"]::placeholder {
-            color: #9ca3af;
-        }
-
-        .filters-panel input[type="text"]::placeholder {
-            color: #9ca3af;
+        /* Specifiek voor datumvelden: iets kleiner font + extra ruimte voor icoon */
+        .filters-panel input[type="date"] {
+            font-size: 0.8rem;
+            padding-right: 32px;
         }
 
         .map-panel {
@@ -322,7 +350,7 @@
 
         .map-wrapper-full #kg-map {
             width: 100%;
-            height: 520px;
+            height: 560px;
         }
 
         .map-panel-footer {
@@ -366,7 +394,7 @@
         }
 
         .location-list-extended {
-            max-height: 520px;
+            max-height: 560px;
             overflow-y: auto;
         }
 
@@ -387,7 +415,15 @@
             }
 
             .filters-panel {
-                order: -1;
+                order: 1;
+            }
+
+            .map-panel {
+                order: 2;
+            }
+
+            .results-panel {
+                order: 3;
             }
 
             .map-wrapper-full #kg-map {
@@ -411,6 +447,34 @@
 
             .sub-hero-card {
                 max-width: 100%;
+            }
+
+            .search-layout {
+                padding: 26px 0 50px;
+            }
+
+            .search-layout-inner {
+                display: block;
+            }
+
+            .filters-panel,
+            .map-panel,
+            .results-panel {
+                margin-bottom: 16px;
+            }
+
+            .filters-toggle-mobile {
+                display: inline-flex;
+            }
+
+            .map-wrapper-full #kg-map {
+                height: 360px;
+            }
+
+            .results-panel-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
             }
         }
     </style>
@@ -523,106 +587,115 @@
                         </button>
                     </div>
 
-                    <div class="filter-group">
-                        <label for="location-search">Zoek locatie</label>
-                        <input id="location-search" type="text" placeholder="Bijv. Utrecht, Houten, Amersfoort">
-                        <p class="filter-description">
-                            Tip: je kunt zoeken op plaats, wijk of postcode (PC4).
-                        </p>
-                    </div>
+                    <button type="button" class="filters-toggle-mobile" aria-expanded="true">
+                        <span><i class="fa-solid fa-sliders"></i> Filters verbergen</span>
+                        <i class="fa-solid fa-chevron-up"></i>
+                    </button>
 
-                    <div class="filter-group">
-                        <label for="location-type-filter">Voertuigtype</label>
-                        <select id="location-type-filter">
-                            <option value="all">Alle voertuigtypen</option>
-                            <option value="auto">Auto</option>
-                            <option value="bus-small">Busje Small</option>
-                            <option value="bus-medium">Busje Medium</option>
-                            <option value="bus-large">Busje Large</option>
-                            <option value="ev">Elektrisch</option>
-                        </select>
-                    </div>
+                    <div class="filters-body">
+                        <!-- Zoek locatie + afstand direct daaronder -->
+                        <div class="filter-group">
+                            <label for="location-search">Zoek locatie</label>
+                            <input id="location-search" type="text" placeholder="Bijv. Utrecht, Houten, Amersfoort">
+                            <p class="filter-description">
+                                Tip: je kunt zoeken op plaats, wijk of postcode (PC4).
+                            </p>
+                        </div>
 
-                    <div class="filter-group">
-                        <label for="usage-filter">Gebruik</label>
-                        <div class="filter-row">
-                            <select id="usage-filter">
-                                <option value="all">Alles</option>
-                                <option value="verhuizen">Verhuizen</option>
-                                <option value="klussen">Klussen &amp; bezorgen</option>
-                                <option value="weekend">Weekend weg</option>
-                                <option value="zakelijk">Zakelijk gebruik</option>
+                        <div class="filter-group">
+                            <label for="distance-filter">Afstand tot gekozen locatie</label>
+                            <select id="distance-filter">
+                                <option value="any">Geen limiet</option>
+                                <option value="2">Binnen 2 km</option>
+                                <option value="5">Binnen 5 km</option>
+                                <option value="10">Binnen 10 km</option>
                             </select>
                         </div>
-                        <p class="filter-description">
-                            Optioneel: te koppelen aan scenario’s in je tools.
-                        </p>
-                    </div>
 
-                    <div class="filter-group">
-                        <label for="cargo-filter">Laadruimte (indicatief)</label>
-                        <div class="filter-row">
-                            <select id="cargo-filter">
-                                <option value="all">Alle groottes</option>
-                                <option value="compact">Compact (auto / Caddy)</option>
-                                <option value="medium">Medium (Transporter)</option>
-                                <option value="large">Large (Crafter)</option>
+                        <div class="filter-group">
+                            <label for="location-type-filter">Voertuigtype</label>
+                            <select id="location-type-filter">
+                                <option value="all">Alle voertuigtypen</option>
+                                <option value="auto">Auto</option>
+                                <option value="bus-small">Busje Small</option>
+                                <option value="bus-medium">Busje Medium</option>
+                                <option value="bus-large">Busje Large</option>
+                                <option value="ev">Elektrisch</option>
                             </select>
                         </div>
-                    </div>
 
-                    <div class="filter-group">
-                        <label>Periode</label>
-                        <div class="filter-row">
-                            <input type="date" id="date-from" title="Startdatum">
-                            <input type="date" id="date-to" title="Einddatum">
+                        <div class="filter-group">
+                            <label for="usage-filter">Gebruik</label>
+                            <div class="filter-row">
+                                <select id="usage-filter">
+                                    <option value="all">Alles</option>
+                                    <option value="verhuizen">Verhuizen</option>
+                                    <option value="klussen">Klussen &amp; bezorgen</option>
+                                    <option value="weekend">Weekend weg</option>
+                                    <option value="zakelijk">Zakelijk gebruik</option>
+                                </select>
+                            </div>
+                            <p class="filter-description">
+                                Optioneel: te koppelen aan scenario’s in je tools.
+                            </p>
                         </div>
-                        <p class="filter-description">
-                            Later te koppelen aan beschikbaarheid uit SnappCar of je eigen planningsmodel.
-                        </p>
-                    </div>
 
-                    <div class="filter-group">
-                        <label>Budget (dagprijs)</label>
-                        <div class="filter-row">
-                            <input type="number" id="price-min" placeholder="Min €">
-                            <input type="number" id="price-max" placeholder="Max €">
+                        <!-- Extra voorkeuren iets hoger in de flow -->
+                        <div class="filter-group">
+                            <label>Extra voorkeuren</label>
+                            <div class="inline-checkbox">
+                                <input type="checkbox" id="only-ev">
+                                <label for="only-ev">Alleen elektrisch</label>
+                            </div>
+                            <div class="inline-checkbox">
+                                <input type="checkbox" id="only-low-emission">
+                                <label for="only-low-emission">Geschikt voor milieuzones</label>
+                            </div>
+                            <div class="inline-checkbox">
+                                <input type="checkbox" id="only-keyless">
+                                <label for="only-keyless">Alleen Keyless voertuigen</label>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="filter-group">
-                        <label>Extra voorkeuren</label>
-                        <div class="inline-checkbox">
-                            <input type="checkbox" id="only-ev">
-                            <label for="only-ev">Alleen elektrisch</label>
+                        <div class="filter-group">
+                            <label for="cargo-filter">Laadruimte (indicatief)</label>
+                            <div class="filter-row">
+                                <select id="cargo-filter">
+                                    <option value="all">Alle groottes</option>
+                                    <option value="compact">Compact (auto / Caddy)</option>
+                                    <option value="medium">Medium (Transporter)</option>
+                                    <option value="large">Large (Crafter)</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="inline-checkbox">
-                            <input type="checkbox" id="only-low-emission">
-                            <label for="only-low-emission">Geschikt voor milieuzones</label>
-                        </div>
-                        <div class="inline-checkbox">
-                            <input type="checkbox" id="only-keyless">
-                            <label for="only-keyless">Alleen Keyless voertuigen</label>
-                        </div>
-                    </div>
 
-                    <div class="filter-group">
-                        <label for="distance-filter">Afstand tot gekozen locatie</label>
-                        <select id="distance-filter">
-                            <option value="any">Geen limiet</option>
-                            <option value="2">Binnen 2 km</option>
-                            <option value="5">Binnen 5 km</option>
-                            <option value="10">Binnen 10 km</option>
-                        </select>
-                    </div>
+                        <div class="filter-group">
+                            <label>Budget (dagprijs)</label>
+                            <div class="filter-row">
+                                <input type="number" id="price-min" placeholder="Min €">
+                                <input type="number" id="price-max" placeholder="Max €">
+                            </div>
+                        </div>
 
-                    <div class="filters-actions">
-                        <button id="location-search-btn" class="btn btn-secondary" type="button">
-                            <i class="fa-solid fa-magnifying-glass-location"></i> Zoek &amp; zoom
-                        </button>
-                        <button id="use-my-location" class="btn btn-secondary" type="button">
-                            <i class="fa-solid fa-location-crosshairs"></i> Mijn locatie
-                        </button>
+                        <div class="filter-group">
+                            <label>Periode</label>
+                            <div class="filter-row">
+                                <input type="date" id="date-from" placeholder="dd-mm-jjjj">
+                                <input type="date" id="date-to" placeholder="dd-mm-jjjj">
+                            </div>
+                            <p class="filter-description">
+                                Later te koppelen aan beschikbaarheid uit SnappCar of je eigen planningsmodel.
+                            </p>
+                        </div>
+
+                        <div class="filters-actions">
+                            <button id="location-search-btn" class="btn btn-secondary" type="button">
+                                <i class="fa-solid fa-magnifying-glass-location"></i> Zoek &amp; zoom
+                            </button>
+                            <button id="use-my-location" class="btn btn-secondary" type="button">
+                                <i class="fa-solid fa-location-crosshairs"></i> Mijn locatie
+                            </button>
+                        </div>
                     </div>
                 </aside>
 
@@ -862,6 +935,39 @@
         });
     }
 
+    // Mobile: filters inklapbaar
+    const filtersPanel = document.querySelector(".filters-panel");
+    const filtersToggleMobile = document.querySelector(".filters-toggle-mobile");
+    if (filtersPanel && filtersToggleMobile) {
+        filtersToggleMobile.addEventListener("click", () => {
+            const isCollapsed = filtersPanel.classList.toggle("collapsed");
+            filtersToggleMobile.setAttribute("aria-expanded", (!isCollapsed).toString());
+            const textSpan = filtersToggleMobile.querySelector("span");
+            const icon = filtersToggleMobile.querySelector("i.fa-chevron-up, i.fa-chevron-down");
+            if (isCollapsed) {
+                if (textSpan) textSpan.firstChild.textContent = " Filters tonen";
+                if (icon) {
+                    icon.classList.remove("fa-chevron-up");
+                    icon.classList.add("fa-chevron-down");
+                }
+            } else {
+                if (textSpan) textSpan.firstChild.textContent = " Filters verbergen";
+                if (icon) {
+                    icon.classList.remove("fa-chevron-down");
+                    icon.classList.add("fa-chevron-up");
+                }
+            }
+        });
+
+        // Zorg dat op desktop filters altijd open zijn
+        window.addEventListener("resize", () => {
+            if (window.innerWidth > 768 && filtersPanel.classList.contains("collapsed")) {
+                filtersPanel.classList.remove("collapsed");
+                filtersToggleMobile.setAttribute("aria-expanded", "true");
+            }
+        });
+    }
+
     // ====== UX/SEO upgrade voor resultaatkaarten: type-labels + usage-tekst ======
     function getSeoLabel(raw) {
         const t = (raw || "").toLowerCase();
@@ -890,7 +996,6 @@
     function getUsageText(raw) {
         const t = (raw || "").toLowerCase();
 
-        // basis per type
         let base;
         if (t.includes("bus-large") || t === "bus_l") {
             base = "Vaak geboekt voor grote verhuizingen en volumetransport.";
@@ -906,7 +1011,6 @@
             base = "Veel gebruikt voor dagelijkse ritten en lichte transportklussen.";
         }
 
-        // milieuzones / binnenstad
         if (t.includes("bus") || t === "auto" || t === "compact") {
             base += " Geschikt voor binnenstad en milieuzones (Euro 6).";
         }
@@ -929,7 +1033,6 @@
             badge.textContent = seoLabel;
             badge.dataset.enhanced = "1";
 
-            // usage tekst onderin kaart
             let usageEl = card.querySelector(".location-card-usage");
             if (!usageEl) {
                 usageEl = document.createElement("div");
@@ -942,10 +1045,8 @@
 
     const listEl = document.querySelector("[data-location-list]");
     if (listEl) {
-        // direct op bestaande resultaten
         enhanceLocationCards(listEl);
 
-        // monitor veranderingen (bij nieuwe zoekopdrachten)
         const observer = new MutationObserver(() => {
             enhanceLocationCards(listEl);
         });
