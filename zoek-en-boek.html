@@ -16,465 +16,85 @@
     <link rel="stylesheet" href="data/styles.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Pagina-specifieke layout voor hero + filters -->
     <style>
-        .sub-hero {
-            background-color: #f4f7fa;
-            border-bottom: 1px solid #e5e7eb;
-            padding-top: calc(var(--header-height) + 24px);
-            padding-bottom: 40px;
+        /* Pagina-variant van de map-sectie */
+        .map-section-page {
+            padding-top: calc(var(--header-height) + 40px);
+            padding-bottom: 70px;
         }
 
-        .sub-hero-inner {
-            display: grid;
-            grid-template-columns: minmax(0, 1.7fr) minmax(0, 1.1fr);
-            gap: 28px;
-            align-items: center;
-        }
-
-        .sub-hero-eyebrow {
-            font-size: 0.78rem;
-            letter-spacing: 0.16em;
-            text-transform: uppercase;
-            color: #6b7280;
-            margin-bottom: 0.4rem;
-        }
-
-        .sub-hero-title {
-            font-size: 2.1rem;
-            line-height: 1.2;
-            margin-bottom: 0.75rem;
-            color: var(--primary-blue);
-        }
-
-        .sub-hero-text {
-            font-size: 0.98rem;
-            max-width: 620px;
-            color: var(--text-light);
-            margin-bottom: 1.1rem;
-        }
-
-        .sub-hero-quick-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 0.8rem;
-        }
-
-        .chip-button {
-            border-radius: 999px;
-            border: 1px solid #d1d5db;
-            background-color: #ffffff;
-            padding: 7px 14px;
-            font-size: 0.85rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            transition: background 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
-        }
-
-        .chip-button i {
-            color: var(--accent-orange);
-        }
-
-        .chip-button:hover {
-            background-color: #1a2c49;
-            border-color: #1a2c49;
-            color: #ffffff;
-            transform: translateY(-1px);
-        }
-
-        .chip-button:hover i {
-            color: #ffffff;
-        }
-
-        .sub-hero-meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            font-size: 0.82rem;
-            color: #4b5563;
-        }
-
-        .sub-hero-meta span {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .sub-hero-meta i {
-            color: #16a34a;
-        }
-
-        .sub-hero-right {
-            display: flex;
-            justify-content: flex-end;
-        }
-
-        .sub-hero-card {
-            background-color: #ffffff;
-            border-radius: 14px;
-            padding: 18px 18px 16px;
-            border: 1px solid #e5e7eb;
-            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
-            max-width: 360px;
-            width: 100%;
-        }
-
-        .sub-hero-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .map-section-page h1 {
+            font-size: 2.3rem;
+            text-align: center;
             margin-bottom: 0.75rem;
         }
 
-        .card-label {
-            font-size: 0.83rem;
-            font-weight: 700;
-            color: var(--primary-blue);
+        .map-section-page .section-sub {
+            margin-bottom: 1.6rem;
         }
 
-        .card-pill {
-            font-size: 0.75rem;
-            padding: 4px 10px;
-            border-radius: 999px;
-            background-color: var(--primary-blue);
-            color: #ffffff;
-        }
-
-        .sub-hero-steps {
-            list-style: none;
-            padding-left: 0;
-            margin: 0 0 0.9rem;
-            font-size: 0.88rem;
-            color: var(--text-light);
-        }
-
-        .sub-hero-steps li {
-            margin-bottom: 0.4rem;
-            position: relative;
-            padding-left: 0.9rem;
-        }
-
-        .sub-hero-steps li::before {
-            content: "•";
-            position: absolute;
-            left: 0;
-            top: 0.1rem;
-            color: var(--accent-orange);
-        }
-
-        .sub-hero-card-note {
-            font-size: 0.8rem;
-            color: #6b7280;
-            margin: 0.6rem 0 0;
-        }
-
-        /* Zoek-layout */
-        .search-layout {
-            padding: 40px 0 70px;
-            background-color: #ffffff;
-        }
-
-        .search-layout-inner {
-            display: grid;
-            grid-template-columns: 300px minmax(0, 2.3fr) minmax(0, 1.4fr);
-            gap: 24px;
-            align-items: flex-start;
-        }
-
-        .filters-panel {
-            background-color: #ffffff;
-            border-radius: 14px;
-            padding: 16px 14px 18px;
+        /* Meer-filters paneel */
+        .advanced-filters {
+            max-width: 1000px;
+            margin: 0 auto 18px auto;
+            background: #ffffff;
+            border-radius: 12px;
             border: 1px solid #e5e7eb;
-            box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
-        }
-
-        .filters-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 0.4rem;
-        }
-
-        .filters-header h2 {
-            font-size: 1rem;
-            margin: 0;
-        }
-
-        .filters-panel.collapsed .filters-body {
+            padding: 10px 14px 12px;
             display: none;
         }
 
-        .filters-toggle-mobile {
-            display: none;
-            width: 100%;
-            margin: 6px 0 8px;
-            padding: 8px 10px;
-            font-size: 0.85rem;
-            border-radius: 8px;
-            border: 1px solid #d1d5db;
-            background-color: #f9fafb;
-            display: none;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
+        .advanced-filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px 14px;
         }
 
-        .filters-toggle-mobile span {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .filters-toggle-mobile i {
-            font-size: 0.8rem;
-            color: #6b7280;
-        }
-
-        .filter-group {
-            margin-bottom: 0.65rem;
-        }
-
-        .filter-group label {
+        .advanced-filters .filter-group-inline label {
             display: block;
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             font-weight: 600;
-            margin-bottom: 0.25rem;
+            margin-bottom: 2px;
             color: var(--primary-blue);
         }
 
-        .filter-row {
-            display: flex;
-            gap: 8px;
-        }
-
-        .filter-row > * {
-            flex: 1;
-        }
-
-        .filter-description {
-            font-size: 0.75rem;
-            color: #6b7280;
-            margin-top: 0.25rem;
-        }
-
-        .inline-checkbox {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.82rem;
-            margin-bottom: 4px;
-        }
-
-        .filters-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 0.7rem;
-        }
-
-        .filters-actions .btn {
-            padding: 9px 12px;
-            font-size: 0.83rem;
-        }
-
-        /* >>> Strakkere inputs binnen filterpanel <<< */
-        .filters-panel input[type="text"],
-        .filters-panel input[type="number"],
-        .filters-panel input[type="date"],
-        .filters-panel select {
+        .advanced-filters .filter-group-inline input,
+        .advanced-filters .filter-group-inline select {
             width: 100%;
-            box-sizing: border-box;
-            padding: 8px 10px;
+            padding: 7px 9px;
             border-radius: 6px;
             border: 1px solid #d1d5db;
-            font-size: 0.86rem;
+            font-size: 0.85rem;
         }
 
-        /* Specifiek voor datumvelden: iets kleiner font + extra ruimte voor icoon */
-        .filters-panel input[type="date"] {
-            font-size: 0.8rem;
-            padding-right: 32px;
-        }
-
-        .map-panel {
-            background-color: #ffffff;
-            border-radius: 14px;
-            padding: 12px 12px 14px;
-            border: 1px solid #e5e7eb;
-            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            height: 100%;
-        }
-
-        .map-panel-header {
+        .advanced-filters .inline-checkbox {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            gap: 6px;
+            font-size: 0.82rem;
         }
 
-        .map-panel-header h2 {
-            font-size: 1.02rem;
-            margin: 0;
-        }
-
-        .map-mode-toggle {
-            display: inline-flex;
-            border-radius: 999px;
-            border: 1px solid #d1d5db;
-            overflow: hidden;
-        }
-
-        .map-mode-toggle button {
-            border: none;
-            background-color: transparent;
-            padding: 5px 10px;
-            font-size: 0.8rem;
-            cursor: pointer;
-        }
-
-        .map-mode-toggle button.active {
-            background-color: var(--primary-blue);
-            color: #ffffff;
-        }
-
-        .map-wrapper-full {
-            flex: 1;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .map-wrapper-full #kg-map {
-            width: 100%;
-            height: 560px;
-        }
-
-        .map-panel-footer {
-            font-size: 0.78rem;
+        .advanced-filters-footer {
+            margin-top: 8px;
+            font-size: 0.76rem;
             color: #6b7280;
         }
 
-        .results-panel {
-            background-color: #ffffff;
-            border-radius: 14px;
-            padding: 14px 13px 16px;
-            border: 1px solid #e5e7eb;
-            box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
-        }
-
-        .results-panel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 0.6rem;
-        }
-
-        .results-panel-header h2 {
-            font-size: 1rem;
-            margin: 0;
-        }
-
-        .results-meta {
-            font-size: 0.78rem;
-            color: #6b7280;
-        }
-
-        .results-sort {
-            font-size: 0.78rem;
-        }
-
-        .results-sort select {
-            font-size: 0.8rem;
-            padding: 4px 6px;
-        }
-
-        .location-list-extended {
-            max-height: 560px;
-            overflow-y: auto;
-        }
-
-        .results-panel-footer {
-            margin-top: 0.7rem;
-            font-size: 0.78rem;
-            color: #6b7280;
-        }
-
-        /* responsief */
-        @media (max-width: 992px) {
-            .sub-hero-inner {
-                grid-template-columns: minmax(0, 1fr);
-            }
-
-            .search-layout-inner {
-                grid-template-columns: minmax(0, 1fr);
-            }
-
-            .filters-panel {
-                order: 1;
-            }
-
-            .map-panel {
-                order: 2;
-            }
-
-            .results-panel {
-                order: 3;
-            }
-
-            .map-wrapper-full #kg-map {
-                height: 420px;
-            }
+        .map-advanced-toggle {
+            white-space: nowrap;
         }
 
         @media (max-width: 768px) {
-            .sub-hero {
-                padding-top: calc(var(--header-height) + 16px);
-                text-align: left;
+            .map-section-page {
+                padding-top: calc(var(--header-height) + 20px);
             }
 
-            .sub-hero-title {
-                font-size: 1.8rem;
+            .map-section-page h1 {
+                font-size: 1.9rem;
             }
 
-            .sub-hero-right {
-                justify-content: flex-start;
-            }
-
-            .sub-hero-card {
-                max-width: 100%;
-            }
-
-            .search-layout {
-                padding: 26px 0 50px;
-            }
-
-            .search-layout-inner {
-                display: block;
-            }
-
-            .filters-panel,
-            .map-panel,
-            .results-panel {
-                margin-bottom: 16px;
-            }
-
-            .filters-toggle-mobile {
-                display: inline-flex;
-            }
-
-            .map-wrapper-full #kg-map {
-                height: 360px;
-            }
-
-            .results-panel-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 4px;
+            .advanced-filters {
+                padding: 10px 10px 12px;
             }
         }
     </style>
@@ -521,215 +141,125 @@
 </header>
 
 <main>
-    <!-- SUB HERO -->
-    <section class="sub-hero">
-        <div class="container sub-hero-inner">
-            <div class="sub-hero-left">
-                <div class="sub-hero-eyebrow">LIVE KAART &amp; ZOEKTOOL</div>
-                <h1 class="sub-hero-title">Zoek &amp; boek een voertuig in jouw buurt</h1>
-                <p class="sub-hero-text">
-                    Hier zie je de volledige live kaart met alle KeylessGo voertuigen in de regio Utrecht. 
-                    Filter op voertuigtype, laadruimte, gebruiksdoel en afstand. Klik op een voertuig in de kaart 
-                    of in de lijst om direct via SnappCar te boeken.
-                </p>
-
-                <div class="sub-hero-quick-actions">
-                    <button type="button" class="chip-button" id="chip-utrecht">
-                        <i class="fa-solid fa-location-dot"></i> Utrecht &amp; omgeving
-                    </button>
-                    <button type="button" class="chip-button" id="chip-houten">
-                        <i class="fa-solid fa-location-dot"></i> Houten &amp; omgeving
-                    </button>
-                    <button type="button" class="chip-button" id="chip-ev">
-                        <i class="fa-solid fa-bolt"></i> Alleen elektrische voertuigen
-                    </button>
-                </div>
-
-                <div class="sub-hero-meta">
-                    <span><i class="fa-solid fa-circle-check"></i> Keyless toegang</span>
-                    <span><i class="fa-solid fa-shield-halved"></i> All-risk verzekerd via SnappCar</span>
-                    <span><i class="fa-solid fa-clock"></i> Binnen enkele minuten op weg</span>
-                </div>
-            </div>
-
-            <div class="sub-hero-right">
-                <div class="sub-hero-card">
-                    <div class="sub-hero-card-header">
-                        <span class="card-label">Snelle start</span>
-                        <span class="card-pill">Stap 1 t/m 3</span>
-                    </div>
-                    <ol class="sub-hero-steps">
-                        <li><strong>Kies je locatie</strong> – zoek op plaats, wijk of postcode.</li>
-                        <li><strong>Selecteer het juiste voertuig</strong> – busje, auto of EV.</li>
-                        <li><strong>Boek via SnappCar</strong> – volledig keyless en verzekerd.</li>
-                    </ol>
-                    <button type="button" class="btn btn-primary" id="sub-hero-scroll-to-search">
-                        Start met zoeken
-                    </button>
-                    <p class="sub-hero-card-note">
-                        Je boekt altijd veilig via SnappCar. KeylessGo beheert de voertuigen en hotspots.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- LAYOUT FILTERS / KAART / RESULTATEN -->
-    <section class="search-layout">
+    <!-- Map-sectie als pagina -->
+    <section class="map-section map-section-page" id="zoek-en-boek">
         <div class="container">
-            <div class="search-layout-inner">
-                <!-- FILTERS PANEL -->
-                <aside class="filters-panel">
-                    <div class="filters-header">
-                        <h2>Filters verfijnen</h2>
-                        <button id="reset-filters" class="btn btn-secondary btn-sm" type="button">
-                            Reset
-                        </button>
+            <h1>Zoek &amp; boek een voertuig in jouw buurt</h1>
+            <p class="section-sub">
+                Bekijk waar onze keyless busjes en auto’s staan in de regio Utrecht. 
+                Vind snel een geschikt voertuig, navigeer erheen met Google Maps en boek direct via SnappCar.
+            </p>
+
+            <!-- BASISFILTERS BOVEN DE KAART -->
+            <div class="map-filters">
+                <input id="location-search" class="search-input" type="text" placeholder="Zoek op plaats, wijk of postcode (bijv. Utrecht, Houten, Amersfoort)">
+                <select id="location-type-filter" class="type-select">
+                    <option value="all">Alle voertuigtypen</option>
+                    <option value="auto">Auto</option>
+                    <option value="bus-small">Busje Small</option>
+                    <option value="bus-medium">Busje Medium</option>
+                    <option value="bus-large">Busje Large</option>
+                    <option value="ev">Elektrisch</option>
+                </select>
+                <button id="location-search-btn" class="btn btn-secondary map-reset-btn">Zoek &amp; zoom</button>
+                <button id="use-my-location" class="btn btn-secondary map-reset-btn">Gebruik mijn locatie</button>
+                <button id="toggle-advanced-filters" class="btn btn-secondary map-reset-btn map-advanced-toggle">
+                    Meer filters
+                </button>
+            </div>
+
+            <!-- UITGEBREIDE FILTERS (UITKLAP) -->
+            <div class="advanced-filters" id="advanced-filters">
+                <div class="advanced-filters-grid">
+                    <div class="filter-group-inline">
+                        <label for="distance-filter">Afstand tot gekozen locatie</label>
+                        <select id="distance-filter">
+                            <option value="any">Geen limiet</option>
+                            <option value="2">Binnen 2 km</option>
+                            <option value="5">Binnen 5 km</option>
+                            <option value="10">Binnen 10 km</option>
+                        </select>
                     </div>
 
-                    <button type="button" class="filters-toggle-mobile" aria-expanded="true">
-                        <span><i class="fa-solid fa-sliders"></i> Filters verbergen</span>
-                        <i class="fa-solid fa-chevron-up"></i>
-                    </button>
-
-                    <div class="filters-body">
-                        <!-- Zoek locatie + afstand direct daaronder -->
-                        <div class="filter-group">
-                            <label for="location-search">Zoek locatie</label>
-                            <input id="location-search" type="text" placeholder="Bijv. Utrecht, Houten, Amersfoort">
-                            <p class="filter-description">
-                                Tip: je kunt zoeken op plaats, wijk of postcode (PC4).
-                            </p>
-                        </div>
-
-                        <div class="filter-group">
-                            <label for="distance-filter">Afstand tot gekozen locatie</label>
-                            <select id="distance-filter">
-                                <option value="any">Geen limiet</option>
-                                <option value="2">Binnen 2 km</option>
-                                <option value="5">Binnen 5 km</option>
-                                <option value="10">Binnen 10 km</option>
-                            </select>
-                        </div>
-
-                        <div class="filter-group">
-                            <label for="location-type-filter">Voertuigtype</label>
-                            <select id="location-type-filter">
-                                <option value="all">Alle voertuigtypen</option>
-                                <option value="auto">Auto</option>
-                                <option value="bus-small">Busje Small</option>
-                                <option value="bus-medium">Busje Medium</option>
-                                <option value="bus-large">Busje Large</option>
-                                <option value="ev">Elektrisch</option>
-                            </select>
-                        </div>
-
-                        <div class="filter-group">
-                            <label for="usage-filter">Gebruik</label>
-                            <div class="filter-row">
-                                <select id="usage-filter">
-                                    <option value="all">Alles</option>
-                                    <option value="verhuizen">Verhuizen</option>
-                                    <option value="klussen">Klussen &amp; bezorgen</option>
-                                    <option value="weekend">Weekend weg</option>
-                                    <option value="zakelijk">Zakelijk gebruik</option>
-                                </select>
-                            </div>
-                            <p class="filter-description">
-                                Optioneel: te koppelen aan scenario’s in je tools.
-                            </p>
-                        </div>
-
-                        <!-- Extra voorkeuren iets hoger in de flow -->
-                        <div class="filter-group">
-                            <label>Extra voorkeuren</label>
-                            <div class="inline-checkbox">
-                                <input type="checkbox" id="only-ev">
-                                <label for="only-ev">Alleen elektrisch</label>
-                            </div>
-                            <div class="inline-checkbox">
-                                <input type="checkbox" id="only-low-emission">
-                                <label for="only-low-emission">Geschikt voor milieuzones</label>
-                            </div>
-                            <div class="inline-checkbox">
-                                <input type="checkbox" id="only-keyless">
-                                <label for="only-keyless">Alleen Keyless voertuigen</label>
-                            </div>
-                        </div>
-
-                        <div class="filter-group">
-                            <label for="cargo-filter">Laadruimte (indicatief)</label>
-                            <div class="filter-row">
-                                <select id="cargo-filter">
-                                    <option value="all">Alle groottes</option>
-                                    <option value="compact">Compact (auto / Caddy)</option>
-                                    <option value="medium">Medium (Transporter)</option>
-                                    <option value="large">Large (Crafter)</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="filter-group">
-                            <label>Budget (dagprijs)</label>
-                            <div class="filter-row">
-                                <input type="number" id="price-min" placeholder="Min €">
-                                <input type="number" id="price-max" placeholder="Max €">
-                            </div>
-                        </div>
-
-                        <div class="filter-group">
-                            <label>Periode</label>
-                            <div class="filter-row">
-                                <input type="date" id="date-from" placeholder="dd-mm-jjjj">
-                                <input type="date" id="date-to" placeholder="dd-mm-jjjj">
-                            </div>
-                            <p class="filter-description">
-                                Later te koppelen aan beschikbaarheid uit SnappCar of je eigen planningsmodel.
-                            </p>
-                        </div>
-
-                        <div class="filters-actions">
-                            <button id="location-search-btn" class="btn btn-secondary" type="button">
-                                <i class="fa-solid fa-magnifying-glass-location"></i> Zoek &amp; zoom
-                            </button>
-                            <button id="use-my-location" class="btn btn-secondary" type="button">
-                                <i class="fa-solid fa-location-crosshairs"></i> Mijn locatie
-                            </button>
-                        </div>
+                    <div class="filter-group-inline">
+                        <label for="usage-filter">Gebruik</label>
+                        <select id="usage-filter">
+                            <option value="all">Alles</option>
+                            <option value="verhuizen">Verhuizen</option>
+                            <option value="klussen">Klussen &amp; bezorgen</option>
+                            <option value="weekend">Weekend weg</option>
+                            <option value="zakelijk">Zakelijk gebruik</option>
+                        </select>
                     </div>
-                </aside>
 
-                <!-- KAART PANEL -->
-                <section class="map-panel">
-                    <div class="map-panel-header">
-                        <h2>Live kaart met voertuigen</h2>
-                        <div class="map-mode-toggle">
-                            <button type="button" class="active" id="map-mode-vehicles">Voertuigen</button>
-                            <button type="button" id="map-mode-hotspots">Hotspots</button>
+                    <div class="filter-group-inline">
+                        <label for="cargo-filter">Laadruimte (indicatief)</label>
+                        <select id="cargo-filter">
+                            <option value="all">Alle groottes</option>
+                            <option value="compact">Compact (auto / Caddy)</option>
+                            <option value="medium">Medium (Transporter)</option>
+                            <option value="large">Large (Crafter)</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group-inline">
+                        <label>Budget (dagprijs)</label>
+                        <div style="display:flex;gap:6px;">
+                            <input type="number" id="price-min" placeholder="Min €">
+                            <input type="number" id="price-max" placeholder="Max €">
                         </div>
                     </div>
 
-                    <div class="map-wrapper-full">
-                        <div id="kg-map"></div>
-                    </div>
-
-                    <div class="map-panel-footer">
-                        Klik op een marker om details te zien, route te openen in Google Maps of direct te boeken via SnappCar.
-                    </div>
-                </section>
-
-                <!-- RESULTATEN PANEL -->
-                <aside class="results-panel">
-                    <div class="results-panel-header">
-                        <div>
-                            <h2>Dichtstbijzijnde voertuigen</h2>
-                            <div class="results-meta">
-                                <span id="results-count">Voertuigen in de buurt van jouw zoeklocatie.</span>
-                            </div>
+                    <div class="filter-group-inline">
+                        <label>Periode</label>
+                        <div style="display:flex;gap:6px;">
+                            <input type="date" id="date-from">
+                            <input type="date" id="date-to">
                         </div>
-                        <div class="results-sort">
+                    </div>
+
+                    <div class="filter-group-inline">
+                        <label>Extra voorkeuren</label>
+                        <div class="inline-checkbox">
+                            <input type="checkbox" id="only-ev">
+                            <label for="only-ev">Alleen elektrisch</label>
+                        </div>
+                        <div class="inline-checkbox">
+                            <input type="checkbox" id="only-low-emission">
+                            <label for="only-low-emission">Geschikt voor milieuzones</label>
+                        </div>
+                        <div class="inline-checkbox">
+                            <input type="checkbox" id="only-keyless">
+                            <label for="only-keyless">Alleen Keyless voertuigen</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="advanced-filters-footer">
+                    Deze extra filters zijn vooral handig voor planning, scenario’s en zakelijke users. 
+                    Later kun je dit koppelen aan je eigen tools en beschikbaarheidsdata.
+                </div>
+            </div>
+
+            <!-- LAYOUT MAP + RESULTATEN (zoals op index) -->
+            <div class="location-layout">
+                <div class="map-wrapper">
+                    <div id="kg-map"></div>
+                </div>
+
+                <aside class="location-sidebar">
+                    <h3>Dichtstbijzijnde voertuigen</h3>
+                    <p class="location-sidebar-sub">
+                        We tonen de voertuigen die het dichtst bij jouw gekozen locatie staan. 
+                        Kies een voertuig om meer details te zien, op de kaart te tonen of direct via SnappCar te boeken.
+                    </p>
+
+                    <div class="results-panel-header" style="margin:0 0 6px 0;display:flex;justify-content:space-between;align-items:center;gap:8px;">
+                        <span id="results-count" style="font-size:0.8rem;color:#6b7280;">
+                            Voertuigen in de buurt van jouw zoeklocatie.
+                        </span>
+                        <div class="results-sort" style="font-size:0.78rem;">
                             <label for="sort-results">Sorteer op:</label>
-                            <select id="sort-results">
+                            <select id="sort-results" style="font-size:0.8rem;padding:3px 6px;">
                                 <option value="distance">Afstand</option>
                                 <option value="price-asc">Prijs (laag-hoog)</option>
                                 <option value="price-desc">Prijs (hoog-laag)</option>
@@ -738,12 +268,12 @@
                         </div>
                     </div>
 
-                    <div class="location-list location-list-extended" data-location-list></div>
+                    <div class="location-list" data-location-list></div>
 
-                    <div class="results-panel-footer">
+                    <p class="location-note">
                         Alle reserveringen, betalingen en verzekering lopen via SnappCar. 
                         KeylessGo zorgt voor goed onderhouden voertuigen, slimme hotspots en support.
-                    </div>
+                    </p>
                 </aside>
             </div>
         </div>
@@ -853,118 +383,14 @@
         });
     });
 
-    // Quick action chips
-    const searchInput = document.getElementById("location-search");
-    const typeFilter = document.getElementById("location-type-filter");
-    const onlyEvCheckbox = document.getElementById("only-ev");
-
-    const utrechtChip = document.getElementById("chip-utrecht");
-    const houtenChip = document.getElementById("chip-houten");
-    const evChip = document.getElementById("chip-ev");
-    const scrollToSearchBtn = document.getElementById("sub-hero-scroll-to-search");
-
-    function triggerSearchClick() {
-        const btn = document.getElementById("location-search-btn");
-        if (btn) btn.click();
-    }
-
-    if (utrechtChip && searchInput) {
-        utrechtChip.addEventListener("click", () => {
-            searchInput.value = "Utrecht";
-            if (typeFilter) typeFilter.value = "all";
-            if (onlyEvCheckbox) onlyEvCheckbox.checked = false;
-            triggerSearchClick();
-        });
-    }
-
-    if (houtenChip && searchInput) {
-        houtenChip.addEventListener("click", () => {
-            searchInput.value = "Houten";
-            if (typeFilter) typeFilter.value = "all";
-            if (onlyEvCheckbox) onlyEvCheckbox.checked = false;
-            triggerSearchClick();
-        });
-    }
-
-    if (evChip && searchInput && onlyEvCheckbox) {
-        evChip.addEventListener("click", () => {
-            searchInput.value = "Utrecht";
-            if (typeFilter) typeFilter.value = "ev";
-            onlyEvCheckbox.checked = true;
-            triggerSearchClick();
-        });
-    }
-
-    if (scrollToSearchBtn) {
-        scrollToSearchBtn.addEventListener("click", () => {
-            const section = document.querySelector(".search-layout");
-            if (!section) return;
-            section.scrollIntoView({ behavior: "smooth", block: "start" });
-        });
-    }
-
-    // Reset filters
-    const resetBtn = document.getElementById("reset-filters");
-    if (resetBtn) {
-        resetBtn.addEventListener("click", () => {
-            const idsToReset = [
-                "location-search",
-                "usage-filter",
-                "cargo-filter",
-                "date-from",
-                "date-to",
-                "price-min",
-                "price-max",
-                "distance-filter",
-                "location-type-filter"
-            ];
-            idsToReset.forEach(id => {
-                const el = document.getElementById(id);
-                if (!el) return;
-                if (el.tagName === "SELECT") {
-                    el.selectedIndex = 0;
-                } else {
-                    el.value = "";
-                }
-            });
-
-            ["only-ev","only-low-emission","only-keyless"].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.checked = false;
-            });
-        });
-    }
-
-    // Mobile: filters inklapbaar
-    const filtersPanel = document.querySelector(".filters-panel");
-    const filtersToggleMobile = document.querySelector(".filters-toggle-mobile");
-    if (filtersPanel && filtersToggleMobile) {
-        filtersToggleMobile.addEventListener("click", () => {
-            const isCollapsed = filtersPanel.classList.toggle("collapsed");
-            filtersToggleMobile.setAttribute("aria-expanded", (!isCollapsed).toString());
-            const textSpan = filtersToggleMobile.querySelector("span");
-            const icon = filtersToggleMobile.querySelector("i.fa-chevron-up, i.fa-chevron-down");
-            if (isCollapsed) {
-                if (textSpan) textSpan.firstChild.textContent = " Filters tonen";
-                if (icon) {
-                    icon.classList.remove("fa-chevron-up");
-                    icon.classList.add("fa-chevron-down");
-                }
-            } else {
-                if (textSpan) textSpan.firstChild.textContent = " Filters verbergen";
-                if (icon) {
-                    icon.classList.remove("fa-chevron-down");
-                    icon.classList.add("fa-chevron-up");
-                }
-            }
-        });
-
-        // Zorg dat op desktop filters altijd open zijn
-        window.addEventListener("resize", () => {
-            if (window.innerWidth > 768 && filtersPanel.classList.contains("collapsed")) {
-                filtersPanel.classList.remove("collapsed");
-                filtersToggleMobile.setAttribute("aria-expanded", "true");
-            }
+    // Meer filters toggle
+    const advBtn = document.getElementById("toggle-advanced-filters");
+    const advPanel = document.getElementById("advanced-filters");
+    if (advBtn && advPanel) {
+        advBtn.addEventListener("click", () => {
+            const visible = advPanel.style.display === "block";
+            advPanel.style.display = visible ? "none" : "block";
+            advBtn.textContent = visible ? "Meer filters" : "Minder filters";
         });
     }
 
@@ -1037,7 +463,8 @@
             if (!usageEl) {
                 usageEl = document.createElement("div");
                 usageEl.className = "location-card-usage";
-                card.appendChild(usageEl);
+                const body = card.querySelector(".location-card-body") || card;
+                body.appendChild(usageEl);
             }
             usageEl.textContent = getUsageText(rawText);
         });

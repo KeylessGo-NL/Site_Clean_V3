@@ -21,7 +21,7 @@
         return EARTH_RADIUS_KM * c;
     }
 
-    // Zeer simpele mapping van zoektekst -> referentie-locatie
+    // eenvoudige mapping van zoektekst -> ref-locatie
     function getReferenceLocation(searchText) {
         if (!searchText) {
             return { lat: 52.091, lng: 5.122, label: "Utrecht" };
@@ -48,10 +48,17 @@
             case "price-desc":
                 v.sort((a, b) => (b.pricePerDay || 0) - (a.pricePerDay || 0));
                 break;
-            case "size":
-                const rank = { "bus-large": 3, "bus-medium": 2, "bus-small": 1, ev: 0.5, auto: 0.4 };
+            case "size": {
+                const rank = {
+                    "bus-large": 3,
+                    "bus-medium": 2,
+                    "bus-small": 1,
+                    ev: 0.5,
+                    auto: 0.4,
+                };
                 v.sort((a, b) => (rank[b.type] || 0) - (rank[a.type] || 0));
                 break;
+            }
             case "distance":
             default:
                 v.sort((a, b) => (a.distanceKm || 0) - (b.distanceKm || 0));
@@ -59,6 +66,7 @@
         return v;
     }
 
+    // resultaatkaart met thumbnail
     function buildLocationCard(vehicle) {
         const distanceText =
             typeof vehicle.distanceKm === "number"
@@ -74,7 +82,7 @@
         };
 
         const typeClass = typeClassMap[vehicle.type] || "badge-type-auto";
-        const typeRawLabel = vehicle.type; // wordt op Zoek & Boek pagina omgezet naar Bus S / Bus M / etc.
+        const typeRawLabel = vehicle.type; // wordt op zoek-en-boek via script omgezet naar Bus S / EV etc.
 
         const priceText = vehicle.pricePerDay
             ? `€ ${vehicle.pricePerDay.toFixed(0)}.- p/dag`
@@ -85,32 +93,45 @@
         const bookUrl = vehicle.bookUrl || "https://www.snappcar.nl";
         const routeUrl = `https://www.google.com/maps?q=${vehicle.lat},${vehicle.lng}`;
 
+        const thumbHtml = vehicle.imageUrl
+            ? `<img src="${vehicle.imageUrl}" alt="${vehicle.name}">`
+            : "";
+
         return `
             <article class="location-card" data-vehicle-id="${vehicle.id}">
-                <div class="location-card-header">
-                    <div>
-                        <div class="location-card-title">${vehicle.name}</div>
-                        <div class="location-card-meta">
-                            ${distanceText}${distanceText && locationLabel ? " · " : ""}${locationLabel}
+                <div class="location-card-main">
+                    <div class="location-card-thumb">
+                        ${thumbHtml}
+                    </div>
+                    <div class="location-card-body">
+                        <div class="location-card-header">
+                            <div>
+                                <div class="location-card-title">${vehicle.name}</div>
+                                <div class="location-card-meta">
+                                    ${distanceText}${
+            distanceText && locationLabel ? " · " : ""
+        }${locationLabel}
+                                </div>
+                                <div class="location-card-meta">
+                                    ${priceText}
+                                </div>
+                            </div>
+                            <div>
+                                <span class="location-card-type ${typeClass}">${typeRawLabel}</span>
+                            </div>
                         </div>
-                        <div class="location-card-meta">
-                            ${priceText}
+                        <div class="location-card-actions">
+                            <button class="btn btn-secondary btn-sm js-show-on-map" type="button">
+                                Toon op kaart
+                            </button>
+                            <a class="btn btn-secondary btn-sm" href="${routeUrl}" target="_blank" rel="noopener">
+                                Route
+                            </a>
+                            <a class="btn btn-primary btn-sm" href="${bookUrl}" target="_blank" rel="noopener">
+                                Nu huren
+                            </a>
                         </div>
                     </div>
-                    <div>
-                        <span class="location-card-type ${typeClass}">${typeRawLabel}</span>
-                    </div>
-                </div>
-                <div class="location-card-actions">
-                    <button class="btn btn-secondary btn-sm js-show-on-map" type="button">
-                        Toon op kaart
-                    </button>
-                    <a class="btn btn-secondary btn-sm" href="${routeUrl}" target="_blank" rel="noopener">
-                        Route
-                    </a>
-                    <a class="btn btn-primary btn-sm" href="${bookUrl}" target="_blank" rel="noopener">
-                        Nu huren
-                    </a>
                 </div>
             </article>
         `;
@@ -148,12 +169,7 @@
             if (searchText) {
                 referenceLocation = getReferenceLocation(searchText);
                 filtered = filtered.filter((v) => {
-                    const haystack = [
-                        v.name,
-                        v.city,
-                        v.area,
-                        (v.label || ""),
-                    ]
+                    const haystack = [v.name, v.city, v.area, v.label || ""]
                         .join(" ")
                         .toLowerCase();
                     return haystack.includes(searchText);
@@ -252,26 +268,21 @@
                 resultsCountEl.textContent = txt;
             }
 
-            // click handlers
             listContainer.querySelectorAll(".location-card").forEach((card) => {
                 const id = card.getAttribute("data-vehicle-id");
                 const showBtn = card.querySelector(".js-show-on-map");
 
                 if (showBtn) {
-                    showBtn.addEventListener("click", () => {
+                    showBtn.addEventListener("click", (e) => {
+                        e.stopPropagation();
                         if (window.KGMap && typeof window.KGMap.focusOnVehicle === "function") {
                             window.KGMap.focusOnVehicle(id);
                         }
                     });
                 }
 
-                // hele kaart klikbaar voor map-focus
                 card.addEventListener("click", (e) => {
-                    // voorkom dubbel open bij klik op knoppen
-                    if (
-                        e.target.closest("a") ||
-                        e.target.closest("button")
-                    ) {
+                    if (e.target.closest("a") || e.target.closest("button")) {
                         return;
                     }
                     if (window.KGMap && typeof window.KGMap.focusOnVehicle === "function") {
@@ -282,14 +293,10 @@
         }
 
         // Events
-        if (searchBtn) {
-            searchBtn.addEventListener("click", applyFilters);
-        }
+        if (searchBtn) searchBtn.addEventListener("click", applyFilters);
         if (searchInput) {
             searchInput.addEventListener("keydown", (e) => {
-                if (e.key === "Enter") {
-                    applyFilters();
-                }
+                if (e.key === "Enter") applyFilters();
             });
         }
         if (typeFilter) typeFilter.addEventListener("change", applyFilters);
@@ -327,7 +334,6 @@
                         }
                     },
                     () => {
-                        // bij fout: gebruik standaard
                         referenceLocation = getReferenceLocation(
                             searchInput ? searchInput.value : ""
                         );
