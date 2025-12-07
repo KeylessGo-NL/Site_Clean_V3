@@ -344,6 +344,12 @@ header {
     margin-bottom: 1.15rem;
     max-width: 540px;
 }
+.hero-sub-alt {
+    font-size: 1rem;
+    color: #a5b4fc;
+    margin-bottom: 1.15rem;
+    max-width: 540px;
+}
 
 .hero-buttons {
     display: flex;
