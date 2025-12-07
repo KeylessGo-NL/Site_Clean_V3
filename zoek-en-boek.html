@@ -168,7 +168,7 @@
         .sub-hero-card-note {
             font-size: 0.8rem;
             color: #6b7280;
-            margin: 0;
+            margin: 0.6rem 0 0;
         }
 
         /* Zoek-layout */
@@ -205,7 +205,7 @@
         }
 
         .filter-group {
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.9rem;
         }
 
         .filter-group label {
@@ -248,6 +248,27 @@
         .filters-actions .btn {
             padding: 9px 12px;
             font-size: 0.83rem;
+        }
+
+        /* >>> Strakkere inputs binnen filterpanel <<< */
+        .filters-panel input[type="text"],
+        .filters-panel input[type="number"],
+        .filters-panel input[type="date"],
+        .filters-panel select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 8px 10px;
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+            font-size: 0.86rem;
+        }
+
+        .filters-panel input[type="number"]::placeholder {
+            color: #9ca3af;
+        }
+
+        .filters-panel input[type="text"]::placeholder {
+            color: #9ca3af;
         }
 
         .map-panel {
@@ -478,14 +499,12 @@
                         <li><strong>Selecteer het juiste voertuig</strong> – busje, auto of EV.</li>
                         <li><strong>Boek via SnappCar</strong> – volledig keyless en verzekerd.</li>
                     </ol>
-                    <div class="sub-hero-card-footer">
-                        <button type="button" class="btn btn-primary" id="sub-hero-scroll-to-search">
-                            Start met zoeken
-                        </button>
-                        <p class="sub-hero-card-note">
-                            Je boekt altijd veilig via SnappCar. KeylessGo beheert de voertuigen en hotspots.
-                        </p>
-                    </div>
+                    <button type="button" class="btn btn-primary" id="sub-hero-scroll-to-search">
+                        Start met zoeken
+                    </button>
+                    <p class="sub-hero-card-note">
+                        Je boekt altijd veilig via SnappCar. KeylessGo beheert de voertuigen en hotspots.
+                    </p>
                 </div>
             </div>
         </div>
@@ -506,7 +525,7 @@
 
                     <div class="filter-group">
                         <label for="location-search">Zoek locatie</label>
-                        <input id="location-search" class="search-input" type="text" placeholder="Bijv. Utrecht, Houten, Amersfoort">
+                        <input id="location-search" type="text" placeholder="Bijv. Utrecht, Houten, Amersfoort">
                         <p class="filter-description">
                             Tip: je kunt zoeken op plaats, wijk of postcode (PC4).
                         </p>
@@ -514,7 +533,7 @@
 
                     <div class="filter-group">
                         <label for="location-type-filter">Voertuigtype</label>
-                        <select id="location-type-filter" class="type-select">
+                        <select id="location-type-filter">
                             <option value="all">Alle voertuigtypen</option>
                             <option value="auto">Auto</option>
                             <option value="bus-small">Busje Small</option>
@@ -525,7 +544,7 @@
                     </div>
 
                     <div class="filter-group">
-                        <label>Gebruik</label>
+                        <label for="usage-filter">Gebruik</label>
                         <div class="filter-row">
                             <select id="usage-filter">
                                 <option value="all">Alles</option>
@@ -541,7 +560,7 @@
                     </div>
 
                     <div class="filter-group">
-                        <label>Laadruimte (indicatief)</label>
+                        <label for="cargo-filter">Laadruimte (indicatief)</label>
                         <div class="filter-row">
                             <select id="cargo-filter">
                                 <option value="all">Alle groottes</option>
@@ -588,7 +607,7 @@
                     </div>
 
                     <div class="filter-group">
-                        <label>Afstand tot gekozen locatie</label>
+                        <label for="distance-filter">Afstand tot gekozen locatie</label>
                         <select id="distance-filter">
                             <option value="any">Geen limiet</option>
                             <option value="2">Binnen 2 km</option>
@@ -841,6 +860,96 @@
                 if (el) el.checked = false;
             });
         });
+    }
+
+    // ====== UX/SEO upgrade voor resultaatkaarten: type-labels + usage-tekst ======
+    function getSeoLabel(raw) {
+        const t = (raw || "").toLowerCase();
+        switch (t) {
+            case "bus-small":
+            case "bus_s":
+                return "Bus S";
+            case "bus-medium":
+            case "bus_m":
+                return "Bus M";
+            case "bus-large":
+            case "bus_l":
+                return "Bus L";
+            case "auto":
+            case "compact":
+                return "Compact car";
+            case "ev":
+            case "elektrisch":
+            case "electric":
+                return "EV";
+            default:
+                return raw || "";
+        }
+    }
+
+    function getUsageText(raw) {
+        const t = (raw || "").toLowerCase();
+
+        // basis per type
+        let base;
+        if (t.includes("bus-large") || t === "bus_l") {
+            base = "Vaak geboekt voor grote verhuizingen en volumetransport.";
+        } else if (t.includes("bus-medium") || t === "bus_m") {
+            base = "Populair voor verhuisklussen en grotere transporten.";
+        } else if (t.includes("bus-small") || t === "bus_s") {
+            base = "Ideaal voor kleine verhuizingen, klussen en bezorgen.";
+        } else if (t === "ev" || t.includes("electric") || t.includes("elektrisch")) {
+            base = "Elektrische deelauto, perfect voor stille ritten en woon-werkverkeer.";
+        } else if (t === "auto" || t === "compact") {
+            base = "Compacte stadsauto, veel gebruikt voor korte ritten en dagjes weg.";
+        } else {
+            base = "Veel gebruikt voor dagelijkse ritten en lichte transportklussen.";
+        }
+
+        // milieuzones / binnenstad
+        if (t.includes("bus") || t === "auto" || t === "compact") {
+            base += " Geschikt voor binnenstad en milieuzones (Euro 6).";
+        }
+        if (t === "ev" || t.includes("electric") || t.includes("elektrisch")) {
+            base += " Altijd toegestaan in milieuzones en emissievrije zones.";
+        }
+
+        return base;
+    }
+
+    function enhanceLocationCards(root) {
+        if (!root) return;
+        const cards = root.querySelectorAll(".location-card");
+        cards.forEach(card => {
+            const badge = card.querySelector(".location-card-type");
+            if (!badge || badge.dataset.enhanced === "1") return;
+
+            const rawText = (badge.textContent || "").trim();
+            const seoLabel = getSeoLabel(rawText);
+            badge.textContent = seoLabel;
+            badge.dataset.enhanced = "1";
+
+            // usage tekst onderin kaart
+            let usageEl = card.querySelector(".location-card-usage");
+            if (!usageEl) {
+                usageEl = document.createElement("div");
+                usageEl.className = "location-card-usage";
+                card.appendChild(usageEl);
+            }
+            usageEl.textContent = getUsageText(rawText);
+        });
+    }
+
+    const listEl = document.querySelector("[data-location-list]");
+    if (listEl) {
+        // direct op bestaande resultaten
+        enhanceLocationCards(listEl);
+
+        // monitor veranderingen (bij nieuwe zoekopdrachten)
+        const observer = new MutationObserver(() => {
+            enhanceLocationCards(listEl);
+        });
+        observer.observe(listEl, { childList: true, subtree: true });
     }
 </script>
 
