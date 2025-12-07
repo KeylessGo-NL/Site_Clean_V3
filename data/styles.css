@@ -180,7 +180,7 @@ header {
 }
 
 .logo img {
-    max-height: 44px; /* iets groter, goed leesbaar maar niet te groot */
+    max-height: 100px; /* iets groter, goed leesbaar maar niet te groot */
     width: auto;
     object-fit: contain;
     display: block;
