@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8" />
+    <title>Contact – KeylessGo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Neem contact op met KeylessGo voor vragen over onze voertuigen, keyless huren via SnappCar, zakelijke samenwerkingen en fleet-oplossingen.">
+
+    <!-- Hoofd CSS -->
+    <link rel="stylesheet" href="assets/css/styles.css" />
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        referrerpolicy="no-referrer"
+    >
+
+    <style>
+        /* ===== CONTACT SPECIFIEKE STYLES ===== */
+
+        .contact-hero {
+            padding-top: calc(var(--header-height) + 40px);
+            padding-bottom: 40px;
+            background-color: var(--bg-light);
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .contact-hero h1 {
+            text-align: center;
+            font-size: 2.3rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .contact-hero .section-sub {
+            margin-bottom: 2rem;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.2fr);
+            gap: 26px;
+            align-items: flex-start;
+        }
+
+        .contact-card {
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 18px 20px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 10px 28px rgba(15, 23, 42, 0.07);
+            margin-bottom: 16px;
+        }
+
+        .contact-card h3 {
+            margin-bottom: 0.6rem;
+        }
+
+        .contact-card p {
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-card-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            font-size: 0.92rem;
+            color: var(--text-light);
+        }
+
+        .contact-card-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 0.4rem;
+        }
+
+        .contact-card-list i {
+            color: var(--accent-orange);
+            margin-top: 3px;
+            min-width: 16px;
+        }
+
+        .contact-label {
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+
+        /* Contactformulier */
+        .contact-form-card {
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 20px 20px 22px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 12px 32px rgba(15, 23, 42, 0.09);
+        }
+
+        .contact-form-card h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-form-card p {
+            font-size: 0.9rem;
+            margin-bottom: 1.1rem;
+        }
+
+        .contact-form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px 18px;
+        }
+
+        .contact-form-grid .full {
+            grid-column: 1 / -1;
+        }
+
+        .contact-form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .contact-form-field label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+
+        .contact-form-field input,
+        .contact-form-field select,
+        .contact-form-field textarea {
+            font-family: var(--font-stack);
+            font-size: 0.9rem;
+            padding: 9px 10px;
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+            outline: none;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .contact-form-field input:focus,
+        .contact-form-field select:focus,
+        .contact-form-field textarea:focus {
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 0 1px rgba(255, 122, 0, 0.25);
+        }
+
+        .contact-form-field textarea {
+            min-height: 130px;
+            resize: vertical;
+        }
+
+        .contact-form-footnote {
+            margin-top: 10px;
+            font-size: 0.78rem;
+            color: #6b7280;
+        }
+
+        .contact-checkbox-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: #4b5563;
+            margin-top: 4px;
+        }
+
+        .contact-checkbox-row input {
+            margin-top: 3px;
+        }
+
+        .contact-form-actions {
+            margin-top: 14px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .contact-form-actions .btn {
+            padding-left: 22px;
+            padding-right: 22px;
+        }
+
+        /* Onderste blok met praktische info */
+        .contact-extra-section {
+            padding: 50px 0 70px;
+            background-color: #ffffff;
+        }
+
+        .contact-extra-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.1fr);
+            gap: 24px;
+        }
+
+        .contact-extra-card {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 16px 18px;
+            border: 1px solid #e5e7eb;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .contact-extra-card h3 {
+            margin-bottom: 0.4rem;
+        }
+
+        .contact-extra-card p {
+            margin-bottom: 0.4rem;
+        }
+
+        .contact-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            padding: 4px 9px;
+            border-radius: 999px;
+            background: #e5e7eb;
+            color: #374151;
+            margin-top: 6px;
+        }
+
+        .contact-snappcar-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: #4b5563;
+            margin-top: 6px;
+        }
+
+        .contact-snappcar-note i {
+            color: #2563eb;
+            margin-top: 3px;
+        }
+
+        @media (max-width: 992px) {
+            .contact-grid,
+            .contact-extra-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .contact-hero {
+                padding-top: calc(var(--header-height) + 24px);
+                padding-bottom: 34px;
+            }
+
+            .contact-hero h1 {
+                font-size: 2rem;
+            }
+
+            .contact-form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-form-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container header-content">
+        <a href="index.html" class="logo" aria-label="KeylessGo home">
+            <img src="img/partner/keylessgo-logo.png" alt="KeylessGo logo">
+        </a>
+
+        <nav class="nav-menu">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="zoek-en-boek.html">Zoek &amp; Boek</a></li>
+
+                <li class="has-submenu">
+                    <a href="index.html#onze-vloot">Voertuigen</a>
+                    <ul class="submenu">
+                        <li><a href="index.html#onze-vloot">Busjes</a></li>
+                        <li><a href="index.html#onze-vloot">Auto's</a></li>
+                        <li><a href="index.html#onze-vloot">Elektrisch</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="hoe-werkt-het.html">Hoe het werkt</a></li>
+                <li><a href="index.html#waarom-keylessgo">Waarom KeylessGo</a></li>
+                <li><a href="contact.html" class="active">Contact</a></li>
+            </ul>
+            <a href="https://www.snappcar.nl" target="_blank" rel="noopener" class="btn btn-primary nav-cta">
+                Direct huren via SnappCar
+            </a>
+        </nav>
+
+        <button class="hamburger" id="hamburger" aria-label="Menu openen" aria-expanded="false">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+    </div>
+</header>
+
+<main>
+    <!-- HERO + INTRO + FORM -->
+    <section class="contact-hero">
+        <div class="container">
+            <h1>Contact met KeylessGo</h1>
+            <p class="section-sub">
+                Heb je een vraag over onze voertuigen, keyless huren via SnappCar of wil je zakelijk samenwerken?
+                Vul het formulier in of neem direct contact op via de gegevens hieronder.
+            </p>
+
+            <div class="contact-grid">
+                <!-- LINKERKANT: INFO/BLOKKEN -->
+                <div>
+                    <div class="contact-card">
+                        <h3>Vragen van huurders &amp; particulieren</h3>
+                        <ul class="contact-card-list">
+                            <li>
+                                <i class="fa-solid fa-circle-question"></i>
+                                <div>
+                                    <span class="contact-label">Algemene vragen:</span><br>
+                                    Over de locaties van onze voertuigen, type busjes/auto’s, keyless toegang of praktische zaken rond je rit.
+                                </div>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-car-side"></i>
+                                <div>
+                                    <span class="contact-label">Voertuig of locatie:</span><br>
+                                    Mist er een voertuig in jouw buurt of heb je feedback over een bestaande hotspot? Laat het ons weten.
+                                </div>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-shield-halved"></i>
+                                <div>
+                                    <span class="contact-label">Reserveringen, betalingen &amp; schade:</span><br>
+                                    Dit loopt altijd via SnappCar. Voor wijzigingen in je boeking, uitbetalingen of schades kun je terecht bij
+                                    <a href="https://support.snappcar.nl" target="_blank" rel="noopener">SnappCar support</a>.
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="contact-card">
+                        <h3>Zakelijk contact &amp; samenwerkingen</h3>
+                        <ul class="contact-card-list">
+                            <li>
+                                <i class="fa-solid fa-briefcase"></i>
+                                <div>
+                                    <span class="contact-label">Zakelijk huren &amp; fleet-oplossingen</span><br>
+                                    Voor structurele inzet van busjes of auto’s, maatwerk hotspots of een eigen keyless vloot.
+                                </div>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-handshake-angle"></i>
+                                <div>
+                                    <span class="contact-label">Partners &amp; locaties</span><br>
+                                    Heb je een geschikte locatie of parkeerterrein en wil je KeylessGo-voertuigen plaatsen?
+                                    We denken graag mee.
+                                </div>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-building"></i>
+                                <div>
+                                    <span class="contact-label">Bedrijfsgegevens</span><br>
+                                    Regio: Utrecht<br>
+                                    E-mail: <a href="mailto:info@keylessgo.nl">info@keylessgo.nl</a><br>
+                                    KvK-nummer: … (aan te vullen)<br>
+                                    BTW-nummer: … (aan te vullen)
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- RECHTS: FORMULIER -->
+                <div>
+                    <div class="contact-form-card">
+                        <h3>Stuur ons een bericht</h3>
+                        <p>
+                            We reageren normaal gesproken binnen 1–2 werkdagen op je bericht. 
+                            Bij urgente vragen over een lopende rit kun je het beste eerst SnappCar support raadplegen.
+                        </p>
+
+                        <form action="#" method="post" novalidate>
+                            <div class="contact-form-grid">
+                                <div class="contact-form-field">
+                                    <label for="contact-type">Ik heb een vraag als*</label>
+                                    <select id="contact-type" name="type" required>
+                                        <option value="">Maak een keuze…</option>
+                                        <option value="particulier">Particuliere huurder</option>
+                                        <option value="zakelijk">Zakelijk / bedrijf</option>
+                                        <option value="partner">Potentiële partner / locatie</option>
+                                        <option value="pers">Pers / media</option>
+                                        <option value="overig">Overig</option>
+                                    </select>
+                                </div>
+
+                                <div class="contact-form-field">
+                                    <label for="contact-subject">Onderwerp*</label>
+                                    <input id="contact-subject" name="onderwerp" type="text" required placeholder="Bijv. Busje in Houten of fleet-vraag">
+                                </div>
+
+                                <div class="contact-form-field">
+                                    <label for="contact-name">Naam*</label>
+                                    <input id="contact-name" name="naam" type="text" required placeholder="Voor- en achternaam">
+                                </div>
+
+                                <div class="contact-form-field">
+                                    <label for="contact-company">Bedrijf (optioneel)</label>
+                                    <input id="contact-company" name="bedrijf" type="text" placeholder="Bedrijfsnaam (indien van toepassing)">
+                                </div>
+
+                                <div class="contact-form-field">
+                                    <label for="contact-email">E-mailadres*</label>
+                                    <input id="contact-email" name="email" type="email" required placeholder="jouw@email.com">
+                                </div>
+
+                                <div class="contact-form-field">
+                                    <label for="contact-phone">Telefoon (optioneel)</label>
+                                    <input id="contact-phone" name="telefoon" type="tel" placeholder="Voor terugbelverzoek">
+                                </div>
+
+                                <div class="contact-form-field full">
+                                    <label for="contact-message">Je bericht*</label>
+                                    <textarea id="contact-message" name="bericht" required placeholder="Beschrijf je vraag of idee zo concreet mogelijk."></textarea>
+                                </div>
+
+                                <div class="contact-form-field full">
+                                    <div class="contact-checkbox-row">
+                                        <input id="contact-privacy" name="privacy" type="checkbox" required>
+                                        <label for="contact-privacy">
+                                            Ik ga akkoord dat mijn gegevens worden gebruikt om mijn vraag te beantwoorden.
+                                            Meer info in onze <a href="privacy.html">privacyverklaring</a>.
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="contact-form-actions">
+                                <button type="submit" class="btn btn-primary">
+                                    Bericht versturen
+                                </button>
+                                <span class="contact-form-footnote">
+                                    Liever direct mailen? Stuur een bericht naar
+                                    <a href="mailto:info@keylessgo.nl">info@keylessgo.nl</a>.
+                                </span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- EXTRA INFO / SNAPPCAR / BEREIKBAARHEID -->
+    <section class="contact-extra-section">
+        <div class="container">
+            <h2>Praktische informatie</h2>
+            <p class="section-sub">
+                Een deel van de vragen rondom je rit loopt via SnappCar, andere zaken regel je direct met KeylessGo.
+                Hieronder een kort overzicht.
+            </p>
+
+            <div class="contact-extra-grid">
+                <div class="contact-extra-card">
+                    <h3>Wanneer neem ik contact op met SnappCar?</h3>
+                    <p>
+                        Voor de volgende onderwerpen kun je het beste direct terecht bij SnappCar support 
+                        (via de app of <a href="https://support.snappcar.nl" target="_blank" rel="noopener">support.snappcar.nl</a>):
+                    </p>
+                    <ul>
+                        <li>Reserveringen wijzigen of annuleren</li>
+                        <li>Betalingen, borg en uitbetalingen</li>
+                        <li>Schade, incidenten of pech onderweg</li>
+                        <li>Problemen met je account of verificatie</li>
+                    </ul>
+
+                    <div class="contact-snappcar-note">
+                        <i class="fa-solid fa-info-circle"></i>
+                        <p>
+                            KeylessGo beheert de voertuigen en hotspots, maar alle huurcontracten, 
+                            betalingen en verzekeringen lopen via SnappCar. 
+                        </p>
+                    </div>
+                </div>
+
+                <div class="contact-extra-card">
+                    <h3>Wanneer neem ik contact op met KeylessGo?</h3>
+                    <p>
+                        Neem direct contact met ons op voor:
+                    </p>
+                    <ul>
+                        <li>Feedback over een voertuig, hotspot of schoonmaak</li>
+                        <li>Suggesties voor nieuwe locaties of voertuigtypen</li>
+                        <li>Zakelijke vragen over structureel huren of fleet-oplossingen</li>
+                        <li>Locatiepartners, vastgoed en samenwerkingen</li>
+                    </ul>
+
+                    <div class="contact-tag">
+                        <i class="fa-solid fa-location-dot"></i> Regio Utrecht
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="container footer-grid">
+        <div>
+            <div class="footer-logo">KeylessGo</div>
+            <p class="footer-text">
+                Moderne deelauto's en busjes met keyless toegang. 
+                Vlootbeheer door KeylessGo, boekingen via SnappCar.
+            </p>
+        </div>
+        <div class="footer-col">
+            <h4>Menu</h4>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="zoek-en-boek.html">Zoek &amp; Boek</a></li>
+                <li><a href="index.html#onze-vloot">Onze vloot</a></li>
+                <li><a href="hoe-werkt-het.html">Hoe het werkt</a></li>
+                <li><a href="index.html#waarom-keylessgo">Waarom KeylessGo</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Contact</h4>
+            <ul>
+                <li><a href="mailto:info@keylessgo.nl">info@keylessgo.nl</a></li>
+                <li><a href="contact.html">Contactformulier</a></li>
+                <li><a href="privacy.html">Privacy &amp; cookies</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="copyright">
+        © <span id="year"></span> KeylessGo. Boekingen, verificatie en verzekering verlopen via SnappCar.
+    </div>
+</footer>
+
+<script>
+    // jaar in footer
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // hamburger menu
+    const hamburger = document.getElementById("hamburger");
+    const navMenu = document.querySelector(".nav-menu");
+
+    if (hamburger && navMenu) {
+        hamburger.addEventListener("click", () => {
+            const isActive = navMenu.classList.toggle("active");
+            hamburger.classList.toggle("open", isActive);
+            document.body.classList.toggle("nav-open", isActive);
+            hamburger.setAttribute("aria-expanded", isActive ? "true" : "false");
+        });
+    }
+
+    // mobile submenu toggle
+    document.querySelectorAll(".has-submenu > a").forEach(link => {
+        link.addEventListener("click", (e) => {
+            if (window.innerWidth > 768) return; // desktop: hover
+            e.preventDefault();
+            link.parentElement.classList.toggle("open");
+        });
+    });
+</script>
+
+</body>
+</html>
