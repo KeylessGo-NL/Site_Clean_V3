@@ -616,16 +616,40 @@
 </footer>
 
 <script>
-// Footer jaar
-document.getElementById("year").textContent = new Date().getFullYear();
+  // Jaar in footer
+  const yearEl = document.getElementById("year");
+  if (yearEl) {
+      yearEl.textContent = new Date().getFullYear();
+  }
 
-// FAQ accordion toggle
-document.querySelectorAll('.faq-question').forEach(q => {
-    q.addEventListener('click', () => {
-        q.parentElement.classList.toggle('faq-open');
-    });
-});
+  // Hamburger / mobiele navigatie
+  const hamburger = document.getElementById("hamburger");
+  const navMenu   = document.querySelector(".nav-menu");
+
+  if (hamburger && navMenu) {
+      hamburger.addEventListener("click", () => {
+          const isActive = navMenu.classList.toggle("active");
+          hamburger.classList.toggle("open", isActive);
+          document.body.classList.toggle("nav-open", isActive);
+          hamburger.setAttribute("aria-expanded", isActive ? "true" : "false");
+      });
+  }
+
+  // Mobiel submenu toggle (Voertuigen)
+  document.querySelectorAll(".has-submenu > a").forEach(link => {
+      link.addEventListener("click", (e) => {
+          if (window.innerWidth > 768) return; // desktop: hover
+          e.preventDefault();
+          link.parentElement.classList.toggle("open");
+      });
+  });
+
+  // FAQ accordion toggle
+  document.querySelectorAll(".faq-question").forEach(q => {
+      q.addEventListener("click", () => {
+          q.parentElement.classList.toggle("faq-open");
+      });
+  });
 </script>
-
 </body>
 </html>

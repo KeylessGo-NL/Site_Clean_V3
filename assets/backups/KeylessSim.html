@@ -37,19 +37,22 @@
         .tab-inactive { @apply border-b-2 border-transparent text-slate-500 hover:text-slate-700 hover:bg-gray-100 dark:text-slate-500 dark:hover:text-slate-300 dark:hover:bg-slate-800; }
         .metric-label { @apply text-[10px] uppercase font-bold text-slate-500 tracking-wider; }
         .metric-value { @apply text-xl font-mono font-bold text-slate-800 dark:text-white mt-1; }
-        .risk-gauge { height: 6px; border-radius: 3px; background: #e2e8f0; dark:background-slate-700; overflow: hidden; margin-top: 8px; }
-        .risk-fill { height: 100%; transition: width 0.5s ease; }
+        
+        /* Table Styles */
+        .data-table th { @apply text-left px-4 py-2 bg-gray-100 dark:bg-slate-900 font-bold text-slate-600 dark:text-slate-400 border-b border-gray-200 dark:border-slate-800 sticky top-0; }
+        .data-table td { @apply px-4 py-2 border-b border-gray-100 dark:border-slate-800 text-slate-600 dark:text-slate-400 font-mono; }
+        .data-table tr:hover { @apply bg-gray-50 dark:bg-slate-800/50; }
     </style>
 </head>
 <body class="h-screen flex flex-col overflow-hidden">
 
     <!-- Header -->
-    <header class="bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 h-14 flex items-center justify-between px-6 flex-shrink-0 z-20">
+    <header class="bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 h-14 flex items-center justify-between px-6 flex-shrink-0 z-20 shadow-sm">
         <div class="flex items-center gap-3">
             <div class="w-8 h-8 bg-gradient-to-br from-sky-600 to-blue-700 rounded flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-sky-900/50">KG</div>
             <div>
                 <h1 class="font-bold text-sm text-slate-800 dark:text-white tracking-wide leading-tight">KeylessGo Fleet Intelligence</h1>
-                <div class="text-[10px] text-sky-600 dark:text-sky-500 font-mono font-bold">v8.2 ULTIMATE (Light)</div>
+                <div class="text-[10px] text-sky-600 dark:text-sky-500 font-mono font-bold">v8.2 ULTIMATE</div>
             </div>
         </div>
         
@@ -66,7 +69,7 @@
                 <span class="text-[9px] uppercase text-slate-400 font-bold">Betrouwbaarheid</span>
                 <div class="flex items-center gap-2">
                     <div class="w-16 h-1.5 bg-gray-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                        <div id="reliability-bar" class="h-full bg-green-500 w-3/4"></div>
+                        <div id="reliability-bar" class="h-full bg-green-500 w-3/4 transition-all duration-500"></div>
                     </div>
                     <span class="text-xs font-bold text-green-600 dark:text-green-400" id="reliability-score">A</span>
                 </div>
@@ -142,7 +145,7 @@
                             <span class="text-emerald-600 dark:text-emerald-400 font-bold" id="val-mix-bus">84% Bus</span>
                             <span class="text-slate-500 dark:text-slate-400" id="val-mix-car">16% Auto</span>
                         </div>
-                        <p class="text-[9px] text-slate-500 mt-1 leading-tight">Bus = Mix van Caddy (Small), Transporter (Med), Crafter (Large) volgens CSV profiel.</p>
+                        <p class="text-[9px] text-slate-500 mt-1 leading-tight">Busmix (vast): 24% Small, 40% Med, 20% Large</p>
                     </div>
                 </div>
 
@@ -154,23 +157,20 @@
                     
                     <div class="grid grid-cols-2 gap-2">
                         <div class="input-group">
-                            <label>Dagprijs Bus (€)</label>
+                            <label>Prijs Bus (Gem.)</label>
                             <input type="number" id="p-price-bus" class="input-field" value="85" onchange="runModel()">
                         </div>
                         <div class="input-group">
-                            <label>Dagprijs Auto (€)</label>
+                            <label>Prijs Auto</label>
                             <input type="number" id="p-price-car" class="input-field" value="45" onchange="runModel()">
                         </div>
                     </div>
 
                     <div class="input-group">
-                        <label>Target Bezetting (Jaargemiddelde)</label>
+                        <label>Target Bezetting (%)</label>
                         <input type="range" id="p-occ" min="20" max="70" value="38" class="w-full h-1 bg-gray-300 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-sky-500" oninput="runModel()">
                         <div class="text-right text-[10px] text-sky-600 dark:text-sky-400 mt-1 font-mono" id="val-occ">38%</div>
                     </div>
-                    
-                    <!-- Hidden but kept for logic compatibility if needed or expanded -->
-                    <input type="hidden" id="p-price-idx" value="100"> 
                 </div>
 
                 <!-- Finance -->
@@ -184,16 +184,16 @@
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <div class="input-group">
-                            <label>Extra Inv. Yr2</label>
+                            <label>Inv. Yr 2</label>
                             <input type="number" id="p-capex-y2" class="input-field" value="15000" onchange="runModel()">
                         </div>
                         <div class="input-group">
-                            <label>Extra Inv. Yr4</label>
+                            <label>Inv. Yr 4</label>
                             <input type="number" id="p-capex-y4" class="input-field" value="30000" onchange="runModel()">
                         </div>
                     </div>
                     <div class="input-group pt-2">
-                        <label>Dividend Payout (% van Winst)</label>
+                        <label>Dividend (%)</label>
                         <input type="range" id="p-div" min="0" max="100" value="0" class="w-full h-1 bg-gray-300 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-purple-500" oninput="runModel()">
                         <div class="text-right text-[10px] text-purple-600 dark:text-purple-400 mt-1 font-mono" id="val-div">0%</div>
                     </div>
@@ -208,7 +208,7 @@
             <!-- Tab Navigation -->
             <div class="flex border-b border-gray-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 px-4 sticky top-0 z-10 backdrop-blur-sm">
                 <button class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider tab-active transition-all" onclick="switchTab('dashboard', this)">📊 Dashboard</button>
-                <button class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider tab-inactive transition-all" onclick="switchTab('monthly', this)">📅 Maandelijkse Trends</button>
+                <button class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider tab-inactive transition-all" onclick="switchTab('monthly', this)">📅 Maandelijks</button>
                 <button class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider tab-inactive transition-all" onclick="switchTab('financials', this)">📑 P&L & Balans</button>
                 <button class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider tab-inactive transition-all" onclick="switchTab('fleet', this)">🚐 Vloot Detail</button>
             </div>
@@ -222,24 +222,24 @@
                     <!-- KPI Row -->
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div class="panel p-4">
-                            <h4 class="metric-label">Cumulatieve Netto Winst</h4>
+                            <h4 class="metric-label">Cumulatieve Winst</h4>
                             <div class="metric-value text-emerald-600 dark:text-emerald-400" id="kpi-cum-profit">€ 0</div>
-                            <div class="text-[10px] text-slate-500 mt-1">Einde Looptijd (Na Belasting)</div>
+                            <div class="text-[10px] text-slate-500 mt-1">Einde Looptijd (Netto)</div>
                         </div>
                         <div class="panel p-4">
                             <h4 class="metric-label">Eind Cashpositie</h4>
                             <div class="metric-value" id="kpi-end-cash">€ 0</div>
-                            <div class="text-[10px] text-slate-500 mt-1">Liquide middelen</div>
+                            <div class="text-[10px] text-slate-500 mt-1">Bankstand</div>
                         </div>
                         <div class="panel p-4">
                             <h4 class="metric-label">Gemiddelde ROI</h4>
                             <div class="metric-value text-sky-600 dark:text-sky-400" id="kpi-roi">0%</div>
-                            <div class="text-[10px] text-slate-500 mt-1">Jaarlijks rendement</div>
+                            <div class="text-[10px] text-slate-500 mt-1">Return on Investment</div>
                         </div>
                         <div class="panel p-4">
-                            <h4 class="metric-label">Vloot Activa Waarde</h4>
+                            <h4 class="metric-label">Vlootwaarde</h4>
                             <div class="metric-value text-purple-600 dark:text-purple-400" id="kpi-assets">€ 0</div>
-                            <div class="text-[10px] text-slate-500 mt-1">Restwaarde Eigendom</div>
+                            <div class="text-[10px] text-slate-500 mt-1">Boekwaarde Eigendom</div>
                         </div>
                     </div>
 
@@ -247,7 +247,7 @@
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div class="panel p-5 lg:col-span-2 shadow-lg">
                             <div class="flex justify-between items-center mb-4">
-                                <h3 class="text-slate-800 dark:text-white font-bold text-xs uppercase">Financiële Performance (Jaarlijks)</h3>
+                                <h3 class="text-slate-800 dark:text-white font-bold text-xs uppercase">Financiële Performance</h3>
                                 <div class="flex gap-2 text-[10px] text-slate-500">
                                     <span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-blue-500"></div> Omzet</span>
                                     <span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-emerald-500"></div> Winst</span>
@@ -268,11 +268,11 @@
                                 <!-- Dynamic Content -->
                             </div>
                             <div class="mt-4 pt-4 border-t border-gray-100 dark:border-slate-800 text-[10px] text-slate-500">
-                                <p class="font-bold mb-1">⚠️ Exogene Risico's (Niet in model):</p>
+                                <p class="font-bold mb-1">⚠️ Exogene Factoren (Niet in model):</p>
                                 <ul class="list-disc pl-4 space-y-1">
-                                    <li>Brandstofprijs schokken >15%</li>
-                                    <li>Wijziging BPM/MRB regelgeving na 2028</li>
-                                    <li>Macro-economische recessie (vraaguitval)</li>
+                                    <li>Extreme brandstofprijs schokken.</li>
+                                    <li>Wetswijziging BPM/MRB na 2028.</li>
+                                    <li>Plotselinge rentestijging op nieuwe leases.</li>
                                 </ul>
                             </div>
                         </div>
@@ -282,8 +282,8 @@
                 <!-- VIEW 2: MONTHLY TRENDS (Deep Dive) -->
                 <div id="view-monthly" class="hidden space-y-6">
                     <div class="panel p-5">
-                        <h3 class="text-slate-800 dark:text-white font-bold text-xs uppercase mb-1">Maandelijkse Cashflow & Seizoensinvloeden</h3>
-                        <p class="text-[10px] text-slate-500 mb-4">Toont de operationele realiteit incl. winterdips en investeringsmomenten.</p>
+                        <h3 class="text-slate-800 dark:text-white font-bold text-xs uppercase mb-1">Maandelijkse Cashflow (Liquiditeit)</h3>
+                        <p class="text-[10px] text-slate-500 mb-4">Toont seizoensinvloeden (winterdips) en investeringsmomenten.</p>
                         <div class="h-72 w-full">
                             <canvas id="chart-monthly-cash"></canvas>
                         </div>
@@ -291,13 +291,13 @@
                     
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div class="panel p-5">
-                            <h3 class="text-slate-800 dark:text-white font-bold text-xs uppercase mb-4">Operationele Kostenopbouw</h3>
+                            <h3 class="text-slate-800 dark:text-white font-bold text-xs uppercase mb-4">Maandelijkse Kostenstructuur</h3>
                             <div class="h-64 w-full">
                                 <canvas id="chart-monthly-opex"></canvas>
                             </div>
                         </div>
                         <div class="panel p-5">
-                            <h3 class="text-slate-800 dark:text-white font-bold text-xs uppercase mb-4">Vloot Lifecycle (Actieve KM)</h3>
+                            <h3 class="text-slate-800 dark:text-white font-bold text-xs uppercase mb-4">Vloot Kilometerstand (Lifecycle)</h3>
                             <div class="h-64 w-full">
                                 <canvas id="chart-monthly-km"></canvas>
                             </div>
@@ -307,17 +307,33 @@
 
                 <!-- VIEW 3: FINANCIAL STATEMENTS -->
                 <div id="view-financials" class="hidden space-y-8">
+                    
+                    <!-- P&L -->
                     <div class="panel overflow-hidden">
                         <div class="bg-gray-100 dark:bg-slate-800/50 px-4 py-3 border-b border-gray-200 dark:border-slate-800 flex justify-between items-center">
-                            <h3 class="text-slate-800 dark:text-white font-bold text-xs uppercase">Winst- en Verliesrekening (x €1.000)</h3>
-                            <button onclick="copyTable('table-pl')" class="text-[10px] text-sky-600 dark:text-sky-400 hover:text-sky-800 transition">Kopieer Data</button>
+                            <h3 class="text-slate-800 dark:text-white font-bold text-xs uppercase">Winst- en Verliesrekening (Jaarlijks x €1.000)</h3>
                         </div>
                         <div class="overflow-x-auto">
-                            <table class="w-full text-right text-[11px] font-mono" id="table-pl">
+                            <table class="w-full text-right text-[11px] font-mono data-table" id="table-pl">
                                 <thead class="bg-gray-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 font-bold border-b border-gray-200 dark:border-slate-800">
                                     <tr><th class="text-left px-4 py-3 sticky left-0 bg-gray-50 dark:bg-slate-900">Post</th><!-- Headers --></tr>
                                 </thead>
-                                <tbody class="divide-y divide-gray-200 dark:divide-slate-800 text-slate-600 dark:text-slate-300"></tbody>
+                                <tbody class="divide-y divide-gray-200 dark:divide-slate-800"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Balance Sheet -->
+                    <div class="panel overflow-hidden">
+                        <div class="bg-gray-100 dark:bg-slate-800/50 px-4 py-3 border-b border-gray-200 dark:border-slate-800 flex justify-between items-center">
+                            <h3 class="text-slate-800 dark:text-white font-bold text-xs uppercase">Balans (Activa / Passiva x €1.000)</h3>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-right text-[11px] font-mono data-table" id="table-bs">
+                                <thead class="bg-gray-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 font-bold border-b border-gray-200 dark:border-slate-800">
+                                    <tr><th class="text-left px-4 py-3 sticky left-0 bg-gray-50 dark:bg-slate-900">Post</th><!-- Headers --></tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200 dark:divide-slate-800"></tbody>
                             </table>
                         </div>
                     </div>
@@ -333,28 +349,35 @@
                             </div>
                         </div>
                         <div class="panel p-5">
-                            <h3 class="text-slate-800 dark:text-white font-bold text-xs uppercase mb-4">Huidige Vlootprofielen</h3>
+                            <h3 class="text-slate-800 dark:text-white font-bold text-xs uppercase mb-4">Huidige Vlootprofielen (CSV Data)</h3>
                             <div class="space-y-3">
-                                <!-- Cards generated dynamically based on mix but hardcoded for visuals here -->
+                                <!-- Static Cards based on CSV logic -->
+                                <div class="bg-gray-50 dark:bg-slate-800 p-3 rounded border border-gray-200 dark:border-slate-700 flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-gray-200 dark:bg-slate-700 rounded flex items-center justify-center text-lg">🚗</div>
+                                    <div>
+                                        <div class="text-xs font-bold text-slate-800 dark:text-white">Compact (VW Up!)</div>
+                                        <div class="text-[10px] text-slate-500 dark:text-slate-400">Lease: €180 | Ops: €60 | Max: 260k km</div>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-50 dark:bg-slate-800 p-3 rounded border border-gray-200 dark:border-slate-700 flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-gray-200 dark:bg-slate-700 rounded flex items-center justify-center text-lg">📦</div>
+                                    <div>
+                                        <div class="text-xs font-bold text-slate-800 dark:text-white">Small Van (Caddy)</div>
+                                        <div class="text-[10px] text-slate-500 dark:text-slate-400">Lease: €220 | Ops: €90 | Max: 320k km</div>
+                                    </div>
+                                </div>
                                 <div class="bg-gray-50 dark:bg-slate-800 p-3 rounded border border-gray-200 dark:border-slate-700 flex items-center gap-3">
                                     <div class="w-10 h-10 bg-gray-200 dark:bg-slate-700 rounded flex items-center justify-center text-lg">🚐</div>
                                     <div>
-                                        <div class="text-xs font-bold text-slate-800 dark:text-white">VW Transporter (Med)</div>
-                                        <div class="text-[10px] text-slate-500 dark:text-slate-400">Lease: €310/mnd | Max: 340k km</div>
+                                        <div class="text-xs font-bold text-slate-800 dark:text-white">Med Van (Transporter)</div>
+                                        <div class="text-[10px] text-slate-500 dark:text-slate-400">Lease: €310 | Ops: €110 | Max: 340k km</div>
                                     </div>
                                 </div>
                                 <div class="bg-gray-50 dark:bg-slate-800 p-3 rounded border border-gray-200 dark:border-slate-700 flex items-center gap-3">
                                     <div class="w-10 h-10 bg-gray-200 dark:bg-slate-700 rounded flex items-center justify-center text-lg">🚚</div>
                                     <div>
-                                        <div class="text-xs font-bold text-slate-800 dark:text-white">VW Crafter (Large)</div>
-                                        <div class="text-[10px] text-slate-500 dark:text-slate-400">Lease: €355/mnd | Max: 400k km</div>
-                                    </div>
-                                </div>
-                                <div class="bg-gray-50 dark:bg-slate-800 p-3 rounded border border-gray-200 dark:border-slate-700 flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-gray-200 dark:bg-slate-700 rounded flex items-center justify-center text-lg">🚗</div>
-                                    <div>
-                                        <div class="text-xs font-bold text-slate-800 dark:text-white">VW Up! (Compact)</div>
-                                        <div class="text-[10px] text-slate-500 dark:text-slate-400">Lease: €180/mnd | Max: 260k km</div>
+                                        <div class="text-xs font-bold text-slate-800 dark:text-white">Large Van (Crafter)</div>
+                                        <div class="text-[10px] text-slate-500 dark:text-slate-400">Lease: €355 | Ops: €130 | Max: 400k km</div>
                                     </div>
                                 </div>
                             </div>
@@ -368,7 +391,7 @@
 
     <!-- SIMULATION LOGIC -->
     <script>
-        // --- CONSTANTS FROM CSV DATA ---
+        // --- CONSTANTS FROM CSV DATA (Detailed) ---
         const VEHICLE_TYPES = {
             'compact': { name: 'VW Up!', price: 10000, lease: 180, ops: 60, dayRate: 45, maxKm: 260000, startKm: 100000, kmPerDay: 80, resPct: 0.20 },
             'small_van': { name: 'VW Caddy', price: 16000, lease: 220, ops: 90, dayRate: 55, maxKm: 320000, startKm: 100000, kmPerDay: 100, resPct: 0.20 },
@@ -423,35 +446,27 @@
             const occBase = parseInt(document.getElementById('p-occ').value) / 100;
             document.getElementById('val-occ').innerText = Math.round(occBase*100) + "%";
 
-            // Note: Keeping p-price-idx in HTML hidden but logic can use it if needed. 
-            // Here using explicit price inputs.
             const pBus = parseInt(document.getElementById('p-price-bus').value); 
             const pCar = parseInt(document.getElementById('p-price-car').value); 
 
             const divPct = parseInt(document.getElementById('p-div').value) / 100;
             document.getElementById('val-div').innerText = Math.round(divPct*100) + "%";
 
-            // Growth Params
             const fleetStart = parseInt(document.getElementById('p-fleet-start').value);
             const growth1 = parseInt(document.getElementById('p-growth-1').value);
             const growth2 = parseInt(document.getElementById('p-growth-2').value);
 
-            // Capital
             const capexStart = parseInt(document.getElementById('p-capex-start').value);
             const capexY2 = parseInt(document.getElementById('p-capex-y2').value);
             const capexY4 = parseInt(document.getElementById('p-capex-y4').value);
 
             // --- SIMULATION LOOP ---
-            
-            // Initial State
             let cash = capexStart;
             let totalInvested = capexStart;
-            let activeFleet = []; // Array of vehicle objects
-            
-            // Outputs
+            let activeFleet = []; 
             const mData = [];
             
-            // Helper to add vehicle
+            // Helper
             const addVehicle = (monthAcq, type) => {
                 const def = VEHICLE_TYPES[type];
                 return {
@@ -468,71 +483,53 @@
                 };
             };
 
-            // Init Fleet (Month 0)
-            // Distribute bus mix according to CSV logical split: Small(30%), Med(50%), Large(20%) of Bus portion
-            const busCount = Math.round(fleetStart * mixBusPct);
-            const carCount = fleetStart - busCount;
-            
-            const splitBus = (n) => {
-                const large = Math.floor(n * 0.2);
-                const small = Math.floor(n * 0.3);
-                const med = n - large - small;
-                return { s: small, m: med, l: large };
+            // Init Fleet Distribution (Based on Mix Slider + Fixed Van Split)
+            // Van Split: Small(30%), Med(50%), Large(20%) of Bus portion
+            const distVehicles = (count, month) => {
+                const busCount = Math.round(count * mixBusPct);
+                const carCount = count - busCount;
+                
+                const large = Math.floor(busCount * 0.2);
+                const small = Math.floor(busCount * 0.3);
+                const med = busCount - large - small;
+
+                for(let i=0; i<carCount; i++) activeFleet.push(addVehicle(month, 'compact'));
+                for(let i=0; i<small; i++) activeFleet.push(addVehicle(month, 'small_van'));
+                for(let i=0; i<med; i++) activeFleet.push(addVehicle(month, 'med_van'));
+                for(let i=0; i<large; i++) activeFleet.push(addVehicle(month, 'large_van'));
             };
 
-            const initB = splitBus(busCount);
-            for(let i=0; i<carCount; i++) activeFleet.push(addVehicle(0, 'compact'));
-            for(let i=0; i<initB.s; i++) activeFleet.push(addVehicle(0, 'small_van'));
-            for(let i=0; i<initB.m; i++) activeFleet.push(addVehicle(0, 'med_van'));
-            for(let i=0; i<initB.l; i++) activeFleet.push(addVehicle(0, 'large_van'));
+            distVehicles(fleetStart, 0);
 
-            // Loop
+            // Time Loop
             for (let m = 0; m < totalMonths; m++) {
                 const curMonthIdx = (startMonth + m) % 12;
                 const yearIdx = Math.floor(m / 12);
                 const isJan = curMonthIdx === 0;
 
-                // 1. Growth (Yearly in Jan)
+                // Growth
                 if (m > 0 && isJan) {
                     const g = yearIdx < 3 ? growth1 : growth2;
-                    const newBus = Math.round(g * mixBusPct);
-                    const newCar = g - newBus;
-                    const bSplit = splitBus(newBus);
-                    
-                    for(let i=0; i<newCar; i++) activeFleet.push(addVehicle(m, 'compact'));
-                    for(let i=0; i<bSplit.s; i++) activeFleet.push(addVehicle(m, 'small_van'));
-                    for(let i=0; i<bSplit.m; i++) activeFleet.push(addVehicle(m, 'med_van'));
-                    for(let i=0; i<bSplit.l; i++) activeFleet.push(addVehicle(m, 'large_van'));
+                    distVehicles(g, m);
                 }
 
-                // 2. Capital Injections
+                // Capex
                 if (m === 12) { cash += capexY2; totalInvested += capexY2; }
                 if (m === 36) { cash += capexY4; totalInvested += capexY4; }
 
-                // 3. Operational Logic per Vehicle
-                let mRev = 0;
-                let mLease = 0;
-                let mOps = 0;
-                let mReplacements = 0;
-                let mActiveCount = 0;
-                let mLeasedCount = 0;
-                let mAssetValue = 0;
-                let mKmTotal = 0;
+                // Fleet Logic
+                let mRev = 0; let mLease = 0; let mOps = 0; let mLeasedCount = 0; let mActiveCount = 0; let mBookVal = 0; let mKmTotal = 0; let mDebt = 0;
 
-                const inflator = Math.pow(1.025, yearIdx); // 2.5% inflation
+                const inflator = Math.pow(1.025, yearIdx); 
 
-                activeFleet.forEach((v, idx) => {
+                activeFleet.forEach((v) => {
                     if (!v.active) return;
 
-                    // Lifecycle Check
+                    // Lifecycle
                     if (v.km >= v.maxKm) {
                         v.active = false;
-                        // Sell Asset (Residual Value Cash In)
-                        const residual = v.price * v.resPct; // Conservative scrap/export value
-                        cash += residual;
-                        mReplacements++;
-                        // Immediate Replacement (New Lease)
-                        activeFleet.push(addVehicle(m, v.type)); 
+                        cash += (v.price * v.resPct); // Sell
+                        activeFleet.push(addVehicle(m, v.type)); // Replace
                         return;
                     }
 
@@ -540,71 +537,61 @@
                     const def = VEHICLE_TYPES[v.type];
                     const isVan = v.type !== 'compact';
                     
-                    // Seasonality
-                    const seasonFactor = isVan ? SEASONALITY.van[curMonthIdx] : SEASONALITY.car[curMonthIdx];
+                    // Econ
+                    const season = isVan ? SEASONALITY.van[curMonthIdx] : SEASONALITY.car[curMonthIdx];
+                    const ramp = (m - v.acqMonth) < 3 ? 0.7 : 1.0;
+                    const effOcc = Math.min(0.70, occBase * season * ramp);
                     
-                    // Revenue Calculation
-                    const age = m - v.acqMonth;
-                    const ramp = age < 3 ? 0.7 : 1.0;
+                    // Override Price Logic: Use UI price for base, or weighted if needed.
+                    // Here we map UI inputs: Bus input -> applies to all vans. Car input -> compact.
+                    const priceBase = isVan ? pBus : pCar;
                     
-                    const effOcc = Math.min(0.70, occBase * seasonFactor * ramp);
-                    const days = 30.5 * effOcc;
-                    // Use override price if set, else def.dayRate
-                    const basePrice = isVan ? pBus : pCar;
-                    const rev = days * basePrice * inflator;
+                    const rev = 30.5 * effOcc * priceBase * inflator;
                     mRev += rev;
 
-                    // Mileage
-                    const km = days * def.kmPerDay;
+                    // KM
+                    const km = 30.5 * effOcc * def.kmPerDay;
                     v.km += km;
                     mKmTotal += km;
 
-                    // Lease Cost
+                    // Lease & Debt
                     if (m < v.leaseEnd) {
                         mLease += def.lease;
                         mLeasedCount++;
-                    } else {
-                        v.isLeased = false;
+                        // Debt approximation: Remaining lease payments
+                        mDebt += (v.leaseEnd - m) * def.lease;
                     }
 
-                    // Ops Cost (Maintenance + Ins + Tires)
-                    // Increases with age/km
+                    // Ops
                     let ops = def.ops * inflator;
                     if (v.km > 150000) ops *= 1.3;
-                    if (v.km > 250000) ops *= 1.5;
-                    // Fixed Insurance add-on per vehicle (SnappCar insurance usually var, but assume base fixed cost + fee)
-                    const fixedIns = 45 * inflator; 
-                    mOps += ops + fixedIns;
+                    mOps += ops + (45 * inflator); // Fixed ins overhead
 
-                    // Asset Value (Linear Depr)
-                    const residual = v.price * v.resPct;
-                    const depr = (v.price - residual) / 60; // 5 year depr
-                    const val = Math.max(residual, v.price - (Math.min(age, 60) * depr));
-                    mAssetValue += val;
+                    // Book Value (Linear Depr over 5 yr to residual)
+                    const age = m - v.acqMonth;
+                    const resid = v.price * v.resPct;
+                    const deprAmount = (v.price - resid) / 60;
+                    const val = Math.max(resid, v.price - (Math.min(age, 60) * deprAmount));
+                    mBookVal += val;
                 });
 
-                // 4. Global Costs
-                const fee = mRev * 0.30; // SnappCar Fee
-                const staffCount = Math.ceil(mActiveCount / 25); // 1 FTE per 25 cars
-                const staffCost = (staffCount * 3500) * inflator; // 3500/mo cost
-                const marketing = (mActiveCount * 25) * inflator;
+                // Global P&L
+                const fee = mRev * 0.30; 
+                const staff = Math.ceil(mActiveCount / 25) * 3500 * inflator;
+                const mkt = mActiveCount * 25 * inflator;
                 const overhead = 500 * inflator;
-
-                const opex = mOps + staffCost + marketing + overhead;
-                const ebitda = mRev - fee - opex;
-                const ebit = ebitda - mLease;
                 
-                // Tax (Carry forward losses simplified: just tax positive months for sim visual)
-                const tax = ebit > 0 ? ebit * 0.19 : 0; 
+                const opex = mOps + staff + mkt + overhead;
+                const ebitda = mRev - fee - opex;
+                const ebit = ebitda - mLease; 
+                const tax = ebit > 0 ? ebit * 0.19 : 0;
                 const net = ebit - tax;
 
-                // Cashflow
                 cash += net;
 
-                // Dividend (Annual in Dec)
+                // Dividend (Dec)
                 if (curMonthIdx === 11 && divPct > 0 && net > 0) {
-                    const annualProfitEst = net * 12; // Crude
-                    const div = Math.min(cash - 20000, annualProfitEst * divPct); // Keep 20k buffer
+                    const div = Math.min(cash - 20000, (net * 12) * divPct);
                     if (div > 0) cash -= div;
                 }
 
@@ -616,17 +603,19 @@
                     net: net,
                     cash: cash,
                     km: mKmTotal,
-                    leaseCost: mLease,
+                    lease: mLease,
                     fee: fee,
                     opex: opex,
                     fleet: mActiveCount,
                     leased: mLeasedCount,
-                    owned: mActiveCount - mLeasedCount,
-                    assets: mAssetValue
+                    assets: cash + mBookVal, // Total Assets (Cash + Fleet)
+                    fixedAssets: mBookVal,
+                    liab: mDebt,
+                    equity: (cash + mBookVal) - mDebt
                 });
             }
 
-            // --- 3. AGGREGATE YEARLY ---
+            // --- AGGREGATION ---
             const yData = [];
             let yt = { rev:0, net:0, km:0 };
             mData.forEach((d, i) => {
@@ -637,38 +626,39 @@
                         rev: yt.rev,
                         net: yt.net,
                         km: yt.km,
-                        cash: d.cash, // snapshot
+                        cash: d.cash,
                         fleet: d.fleet,
                         leased: d.leased,
-                        owned: d.owned,
-                        assets: d.assets
+                        owned: d.fleet - d.leased,
+                        assets: d.fixedAssets,
+                        totalAssets: d.assets,
+                        liab: d.liab,
+                        equity: d.equity
                     });
                     yt = { rev:0, net:0, km:0 };
                 }
             });
 
-            // --- 4. RENDER UI ---
+            // --- RENDER ---
             renderDashboard(mData, yData, totalInvested);
             renderFinancials(yData);
             calculateReliability(mData, yData, totalInvested);
         }
 
-        // --- RENDER FUNCTIONS ---
+        // --- RENDERERS ---
         function renderDashboard(m, y, inv) {
             const last = y[y.length-1];
-            const cumProfit = m.reduce((a,b)=>a+b.net,0);
+            const cumNet = m.reduce((a,b)=>a+b.net,0);
             
-            // KPIs
-            document.getElementById('kpi-cum-profit').innerText = fmtMoney(cumProfit);
+            document.getElementById('kpi-cum-profit').innerText = fmtMoney(cumNet);
             document.getElementById('kpi-end-cash').innerText = fmtMoney(last.cash);
             document.getElementById('kpi-end-cash').className = last.cash < 0 ? "metric-value text-red-500" : "metric-value text-slate-800 dark:text-white";
             
-            const avgProfit = cumProfit / y.length;
-            const roi = (avgProfit / inv) * 100;
+            const roi = ((cumNet / y.length) / inv) * 100;
             document.getElementById('kpi-roi').innerText = roi.toFixed(1) + "%";
             document.getElementById('kpi-assets').innerText = fmtMoney(last.assets);
 
-            // Chart 1: Annual Overview
+            // Chart 1: Annual
             updateChart('chart-annual-main', {
                 labels: y.map(d=>d.year),
                 datasets: [
@@ -677,34 +667,22 @@
                 ]
             }, true);
 
-            // Chart 2: Monthly Cash (Detail)
-            // Downsample for visual clarity if too long
-            const filterStep = m.length > 60 ? 2 : 1;
-            const mFilt = m.filter((_,i)=>i%filterStep===0);
+            // Chart 2: Monthly Cash
+            const step = m.length > 60 ? 2 : 1;
+            const mFilt = m.filter((_,i)=>i%step===0);
             updateChart('chart-monthly-cash', {
                 labels: mFilt.map(d=>d.label),
-                datasets: [{ 
-                    label: 'Bankstand', 
-                    data: mFilt.map(d=>d.cash), 
-                    borderColor: '#f59e0b', 
-                    backgroundColor: (ctx) => {
-                        const gradient = ctx.chart.ctx.createLinearGradient(0,0,0,300);
-                        gradient.addColorStop(0, 'rgba(245, 158, 11, 0.4)');
-                        gradient.addColorStop(1, 'rgba(245, 158, 11, 0.0)');
-                        return gradient;
-                    },
-                    fill: true, pointRadius: 0, borderWidth: 2
-                }]
+                datasets: [{ label: 'Bankstand', data: mFilt.map(d=>d.cash), borderColor: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.1)', fill: true, pointRadius: 0 }]
             });
 
-            // Chart 3: OPEX Stack (Monthly)
-            const mYear1 = m.slice(0, 24); // Show first 2 years details
+            // Chart 3: OPEX Stack
+            const mSlice = m.slice(0, 36); // First 3 years
             updateChart('chart-monthly-opex', {
-                labels: mYear1.map(d=>d.label),
+                labels: mSlice.map(d=>d.label),
                 datasets: [
-                    { label: 'Lease', data: mYear1.map(d=>d.leaseCost), backgroundColor: '#64748b' },
-                    { label: 'Platform Fee', data: mYear1.map(d=>d.fee), backgroundColor: '#ef4444' },
-                    { label: 'Operationeel', data: mYear1.map(d=>d.opex), backgroundColor: '#6366f1' }
+                    { label: 'Lease', data: mSlice.map(d=>d.lease), backgroundColor: '#64748b' },
+                    { label: 'Fee', data: mSlice.map(d=>d.fee), backgroundColor: '#ef4444' },
+                    { label: 'Ops', data: mSlice.map(d=>d.opex), backgroundColor: '#6366f1' }
                 ]
             }, false, true);
 
@@ -712,41 +690,46 @@
             updateChart('chart-fleet-stack', {
                 labels: y.map(d=>d.year),
                 datasets: [
-                    { label: 'In Lease (Schuld)', data: y.map(d=>d.leased), backgroundColor: '#f59e0b' },
-                    { label: 'Eigendom (Vrij)', data: y.map(d=>d.owned), backgroundColor: '#10b981' }
+                    { label: 'In Lease', data: y.map(d=>d.leased), backgroundColor: '#f59e0b' },
+                    { label: 'Eigendom', data: y.map(d=>d.owned), backgroundColor: '#10b981' }
                 ]
             }, false, true);
 
-            // Chart 5: Active KM
+            // Chart 5: KM
             updateChart('chart-monthly-km', {
                 labels: y.map(d=>d.year),
-                datasets: [{ label: 'Jaarkilometrage Vloot', data: y.map(d=>d.km), borderColor: '#8b5cf6', backgroundColor: 'rgba(139, 92, 246, 0.1)', fill: true }]
-            }, false); // Line
+                datasets: [{ label: 'Vloot KM', data: y.map(d=>d.km), borderColor: '#8b5cf6', backgroundColor: 'rgba(139, 92, 246, 0.1)', fill: true }]
+            });
         }
 
         function renderFinancials(y) {
-            const tbody = document.querySelector('#table-pl tbody');
-            const thead = document.querySelector('#table-pl thead tr');
+            // P&L
+            const plBody = document.querySelector('#table-pl tbody');
+            const plHead = document.querySelector('#table-pl thead tr');
             
-            // Build Head
-            let hHtml = '<th class="text-left px-4 py-3 sticky left-0 bg-gray-50 dark:bg-slate-900 z-10">Post</th>';
-            y.forEach(d => hHtml += `<th class="px-2 py-2">${d.year}</th>`);
-            thead.innerHTML = hHtml;
+            let h = '<th class="text-left px-4 py-3 sticky left-0 bg-gray-100 dark:bg-slate-900 z-10">Post</th>';
+            y.forEach(d => h += `<th class="px-2 py-3 min-w-[80px]">${d.year}</th>`);
+            plHead.innerHTML = h;
 
-            // Build Rows
-            const addRow = (lbl, key, bold=false) => {
-                let html = `<tr><td class="text-left px-4 py-2 sticky left-0 bg-gray-50 dark:bg-slate-900 border-r border-slate-300 dark:border-slate-800 ${bold?'font-bold text-slate-900 dark:text-white':'text-slate-500 dark:text-slate-400'}">${lbl}</td>`;
-                y.forEach(d => html += `<td class="px-2 py-2 text-slate-600 dark:text-slate-300 ${bold?'font-bold':''}">${fmtK(d[key])}</td>`);
-                return html + '</tr>';
+            const row = (lbl, key, bold=false) => {
+                let s = `<tr><td class="text-left px-4 py-2 sticky left-0 bg-gray-50 dark:bg-slate-900 border-r border-slate-300 dark:border-slate-800 ${bold?'font-bold':''}">${lbl}</td>`;
+                y.forEach(d => s += `<td class="px-2 py-2 ${bold?'font-bold':''}">${fmtK(d[key])}</td>`);
+                return s + '</tr>';
             }
+            plBody.innerHTML = row('Omzet', 'rev', true) + row('Netto Winst', 'net', true) + row('Cash', 'cash');
 
-            let html = '';
-            html += addRow('Omzet (Bruto)', 'rev', true);
-            html += addRow('Netto Winst', 'net', true);
-            html += addRow('Cash Eind', 'cash');
-            html += addRow('Vloot Grootte', 'fleet');
-            html += addRow('Vaste Activa', 'assets');
-            tbody.innerHTML = html;
+            // Balance Sheet
+            const bsBody = document.querySelector('#table-bs tbody');
+            const bsHead = document.querySelector('#table-bs thead tr');
+            bsHead.innerHTML = h;
+            
+            let b = '';
+            b += row('Activa: Vloot', 'assets');
+            b += row('Activa: Cash', 'cash');
+            b += row('TOTAAL ACTIVA', 'totalAssets', true);
+            b += row('Passiva: Lease Schuld', 'liab');
+            b += row('Passiva: Eigen Vermogen', 'equity');
+            bsBody.innerHTML = b;
         }
 
         function calculateReliability(m, y, inv) {
@@ -754,49 +737,25 @@
             list.innerHTML = '';
             const add = (t, txt, type) => list.innerHTML += `<div class="p-3 rounded text-[11px] mb-2 ${type==='good'?'advice-good':type==='warn'?'advice-warn':'advice-bad'}"><strong class="block mb-1 font-bold opacity-90">${t}</strong><span class="opacity-80">${txt}</span></div>`;
 
-            // Logic
             let score = 100;
             const minCash = Math.min(...m.map(d=>d.cash));
             
-            // 1. Liquidity
-            if (minCash < 0) {
-                score -= 40;
-                add("Kritiek: Liquiditeit", `In ${m.find(d=>d.cash<0).label} duikt de cashflow in het rood. Verhoog startkapitaal of verlaag groei in jaar 1.`, "bad");
-            } else if (minCash < 15000) {
-                score -= 15;
-                add("Risico: Krap bij kas", `Minimale buffer is slechts ${fmtMoney(minCash)}. Een kleine tegenvaller kan fataal zijn.`, "warn");
-            } else {
-                add("Liquiditeit", "Gezonde cashbuffer gehandhaafd.", "good");
-            }
+            if (minCash < 0) { score -= 40; add("CRITIQUE: Liquiditeit", "Cashflow negatief. Verhoog startkapitaal.", "bad"); }
+            else if (minCash < 15000) { score -= 15; add("Risico: Buffer", "Minimale cashbuffer te laag.", "warn"); }
+            else add("Liquiditeit", "Gezonde cashbuffer.", "good");
 
-            // 2. Mix
-            const fleetEnd = y[y.length-1];
-            const mixRatio = parseInt(document.getElementById('p-mix').value);
-            if (mixRatio < 60) {
-                score -= 20;
-                add("Strategie: Marge Druk", "Te veel personenauto's drukken de winstgevendheid. Focus op LCV's voor hogere ROI.", "warn");
-            }
-
-            // 3. J-Curve
-            const year5Profit = y[4] ? y[4].net : 0;
             const year1Profit = y[0].net;
-            if (year5Profit > year1Profit * 1.5) {
-                add("J-Curve Effect", "Duidelijke winstversnelling zichtbaar na aflopen eerste leases.", "good");
-            }
+            if (year1Profit < 0) { score -= 10; add("Aanloopverliezen", "Jaar 1 is verlieslatend. Normaal, maar let op.", "warn"); }
 
-            // Update Gauge
             const bar = document.getElementById('reliability-bar');
             const txt = document.getElementById('reliability-score');
             
-            if(score >= 80) { bar.className = "h-full bg-emerald-500 transition-all"; txt.className="text-xs font-bold text-emerald-600 dark:text-emerald-400"; txt.innerText="A (Uitstekend)"; }
-            else if(score >= 60) { bar.className = "h-full bg-sky-500 transition-all"; txt.className="text-xs font-bold text-sky-600 dark:text-sky-400"; txt.innerText="B (Goed)"; }
-            else if(score >= 40) { bar.className = "h-full bg-amber-500 transition-all"; txt.className="text-xs font-bold text-amber-600 dark:text-amber-400"; txt.innerText="C (Risicovol)"; }
-            else { bar.className = "h-full bg-red-500 transition-all"; txt.className="text-xs font-bold text-red-600 dark:text-red-400"; txt.innerText="D (Kritiek)"; }
-            
+            if(score >= 80) { bar.className = "h-full bg-green-500"; txt.className="text-xs font-bold text-green-500"; txt.innerText="A"; }
+            else if(score >= 60) { bar.className = "h-full bg-blue-500"; txt.className="text-xs font-bold text-blue-500"; txt.innerText="B"; }
+            else { bar.className = "h-full bg-red-500"; txt.className="text-xs font-bold text-red-500"; txt.innerText="D"; }
             bar.style.width = score + "%";
         }
 
-        // Chart Helper
         function updateChart(id, conf, mixed=false, stacked=false) {
             const ctx = document.getElementById(id).getContext('2d');
             const isDark = document.documentElement.classList.contains('dark');
@@ -820,7 +779,6 @@
             });
         }
 
-        // Init
         window.addEventListener('DOMContentLoaded', runModel);
     </script>
 </body>
