@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KeylessGo Strategisch Plan 2025-2035</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; color: #0F172A; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #94A3B8; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748B; }
+
+        /* Chart Wrapper */
+        .chart-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 1000px;
+            height: 400px;
+            margin: 0 auto;
+        }
+        @media (max-width: 768px) {
+            .chart-wrapper { height: 300px; }
+        }
+
+        .nav-link {
+            position: relative;
+            cursor: pointer;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: #0EA5E9;
+            transition: width 0.3s;
+        }
+        .nav-link:hover::after { width: 100%; }
+
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
+
+        .risk-card { transition: all 0.2s ease; border-left: 4px solid transparent; }
+        .risk-card:hover { border-left-color: #0EA5E9; background-color: #F1F5F9; }
+
+        /* Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none; 
+            background: transparent; 
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #0EA5E9;
+            cursor: pointer;
+            margin-top: -8px; 
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #CBD5E1;
+            border-radius: 2px;
+        }
+        
+        /* Table Styles for Simulator */
+        .sim-table td { padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem; }
+        .sim-table tr:last-child td { border-bottom: none; }
+        .sim-table .amount { text-align: right; font-family: monospace; }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="bg-slate-900 text-white sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center space-x-2 cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <span class="text-2xl">🚗</span>
+                    <span class="font-bold text-xl tracking-wider">KEYLESS<span class="text-sky-400">GO</span></span>
+                </div>
+                <div class="hidden lg:flex space-x-6 text-sm font-medium">
+                    <a onclick="scrollToSection('market')" class="nav-link text-slate-300 hover:text-white">Markt & Locatie</a>
+                    <a onclick="scrollToSection('fleet')" class="nav-link text-slate-300 hover:text-white">Vlootstrategie</a>
+                    <a onclick="scrollToSection('lease-strategy')" class="nav-link text-slate-300 hover:text-white">Lease Analyse</a>
+                    <a onclick="scrollToSection('finance')" class="nav-link text-slate-300 hover:text-white">Financials</a>
+                    <a onclick="scrollToSection('simulation')" class="nav-link text-sky-400 hover:text-sky-300">Pro Simulator</a>
+                    <a onclick="scrollToSection('investor')" class="nav-link text-slate-300 hover:text-white">Investering</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="bg-white border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8 text-center">
+            <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-sky-100 text-sky-800 mb-6">
+                🚀 Startdatum: December 2025
+            </div>
+            <h1 class="text-4xl font-extrabold text-slate-900 sm:text-5xl lg:text-6xl mb-6">
+                Strategische Vlootoptimalisatie <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 to-blue-600">Provincie Utrecht</span>
+            </h1>
+            <p class="mt-4 text-xl text-slate-600 max-w-3xl mx-auto">
+                Asset-Backed Expansie in de 'Tweede Auto' Markt. Een datagedreven model gericht op Vinex-locaties, lichte bedrijfswagens en de transitie naar MaaS (Mobility as a Service).
+            </p>
+            
+            <!-- Quick Stats Grid -->
+            <div class="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-4 max-w-5xl mx-auto">
+                <div class="bg-slate-50 overflow-hidden rounded-lg border border-slate-200 p-5 card-hover">
+                    <dt class="text-sm font-medium text-slate-500 truncate">Vlootmix (Winstmotor)</dt>
+                    <dd class="mt-1 text-2xl font-semibold text-slate-900">70% Bus / 30% Auto</dd>
+                    <dd class="text-xs text-sky-600 font-medium">LCV Niche Focus</dd>
+                </div>
+                <div class="bg-slate-50 overflow-hidden rounded-lg border border-slate-200 p-5 card-hover">
+                    <dt class="text-sm font-medium text-slate-500 truncate">Lease Strategie</dt>
+                    <dd class="mt-1 text-3xl font-semibold text-slate-900">60 Maanden</dd>
+                    <dd class="text-xs text-green-600 font-medium">Optimalisatie Cashflow</dd>
+                </div>
+                <div class="bg-slate-50 overflow-hidden rounded-lg border border-slate-200 p-5 card-hover">
+                    <dt class="text-sm font-medium text-slate-500 truncate">Operationeel Partner</dt>
+                    <dd class="mt-1 text-xl font-bold text-slate-900 py-1">SnappCar Partner+</dd>
+                    <dd class="text-xs text-slate-500">Risico Afdekking (0-24 mnd)</dd>
+                </div>
+                <div class="bg-slate-50 overflow-hidden rounded-lg border border-slate-200 p-5 card-hover">
+                    <dt class="text-sm font-medium text-slate-500 truncate">Cumulatieve Cashflow</dt>
+                    <dd class="mt-1 text-3xl font-semibold text-slate-900">€1.4M</dd>
+                    <dd class="text-xs text-slate-500">Jaar 10 (Prognose)</dd>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Section 1: Market Context & Location Intelligence -->
+    <section id="market" class="py-16 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-slate-900">Macro-Context: De Vinex-Paradox & MaaS</h2>
+                <p class="mt-4 text-lg text-slate-600">
+                    Wij exploiteren de frictie tussen stijgende parkeerdruk en de behoefte aan incidenteel transportvermogen.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Location Intelligence -->
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
+                    <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center">
+                        <span class="bg-sky-100 text-sky-600 p-2 rounded-lg mr-3">🎯</span>
+                        PC4 Hotspot Strategie
+                    </h3>
+                    <p class="text-slate-600 mb-6">
+                        KeylessGo hanteert een strikt datagedreven selectiebeleid. We plaatsen geen voertuigen op basis van intuïtie, maar op basis van granulaire wijkdata.
+                    </p>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="text-green-500 mr-2">✔</span>
+                            <div>
+                                <strong class="text-slate-900">Demografische Draagkracht:</strong>
+                                <span class="text-slate-600 text-sm block">Focus op modaal+ inkomens in suburbane kernen (Leidsche Rijn, Houten, Zeist) die 'bezit' inruilen voor 'toegang'.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-500 mr-2">✔</span>
+                            <div>
+                                <strong class="text-slate-900">Parkeerdruk Index:</strong>
+                                <span class="text-slate-600 text-sm block">Wijken waar de 2e parkeervergunning duur is of waar wachttijden zijn. Hier is de bereidheid om de 2e auto weg te doen het hoogst.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-500 mr-2">✔</span>
+                            <div>
+                                <strong class="text-slate-900">Logistieke Nabijheid:</strong>
+                                <span class="text-slate-600 text-sm block">Locaties binnen 500m van bouwmarkten of meubelboulevards stimuleren impulshuur van bestelbusjes.</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Macro Trends Cards -->
+                <div class="space-y-6">
+                    <div class="bg-slate-800 p-6 rounded-xl text-white shadow-lg">
+                        <h4 class="font-bold text-sky-400 mb-2">De 'Last-Mile' vs. 'Heavy Lifting'</h4>
+                        <p class="text-slate-300 text-sm">
+                            De binnenstad wordt gedomineerd door deelscooters en bakfietsen. De periferie (Vinex) mist capaciteit voor "zwaar" werk (verhuizing, vakantie, grofvuil). Dit is de niche van de Lichte Bedrijfswagen (LCV).
+                        </p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-900 mb-2">Van Status naar Utility</h4>
+                        <p class="text-slate-600 text-sm">
+                            Millennials en Gen Z zien de auto niet als statussymbool maar als tool. De TCO (Total Cost of Ownership) van een eigen busje (€400-600 p/m stilstand) is niet meer te verantwoorden voor incidenteel gebruik.
+                        </p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-900 mb-2">Milieuzones & Euro 6+</h4>
+                        <p class="text-slate-600 text-sm">
+                            Onze vloot bestaat uit Euro 6+ diesels. Deze zijn tot minimaal 2028 welkom in milieuzones voor particulieren. Dit biedt een stabiele horizon voor afschrijving voordat de EV-transitie noodzakelijk wordt.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Fleet Strategy (Unit Economics) -->
+    <section id="fleet" class="py-16 bg-white border-y border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-slate-900">De High-Yield Vlootmix (70/30)</h2>
+                <p class="mt-4 text-lg text-slate-600">
+                    Onze analyse toont aan dat lichte bedrijfswagens <strong>4.8x</strong> meer winst genereren dan compacte auto's.
+                </p>
+            </div>
+
+            <!-- Interactive Toggle -->
+            <div class="flex justify-center mb-8">
+                <div class="bg-slate-100 p-1 rounded-lg inline-flex">
+                    <button onclick="updateFleetView('bus')" id="btn-bus" class="px-6 py-2 rounded-md text-sm font-bold shadow-sm bg-white text-slate-900 transition-all">
+                        🚐 De 'Money Maker' (Bus)
+                    </button>
+                    <button onclick="updateFleetView('car')" id="btn-car" class="px-6 py-2 rounded-md text-sm font-bold text-slate-500 hover:text-slate-900 transition-all">
+                        🚗 De Service (Auto)
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                <!-- Visual Representation -->
+                <div class="bg-slate-50 rounded-2xl p-8 border border-slate-200 h-full flex flex-col justify-center items-center text-center">
+                    <div id="fleet-icon" class="text-9xl mb-6">🚐</div>
+                    <h3 id="fleet-title" class="text-2xl font-bold text-slate-900 mb-2">VW Transporter (Euro 6+)</h3>
+                    <p id="fleet-desc" class="text-slate-600 max-w-sm">
+                        De ruggengraat van de vloot. Waardevast, robuust en essentieel voor de doelgroep. Toegang tot milieuzones gegarandeerd voor particulieren.
+                    </p>
+                </div>
+
+                <!-- Unit Economics Card -->
+                <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+                    <div class="bg-slate-900 px-6 py-4 border-b border-slate-800">
+                        <h3 class="text-lg font-bold text-white">Unit Economics (Maandbasis)</h3>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+                            <span class="text-slate-600">Bruto Huuromzet</span>
+                            <span id="ue-revenue" class="font-bold text-slate-900 text-lg">€ 1.357</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+                            <span class="text-red-500">Af: SnappCar Fee (30%)</span>
+                            <span id="ue-fee" class="text-red-500 font-medium">- € 407</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-slate-100 pb-2 bg-slate-50 px-2 -mx-2 rounded">
+                            <span class="text-slate-800 font-semibold">Netto Omzet</span>
+                            <span id="ue-net-revenue" class="font-bold text-slate-900">€ 950</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+                            <span class="text-slate-600">Financial Lease (60 mnd)</span>
+                            <span id="ue-lease" class="text-slate-600">- € 450</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+                            <span class="text-slate-600">Operationele Kosten (Verz/Ond)</span>
+                            <span id="ue-ops" class="text-slate-600">- € 178</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-2 mt-4 bg-green-50 p-4 rounded-lg border border-green-100">
+                            <span class="text-green-800 font-bold uppercase tracking-wider text-sm">Netto Winst (Pre-Tax)</span>
+                            <span id="ue-profit" class="font-extrabold text-green-600 text-2xl">€ 322</span>
+                        </div>
+                        <p id="ue-multiplier" class="text-xs text-center text-slate-400 mt-2">
+                            * Dit is 4.8x hoger dan de winst op een kleine auto.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: Lease Strategy Deep Dive -->
+    <section id="lease-strategy" class="py-16 bg-slate-900 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-12 text-center">
+                <h2 class="text-3xl font-bold text-white">De Financiële Architectuur: Waarom 60 Maanden?</h2>
+                <p class="mt-4 text-slate-400 max-w-2xl mx-auto">
+                    De keuze voor de lease-termijn is het verschil tussen faillissement en exponentiële groei. Een vergelijking van de scenario's.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- 36 Months -->
+                <div class="bg-slate-800 p-6 rounded-xl border border-red-900/50 opacity-70 hover:opacity-100 transition">
+                    <div class="text-red-500 font-bold text-lg mb-2">❌ Scenario A: 36 Maanden</div>
+                    <div class="text-3xl font-bold mb-4">€ 700 <span class="text-sm font-normal text-slate-400">p/m lasten</span></div>
+                    <p class="text-sm text-slate-300 mb-4">
+                        Verstikt de cashflow. Break-even punt ligt te hoog (>45%). Eén tegenvaller leidt tot liquiditeitsproblemen.
+                    </p>
+                    <div class="text-xs font-mono bg-slate-900 p-2 rounded text-red-400">Resultaat: Stagnatie</div>
+                </div>
+
+                <!-- 48 Months -->
+                <div class="bg-slate-800 p-6 rounded-xl border border-yellow-600/50 opacity-80 hover:opacity-100 transition">
+                    <div class="text-yellow-500 font-bold text-lg mb-2">⚠️ Scenario B: 48 Maanden</div>
+                    <div class="text-3xl font-bold mb-4">€ 580 <span class="text-sm font-normal text-slate-400">p/m lasten</span></div>
+                    <p class="text-sm text-slate-300 mb-4">
+                        Matige cashflow. Beperkte ruimte voor groei of tegenvallers. Alleen haalbaar bij direct hoge bezetting.
+                    </p>
+                    <div class="text-xs font-mono bg-slate-900 p-2 rounded text-yellow-400">Resultaat: Kwetsbaar</div>
+                </div>
+
+                <!-- 60 Months -->
+                <div class="bg-slate-700 p-6 rounded-xl border-2 border-green-500 transform scale-105 shadow-2xl relative">
+                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-slate-900 px-4 py-1 rounded-full text-xs font-bold">AANBEVOLEN STRATEGIE</div>
+                    <div class="text-green-400 font-bold text-lg mb-2">✅ Scenario C: 60 Maanden</div>
+                    <div class="text-3xl font-bold mb-4">€ 450 <span class="text-sm font-normal text-slate-400">p/m lasten</span></div>
+                    <p class="text-sm text-slate-300 mb-4">
+                        Maximaliseert cashflow (€300+ winst/bus). Creëert buffer. Matcht met economische levensduur van 10 jaar.
+                    </p>
+                    <div class="text-xs font-mono bg-slate-900 p-2 rounded text-green-400">Resultaat: Robuuste Groei</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Financial J-Curve Chart -->
+    <section id="finance" class="py-16 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-900">De 'J-Curve': Het Leasevrije Tijdperk</h2>
+                <p class="mt-4 text-slate-600 max-w-3xl">
+                    Het geheim van dit model zit in <strong>Jaar 6</strong>. Wanneer de lease stopt, blijven de inkomsten gelijk maar dalen de kosten drastisch. De winstmarge per voertuig stijgt met <strong>140%</strong>.
+                </p>
+            </div>
+
+            <!-- Chart Container -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-bold text-slate-800">Cumulatieve Cashflow Projectie (2025-2035)</h3>
+                    <select id="scenarioSelect" onchange="updateChart()" class="bg-slate-100 border-none text-sm font-medium text-slate-700 rounded-md py-2 px-4 cursor-pointer hover:bg-slate-200">
+                        <option value="conservative">Scenario: Conservatief (30% Bezetting)</option>
+                        <option value="realistic" selected>Scenario: Realistisch (35-40% Bezetting)</option>
+                        <option value="optimistic">Scenario: Optimistisch (45%+ Bezetting)</option>
+                    </select>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="financeChart"></canvas>
+                </div>
+                <div class="mt-4 grid grid-cols-3 gap-4 text-center text-xs text-slate-500">
+                    <div class="p-2 bg-slate-50 rounded">Fase 1: Validatie (Lease)</div>
+                    <div class="p-2 bg-slate-50 rounded">Fase 2: Expansie (Lease)</div>
+                    <div class="p-2 bg-green-50 text-green-700 font-bold rounded border border-green-100">Fase 3: Oogsten (Leasevrij)</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- REVISED SECTION: Realistic Strategy Simulator (Pro Version) -->
+    <section id="simulation" class="py-16 bg-slate-900 text-white relative overflow-hidden">
+        <!-- Decoration -->
+        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-sky-500 opacity-10 blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-96 h-96 rounded-full bg-purple-500 opacity-10 blur-3xl"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="mb-8 text-center">
+                <div class="inline-block bg-sky-600 text-white text-xs font-bold px-3 py-1 rounded-full mb-4">PRO MODEL v2.0</div>
+                <h2 class="text-3xl font-bold">Realistische Scenario Simulator & P&L Forecast</h2>
+                <p class="mt-4 text-slate-400 max-w-2xl mx-auto">
+                    Pas alle kritieke variabelen aan om de werkelijke winstgevendheid te stress-testen. Inclusief platform fees, variabele kosten en onvoorziene buffers.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Controls Panel (Left) -->
+                <div class="lg:col-span-5 bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl space-y-6">
+                    <div class="flex items-center justify-between border-b border-slate-700 pb-2 mb-4">
+                        <h3 class="text-lg font-bold text-white flex items-center"><span class="mr-2">🎛️</span> Drivers</h3>
+                        <button onclick="resetSimulation()" class="text-xs text-sky-400 hover:text-white underline">Reset waarden</button>
+                    </div>
+
+                    <!-- Group 1: Fleet Config -->
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <label class="text-xs font-bold text-slate-400 uppercase">Vloot Samenstelling</label>
+                            <span id="sim-size-val" class="text-sky-400 text-xs font-bold">10 Voertuigen</span>
+                        </div>
+                        <input type="range" id="sim-size" min="5" max="50" value="10" step="1" class="w-full mb-4" oninput="runSimulation()">
+                        
+                        <div class="flex justify-between mb-1">
+                            <label class="text-xs font-medium text-slate-300">Mix: Bus vs Auto</label>
+                            <span id="sim-mix-val" class="text-sky-400 text-xs font-bold">70% Bus</span>
+                        </div>
+                        <input type="range" id="sim-mix" min="0" max="100" value="70" step="10" class="w-full" oninput="runSimulation()">
+                    </div>
+
+                    <!-- Group 2: Performance & Pricing -->
+                    <div class="pt-4 border-t border-slate-700">
+                        <label class="text-xs font-bold text-slate-400 uppercase mb-3 block">Pricing & Performance</label>
+                        
+                        <div class="flex justify-between mb-1">
+                            <label class="text-xs font-medium text-slate-300">Bezettingsgraad</label>
+                            <span id="sim-occ-val" class="text-sky-400 text-xs font-bold">35%</span>
+                        </div>
+                        <input type="range" id="sim-occ" min="15" max="65" value="35" step="1" class="w-full mb-4" oninput="runSimulation()">
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs font-medium text-slate-300 block mb-1">Dagprijs Bus (€)</label>
+                                <input type="number" id="sim-price-bus" value="85" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white focus:border-sky-500 outline-none" oninput="runSimulation()">
+                            </div>
+                            <div>
+                                <label class="text-xs font-medium text-slate-300 block mb-1">Dagprijs Auto (€)</label>
+                                <input type="number" id="sim-price-car" value="45" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white focus:border-sky-500 outline-none" oninput="runSimulation()">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Group 3: Risks & Costs -->
+                    <div class="pt-4 border-t border-slate-700">
+                        <label class="text-xs font-bold text-slate-400 uppercase mb-3 block">Risico & Kosten</label>
+                        
+                        <div class="flex justify-between mb-1">
+                            <label class="text-xs font-medium text-slate-300">Onvoorzien Buffer (% Omzet)</label>
+                            <span id="sim-buffer-val" class="text-yellow-400 text-xs font-bold">5%</span>
+                        </div>
+                        <input type="range" id="sim-buffer" min="0" max="15" value="5" step="1" class="w-full" oninput="runSimulation()">
+                        <p class="text-xs text-slate-500 mt-2">Dekt eigen risico, schades niet verhaalbaar, en onverwacht onderhoud.</p>
+                    </div>
+                </div>
+
+                <!-- Output Panel (Right) -->
+                <div class="lg:col-span-7 space-y-4">
+                    
+                    <!-- KPI Cards Row -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-white rounded-xl p-4 shadow-lg text-slate-900 relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-16 h-16 bg-green-100 rounded-bl-full -mr-2 -mt-2 z-0"></div>
+                            <h4 class="text-xs font-bold uppercase text-slate-500 relative z-10">Netto Winst (Maand)</h4>
+                            <div class="mt-2 text-3xl font-extrabold text-slate-900 relative z-10" id="res-profit">€ 2.340</div>
+                            <div class="mt-1 text-xs font-bold px-2 py-0.5 rounded w-max relative z-10" id="res-profit-status">Winstgevend</div>
+                        </div>
+
+                        <div class="bg-slate-800 rounded-xl p-4 shadow-lg border border-slate-700">
+                            <h4 class="text-xs font-bold uppercase text-slate-400">Break-Even Bezetting</h4>
+                            <div class="mt-2 text-3xl font-extrabold text-white" id="res-breakeven">29%</div>
+                            <div class="mt-2 w-full bg-slate-700 h-2 rounded-full overflow-hidden">
+                                <div id="res-breakeven-bar" class="bg-sky-500 h-full transition-all duration-300" style="width: 80%"></div>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-1" id="res-breakeven-msg">U zit veilig boven break-even.</p>
+                        </div>
+                    </div>
+
+                    <!-- Detailed P&L Table -->
+                    <div class="bg-slate-800 rounded-xl p-5 border border-slate-700 shadow-xl">
+                        <h4 class="text-sm font-bold text-white mb-4 border-b border-slate-600 pb-2">Maandelijkse P&L Forecast (Detail)</h4>
+                        
+                        <table class="w-full text-slate-300 sim-table">
+                            <tbody>
+                                <tr>
+                                    <td>Bruto Omzet (Bus + Auto)</td>
+                                    <td class="amount text-white font-bold" id="pl-gross">€ 12.000</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-red-400">Min: SnappCar Fee (30%)</td>
+                                    <td class="amount text-red-400" id="pl-fee">- € 3.600</td>
+                                </tr>
+                                <tr class="bg-slate-700/30">
+                                    <td class="font-bold text-slate-200 pl-2">Netto Omzet (Na fee)</td>
+                                    <td class="amount font-bold text-slate-200" id="pl-net">€ 8.400</td>
+                                </tr>
+                                <tr>
+                                    <td>Leasekosten (Vast)</td>
+                                    <td class="amount text-slate-400" id="pl-lease">- € 4.500</td>
+                                </tr>
+                                <tr>
+                                    <td>Partner+ Verzekering & Data (Vast)</td>
+                                    <td class="amount text-slate-400" id="pl-fixed-ops">- € 420</td>
+                                </tr>
+                                <tr>
+                                    <td>Variabel (Schoonmaak/Onderhoud)</td>
+                                    <td class="amount text-slate-400" id="pl-var-ops">- € 800</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-yellow-500">Risico Buffer (<span id="pl-buffer-pct">5</span>%)</td>
+                                    <td class="amount text-yellow-500" id="pl-buffer">- € 600</td>
+                                </tr>
+                                <tr class="border-t border-slate-500">
+                                    <td class="pt-2 font-bold text-lg text-white">Netto Operationeel Resultaat</td>
+                                    <td class="pt-2 font-bold text-lg text-green-400 amount" id="pl-total">€ 2.080</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- ROI Insight -->
+                    <div class="bg-sky-900/30 border border-sky-800 p-3 rounded-lg flex justify-between items-center">
+                        <span class="text-xs text-sky-200">Geschatte ROI (Jaarbasis) op Startkapitaal:</span>
+                        <span class="font-bold text-sky-400" id="res-roi">18.5%</span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: Investor Proposition & Risks -->
+    <section id="investor" class="py-16 bg-white border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                
+                <!-- Investor Value Prop -->
+                <div>
+                    <h2 class="text-3xl font-bold text-slate-900 mb-6">Investeringspropositie</h2>
+                    <p class="text-slate-600 mb-8">
+                        Voor investeerders (Family, Friends & Fools) biedt KeylessGo een tastbaar alternatief voor volatiele aandelen of crypto. Wij noemen het: <em>"Stenen en Cement, maar dan op Wielen"</em>.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <div class="flex items-center justify-center h-12 w-12 rounded-md bg-sky-500 text-white text-xl">🛡</div>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-bold text-slate-900">Asset-Backed Zekerheid</h4>
+                                <p class="mt-1 text-slate-600 text-sm">
+                                    Uw inleg is gedekt door fysieke voertuigen. Lichte bedrijfswagens kennen een hoge historische restwaarde (30-40% na 5 jaar).
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <div class="flex items-center justify-center h-12 w-12 rounded-md bg-sky-500 text-white text-xl">📈</div>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-bold text-slate-900">Hoog Rendement (ROI)</h4>
+                                <p class="mt-1 text-slate-600 text-sm">
+                                    Door de hefboomwerking van de leaseconstructie liggen geprojecteerde rendementen tussen de 8% (conservatief) en 25% (optimistisch).
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <div class="flex items-center justify-center h-12 w-12 rounded-md bg-sky-500 text-white text-xl">🤝</div>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-bold text-slate-900">Flexibele Deelname</h4>
+                                <p class="mt-1 text-slate-600 text-sm">
+                                    Participeer per specifiek voertuig (transparant resultaat) of in de totale vloot voor risicospreiding.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Risk Mitigation Matrix -->
+                <div>
+                    <h2 class="text-3xl font-bold text-slate-900 mb-6">Risico Analyse & Mitigatie</h2>
+                    <div class="space-y-3">
+                        <div class="risk-card bg-slate-50 p-4 rounded-lg">
+                            <h5 class="font-bold text-slate-800 text-sm flex justify-between">
+                                <span>🛑 Strategisch: Platform Afhankelijkheid</span>
+                                <span class="text-red-500 text-xs font-mono">HOOG</span>
+                            </h5>
+                            <p class="text-xs text-slate-600 mt-1">
+                                <strong>Risico:</strong> SnappCar verhoogt fees. <br>
+                                <strong>Mitigatie:</strong> Vloot is eigendom KeylessGo. In Fase 3 (>50 auto's) transitie naar hybride model/eigen platform.
+                            </p>
+                        </div>
+                        <div class="risk-card bg-slate-50 p-4 rounded-lg">
+                            <h5 class="font-bold text-slate-800 text-sm flex justify-between">
+                                <span>🛑 Financieel: Liquiditeit</span>
+                                <span class="text-yellow-500 text-xs font-mono">MIDDEN</span>
+                            </h5>
+                            <p class="text-xs text-slate-600 mt-1">
+                                <strong>Risico:</strong> Tegenval in bezetting. <br>
+                                <strong>Mitigatie:</strong> 60-maanden lease minimaliseert vaste lasten. Bufferopbouw vanaf dag 1. Hotspot data-analyse voorkomt leegstand.
+                            </p>
+                        </div>
+                        <div class="risk-card bg-slate-50 p-4 rounded-lg">
+                            <h5 class="font-bold text-slate-800 text-sm flex justify-between">
+                                <span>🛑 Operationeel: Schade</span>
+                                <span class="text-yellow-500 text-xs font-mono">MIDDEN</span>
+                            </h5>
+                            <p class="text-xs text-slate-600 mt-1">
+                                <strong>Risico:</strong> Vandalisme of ongelukken. <br>
+                                <strong>Mitigatie:</strong> All-risk verzekering via Partner+. Strenge screening huurders. Eigen risico potje opbouwen uit cashflow.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 border-t border-slate-800 py-12 text-white">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
+            <div>
+                <h4 class="font-bold text-lg mb-4">Strategisch Advies</h4>
+                <p class="text-slate-400 mb-2">1. Handhaaf de 70/30 Vlootmix.</p>
+                <p class="text-slate-400 mb-2">2. Gebruik data, geen intuïtie.</p>
+                <p class="text-slate-400">3. Liquiditeit is koning: lease, koop niet.</p>
+            </div>
+            <div>
+                <h4 class="font-bold text-lg mb-4">Roadmap</h4>
+                <p class="text-slate-400 mb-2">Dec 2025: Start (10 voertuigen)</p>
+                <p class="text-slate-400 mb-2">2027: Groeifase (25 voertuigen)</p>
+                <p class="text-slate-400">2031: Leasevrij Oogsten</p>
+            </div>
+            <div>
+                <h4 class="font-bold text-lg mb-4">KeylessGo Utrecht</h4>
+                <p class="text-slate-500">
+                    Gebaseerd op Strategisch Adviesrapport & Businessplan v1.0.<br>
+                    Focus op Asset-Backed Growth.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- DATA OBJECTS ---
+        
+        // Unit Economics Data
+        const fleetData = {
+            bus: {
+                title: "VW Transporter (Euro 6+)",
+                desc: "De ruggengraat van de vloot. Waardevast, robuust en essentieel voor de doelgroep. Toegang tot milieuzones gegarandeerd voor particulieren.",
+                icon: "🚐",
+                revenue: "€ 1.357",
+                fee: "- € 407",
+                netRev: "€ 950",
+                lease: "- € 450",
+                ops: "- € 178",
+                profit: "€ 322",
+                multiplier: "* Dit is 4.8x hoger dan de winst op een kleine auto.",
+                color: "text-green-600"
+            },
+            car: {
+                title: "Compacte Stadsauto (Benzine/EV)",
+                desc: "Service product voor incidenteel klein vervoer. Noodzakelijk voor zichtbaarheid in de wijk, maar lage marges.",
+                icon: "🚗",
+                revenue: "€ 550",
+                fee: "- € 165",
+                netRev: "€ 385",
+                lease: "- € 255", 
+                ops: "- € 63",
+                profit: "€ 67",
+                multiplier: "* Winstmarge is marginaal; dient primair als klantenbinder.",
+                color: "text-yellow-600"
+            }
+        };
+
+        // Financial Projection Data (The J-Curve)
+        const financialData = {
+            labels: ['Jaar 1', 'Jaar 2', 'Jaar 3', 'Jaar 4', 'Jaar 5', 'Jaar 6 (Leasevrij)', 'Jaar 7', 'Jaar 8', 'Jaar 9', 'Jaar 10'],
+            scenarios: {
+                conservative: [20000, 35000, 50000, 65000, 80000, 150000, 220000, 300000, 400000, 500000],
+                realistic: [30000, 71000, 124000, 190000, 280000, 425000, 600000, 850000, 1100000, 1400000],
+                optimistic: [45000, 100000, 180000, 290000, 450000, 700000, 950000, 1300000, 1700000, 2200000]
+            }
+        };
+
+        let financeChartInstance = null;
+
+        // --- FUNCTIONS ---
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetSimulation() {
+            document.getElementById('sim-size').value = 10;
+            document.getElementById('sim-mix').value = 70;
+            document.getElementById('sim-occ').value = 35;
+            document.getElementById('sim-price-bus').value = 85;
+            document.getElementById('sim-price-car').value = 45;
+            document.getElementById('sim-buffer').value = 5;
+            runSimulation();
+        }
+
+        // Fleet Toggle Logic
+        function updateFleetView(type) {
+            const data = fleetData[type];
+            const btnBus = document.getElementById('btn-bus');
+            const btnCar = document.getElementById('btn-car');
+
+            if (type === 'bus') {
+                btnBus.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
+                btnBus.classList.remove('text-slate-500');
+                btnCar.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
+                btnCar.classList.add('text-slate-500');
+            } else {
+                btnCar.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
+                btnCar.classList.remove('text-slate-500');
+                btnBus.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
+                btnBus.classList.add('text-slate-500');
+            }
+
+            document.getElementById('fleet-title').style.opacity = 0;
+            
+            setTimeout(() => {
+                document.getElementById('fleet-icon').innerText = data.icon;
+                document.getElementById('fleet-title').innerText = data.title;
+                document.getElementById('fleet-desc').innerText = data.desc;
+                document.getElementById('ue-revenue').innerText = data.revenue;
+                document.getElementById('ue-fee').innerText = data.fee;
+                document.getElementById('ue-net-revenue').innerText = data.netRev;
+                document.getElementById('ue-lease').innerText = data.lease;
+                document.getElementById('ue-ops').innerText = data.ops;
+                
+                const profitEl = document.getElementById('ue-profit');
+                profitEl.innerText = data.profit;
+                profitEl.className = `font-extrabold text-2xl ${data.color}`;
+
+                document.getElementById('ue-multiplier').innerText = data.multiplier;
+                document.getElementById('fleet-title').style.opacity = 1;
+            }, 150);
+        }
+
+        // Chart Logic
+        function initChart() {
+            const ctx = document.getElementById('financeChart').getContext('2d');
+            financeChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: financialData.labels,
+                    datasets: [{
+                        label: 'Cumulatieve Cashflow (€)',
+                        data: financialData.scenarios.realistic,
+                        borderColor: '#0EA5E9',
+                        backgroundColor: 'rgba(14, 165, 233, 0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#0F172A',
+                        pointRadius: 4,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true, position: 'top' },
+                        tooltip: { mode: 'index', intersect: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { borderDash: [2, 4] },
+                            ticks: { callback: function(value) { return '€' + value / 1000 + 'k'; } }
+                        },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function updateChart() {
+            const scenario = document.getElementById('scenarioSelect').value;
+            const newData = financialData.scenarios[scenario];
+            financeChartInstance.data.datasets[0].data = newData;
+            
+            if(scenario === 'conservative') {
+                financeChartInstance.data.datasets[0].borderColor = '#64748B'; 
+                financeChartInstance.data.datasets[0].backgroundColor = 'rgba(100, 116, 139, 0.1)';
+            } else if (scenario === 'optimistic') {
+                financeChartInstance.data.datasets[0].borderColor = '#10B981'; 
+                financeChartInstance.data.datasets[0].backgroundColor = 'rgba(16, 185, 129, 0.1)';
+            } else {
+                financeChartInstance.data.datasets[0].borderColor = '#0EA5E9'; 
+                financeChartInstance.data.datasets[0].backgroundColor = 'rgba(14, 165, 233, 0.1)';
+            }
+            financeChartInstance.update();
+        }
+
+        // --- REALISTIC SIMULATION ENGINE (PRO v2.0) ---
+        function runSimulation() {
+            // 1. Gather Inputs
+            const size = parseInt(document.getElementById('sim-size').value);
+            const mix = parseInt(document.getElementById('sim-mix').value); // % Bus
+            const occ = parseInt(document.getElementById('sim-occ').value); // % Occupancy
+            
+            const priceBus = parseFloat(document.getElementById('sim-price-bus').value) || 85;
+            const priceCar = parseFloat(document.getElementById('sim-price-car').value) || 45;
+            const bufferPct = parseInt(document.getElementById('sim-buffer').value);
+
+            // Update Input Labels
+            document.getElementById('sim-size-val').innerText = `${size} Voertuigen`;
+            document.getElementById('sim-mix-val').innerText = `${mix}% Bus / ${100-mix}% Auto`;
+            document.getElementById('sim-occ-val').innerText = `${occ}%`;
+            document.getElementById('sim-buffer-val').innerText = `${bufferPct}%`;
+            document.getElementById('pl-buffer-pct').innerText = bufferPct;
+
+            // 2. Define Count & Ratios
+            const numBuses = Math.round(size * (mix / 100));
+            const numCars = size - numBuses;
+            const daysInMonth = 30.5;
+
+            // 3. Define COSTS (Based on Business Plan & Partner+ terms)
+            // Fixed Costs per Month
+            const leaseBus = 450;
+            const leaseCar = 255;
+            const insBus = 30; // Partner+ specific
+            const insCar = 20; // Partner+ specific
+            const hardware = 18;
+            
+            // Variable Costs per Month (Cleaning, Maintenance, Tires)
+            const opsBusBase = 80; 
+            const opsCarBase = 60;
+
+            // 4. CALCULATE REVENUE (GROSS)
+            // Revenue = Count * (Occupancy% * Days) * Price
+            const revBus = numBuses * ((occ / 100) * daysInMonth) * priceBus;
+            const revCar = numCars * ((occ / 100) * daysInMonth) * priceCar;
+            const totalGross = revBus + revCar;
+
+            // 5. CALCULATE EXPENSES
+            const snappCarFee = totalGross * 0.30;
+            
+            const totalLease = (numBuses * leaseBus) + (numCars * leaseCar);
+            
+            const totalFixedOps = (numBuses * (insBus + hardware)) + (numCars * (insCar + hardware));
+            
+            // Ops costs scale slightly with usage, but mostly fixed maintenance schedule
+            // Let's assume the base is for 35% occupancy. Scale up/down slightly.
+            const usageFactor = occ / 35; 
+            const totalVarOps = ((numBuses * opsBusBase) + (numCars * opsCarBase)) * Math.max(0.8, usageFactor); // Min floor for maintenance
+
+            const riskBuffer = totalGross * (bufferPct / 100);
+
+            // 6. TOTALS
+            const totalExpenses = snappCarFee + totalLease + totalFixedOps + totalVarOps + riskBuffer;
+            const netProfit = totalGross - totalExpenses;
+
+            // 7. FORMATTING HELPERS
+            const fmt = new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+            
+            // 8. UPDATE UI - P&L Table
+            document.getElementById('pl-gross').innerText = fmt.format(totalGross);
+            document.getElementById('pl-fee').innerText = "- " + fmt.format(snappCarFee);
+            document.getElementById('pl-net').innerText = fmt.format(totalGross - snappCarFee);
+            
+            document.getElementById('pl-lease').innerText = "- " + fmt.format(totalLease);
+            document.getElementById('pl-fixed-ops').innerText = "- " + fmt.format(totalFixedOps);
+            document.getElementById('pl-var-ops').innerText = "- " + fmt.format(totalVarOps);
+            document.getElementById('pl-buffer').innerText = "- " + fmt.format(riskBuffer);
+            
+            const totalEl = document.getElementById('pl-total');
+            totalEl.innerText = fmt.format(netProfit);
+
+            // 9. KPI CARDS UPDATE
+            document.getElementById('res-profit').innerText = fmt.format(netProfit);
+            const statusEl = document.getElementById('res-profit-status');
+            
+            if (netProfit > 0) {
+                statusEl.innerText = "Winstgevend";
+                statusEl.className = "mt-1 text-xs font-bold px-2 py-0.5 rounded w-max relative z-10 bg-green-100 text-green-700";
+                totalEl.className = "pt-2 font-bold text-lg text-green-400 amount";
+            } else {
+                statusEl.innerText = "Verlieslatend";
+                statusEl.className = "mt-1 text-xs font-bold px-2 py-0.5 rounded w-max relative z-10 bg-red-100 text-red-700";
+                totalEl.className = "pt-2 font-bold text-lg text-red-400 amount";
+            }
+
+            // 10. BREAK-EVEN CALCULATION
+            // Fixed Monthly Nut = Lease + FixedOps
+            // Rev Per 1% Occupancy = (NumBus * Days * PriceBus * 0.01) + (NumCar * Days * PriceCar * 0.01)
+            // Var Costs per 1% Occ = Fee (30% of Rev) + Buffer (% of Rev) + VarOps (Approx)
+            // This is complex algebra, so we iterate or approximate.
+            
+            // Simplification: 
+            // Contribution Margin % = 1 - (0.30 Fee + Buffer% + VarOpsAsPctOfRev)
+            // Let's approximate VarOps as % of Rev for Break-even calc (roughly 10%)
+            const varCostRatio = 0.30 + (bufferPct/100) + 0.10; 
+            const contributionMarginRatio = 1 - varCostRatio;
+            
+            const fixedCostsTotal = totalLease + totalFixedOps;
+            
+            // Revenue needed to cover Fixed Costs
+            const breakEvenRevenue = fixedCostsTotal / contributionMarginRatio;
+            
+            // Max Possible Revenue (100% Occ)
+            const maxRevenue = (numBuses * daysInMonth * priceBus) + (numCars * daysInMonth * priceCar);
+            
+            let breakEvenPct = (breakEvenRevenue / maxRevenue) * 100;
+            breakEvenPct = Math.round(breakEvenPct);
+
+            // Update Break-even UI
+            if (breakEvenPct > 100) breakEvenPct = 100;
+            if (breakEvenPct < 0) breakEvenPct = 0;
+            
+            document.getElementById('res-breakeven').innerText = breakEvenPct + "%";
+            
+            const beBar = document.getElementById('res-breakeven-bar');
+            
+            // Visual logic: If current occ > breakeven, bar is green/safe. Else red/danger.
+            // Width of bar represents Current Occ relative to 100, but we need to show the Gap.
+            // Let's simplify: Bar represents safety margin.
+            
+            const safetyMargin = occ - breakEvenPct;
+            const beMsg = document.getElementById('res-breakeven-msg');
+
+            if (safetyMargin > 5) {
+                beMsg.innerText = `Veilige marge (+${safetyMargin}% boven BE)`;
+                beMsg.className = "text-xs text-green-400 mt-1";
+                beBar.className = "bg-green-500 h-full transition-all duration-300";
+            } else if (safetyMargin >= 0) {
+                beMsg.innerText = `Op het randje (+${safetyMargin}%)`;
+                beMsg.className = "text-xs text-yellow-400 mt-1";
+                beBar.className = "bg-yellow-500 h-full transition-all duration-300";
+            } else {
+                beMsg.innerText = `Onder water (${safetyMargin}%)`;
+                beMsg.className = "text-xs text-red-400 mt-1";
+                beBar.className = "bg-red-500 h-full transition-all duration-300";
+            }
+            
+            // ROI Calc (Simple: Annual Profit / Start Capital)
+            // Start Capital estimated at 10k per car (deposit+setup) if owning, but here we use the 100k fund logic
+            // Let's use 100k fixed start capital as denominator for simplicity, or scale it.
+            const startCap = Math.max(100000, size * 5000); // 100k min, or 5k per car setup
+            const roi = ((netProfit * 12) / startCap) * 100;
+            document.getElementById('res-roi').innerText = roi.toFixed(1) + "%";
+
+            // Visual bar for BE: Width = Current Occ % relative to max reasonable (e.g. 70%)
+            beBar.style.width = Math.min((occ / 80)*100, 100) + "%";
+            // Wait, actually better to show the break even mark relative to current. 
+            // Let's stick to the color coding above, it's clearer.
+        }
+
+        // --- INIT ---
+        window.addEventListener('DOMContentLoaded', () => {
+            initChart();
+            runSimulation(); // Init Sim
+        });
+
+    </script>
+</body>
+</html>

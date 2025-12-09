@@ -12,8 +12,7 @@
     --bg-section: #f9fafb;
     --font-stack: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     --header-height: 76px;
-    
-    /* zelfde kleur als logo-achtergrond */
+
     --header-bg: #1a2c49;
 }
 
@@ -177,7 +176,7 @@ header {
 }
 
 .logo img {
-    max-height: 100px;
+    max-height: 48px;
     width: auto;
     object-fit: contain;
     display: block;
@@ -289,12 +288,30 @@ header {
     transition: all 0.3s ease-in-out;
 }
 
+/* animatie voor hamburger */
+.hamburger.open .bar:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.hamburger.open .bar:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.open .bar:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+/* body lock als menu open is */
+body.nav-open {
+    overflow: hidden;
+}
+
 /* =========================================
-   3. HERO (2 kolommen)
+   3. HERO
 ========================================= */
 .hero {
     position: relative;
-    padding-top: calc(var(--header-height) + 24px);
+    padding-top: calc(var(--header-height) + 32px);
     padding-bottom: 56px;
     background: linear-gradient(
             115deg,
@@ -342,7 +359,7 @@ header {
 }
 
 .hero-sub-alt {
-    font-size: 1rem;
+    font-size: 0.98rem;
     color: #a5b4fc;
     margin-bottom: 1.15rem;
     max-width: 540px;
@@ -400,7 +417,7 @@ header {
 }
 
 .hero-logo-img {
-    max-width: 150px;
+    max-width: 170px;
     margin-bottom: 10px;
 }
 
@@ -502,12 +519,12 @@ header {
 
 .marker-auto { background-color: #1b56d4; }
 .marker-ev { background-color: #15803d; }
-.marker-bus { background-color: #a65314; }
+.marker-bus-small { background-color: #a65314; }
 .marker-bus-medium { background-color: #7c3aed; }
 .marker-bus-large { background-color: #b91c1c; }
 
 /* =========================================
-   4. ONZE VLOOT – 2 rijen x 3
+   4. ONZE VLOOT
 ========================================= */
 .fleet-section {
     background-color: #ffffff;
@@ -846,13 +863,6 @@ header {
     gap: 4px;
 }
 
-@media (max-width: 768px) {
-    .location-card-thumb {
-        width: 96px;
-        height: 68px;
-    }
-}
-
 /* =========================================
    6. HOE WERKT HUREN / WAAROM KEYLESSGO
 ========================================= */
@@ -996,7 +1006,7 @@ footer {
 }
 
 /* =========================================
-   8. RESPONSIVE LAYOUT
+   8. RESPONSIVE
 ========================================= */
 
 /* Tablet & kleine laptops */
@@ -1014,7 +1024,6 @@ footer {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    /* kaart + lijst onder elkaar */
     .location-layout {
         grid-template-columns: 1fr;
     }
@@ -1079,7 +1088,6 @@ footer {
         margin-top: 6px;
     }
 
-    /* submenu mobiel */
     .submenu {
         position: static;
         box-shadow: none;
@@ -1109,6 +1117,10 @@ footer {
 
     .hero-left {
         margin: 0 auto;
+    }
+
+    .hero-title {
+        font-size: 1.9rem;
     }
 
     .hero-sub,
@@ -1142,12 +1154,10 @@ footer {
         width: 100%;
     }
 
-    /* Vloot */
     .fleet-grid {
         grid-template-columns: 1fr;
     }
 
-    /* Map filters */
     .map-section {
         padding-top: 50px;
         padding-bottom: 60px;
@@ -1183,6 +1193,11 @@ footer {
         font-size: 0.9rem;
     }
 
+    .location-card-thumb {
+        width: 96px;
+        height: 68px;
+    }
+
     .location-card-actions {
         width: 100%;
     }
@@ -1193,7 +1208,6 @@ footer {
         justify-content: center;
     }
 
-    /* Partner / footer */
     .footer-grid {
         gap: 20px;
     }
