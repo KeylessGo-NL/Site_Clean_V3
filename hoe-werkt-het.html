@@ -36,49 +36,128 @@
 
 /* ====== STAPPEN BLOK ====== */
 
+/* ====== STAPPEN BLOK – PREMIUM TIMELINE ====== */
+
 .steps-section {
     background: #ffffff;
     padding: 50px 0 60px;
 }
 
-.steps-grid {
+.steps-section h2 {
+    text-align: center;
+}
+
+.steps-timeline {
+    margin-top: 34px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 24px;
-    margin-top: 32px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 26px;
 }
 
-.step-card {
-    background: #ffffff;
-    border-radius: 16px;
-    padding: 24px 22px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+.step-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
     position: relative;
-    overflow: hidden;
 }
 
-.step-number {
-    width: 40px;
-    height: 40px;
+/* Node + lijn */
+.step-node {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.step-node::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    width: 120%;
+    height: 2px;
+    background: linear-gradient(to right, rgba(148,163,184,0.4), rgba(148,163,184,0));
+}
+
+/* geen lijn na laatste */
+.step-item:last-child .step-node::after {
+    display: none;
+}
+
+.step-index {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #9ca3af;
+    margin-bottom: 4px;
+}
+
+.step-circle {
+    width: 52px;
+    height: 52px;
     border-radius: 999px;
-    background: var(--accent-orange);
-    color: #ffffff;
+    background: radial-gradient(circle at 30% 20%, #ffffff, #1f2a3f);
+    border: 2px solid rgba(148, 163, 184, 0.7);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 800;
-    margin-bottom: 14px;
+    box-shadow: 0 10px 25px rgba(15,23,42,0.45);
 }
 
-.step-card h3 {
-    margin-bottom: 6px;
-    font-size: 1.15rem;
+.step-circle i {
+    font-size: 1.4rem;
+    color: var(--accent-orange);
 }
 
-.step-card p {
-    font-size: 0.92rem;
+/* Tekstblok */
+.step-content h3 {
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+}
+
+.step-content p {
+    font-size: 0.93rem;
     color: var(--text-light);
+}
+
+/* MOBIEL: verticale timeline */
+
+@media (max-width: 900px) {
+    .steps-timeline {
+        grid-template-columns: 1fr;
+        gap: 22px;
+    }
+
+    .step-item {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .step-node {
+        margin-bottom: 0;
+        margin-top: 4px;
+    }
+
+    .step-node::after {
+        left: 50%;
+        top: 100%;
+        width: 2px;
+        height: 46px;
+        transform: translateX(-50%);
+        background: linear-gradient(to bottom, rgba(148,163,184,0.5), rgba(148,163,184,0));
+    }
+
+    .step-item:last-child .step-node::after {
+        display: none;
+    }
+
+    .step-content h3 {
+        margin-top: 2px;
+    }
 }
 
 /* ====== WAT TE VERWACHTEN ====== */
@@ -268,33 +347,59 @@
     <div class="container">
         <h2>In 3 stappen op weg</h2>
 
-        <div class="steps-grid">
+        <div class="steps-timeline">
 
-            <article class="step-card">
-                <div class="step-number">1</div>
-                <h3>Zoek & boek online</h3>
-                <p>
-                    Kies jouw deelauto of busje op onze kaart of via SnappCar, selecteer datum en tijd en rond de reservering af. 
-                    Je ziet vooraf duidelijk de kosten, borg en voorwaarden.
-                </p>
+            <!-- Stap 1 -->
+            <article class="step-item">
+                <div class="step-node">
+                    <div class="step-index">1</div>
+                    <div class="step-circle">
+                        <i class="fa-solid fa-magnifying-glass-location"></i>
+                    </div>
+                </div>
+                <div class="step-content">
+                    <h3>Zoek &amp; boek online</h3>
+                    <p>
+                        Kies jouw deelauto of busje op onze kaart of via SnappCar, selecteer datum en tijd
+                        en rond de reservering af. Je ziet vooraf duidelijk de kosten, borg en voorwaarden.
+                    </p>
+                </div>
             </article>
 
-            <article class="step-card">
-                <div class="step-number">2</div>
-                <h3>Keyless check-in & openen</h3>
-                <p>
-                    Loop op de dag zelf naar het voertuig en volg de check-in stappen in de app 
-                    (foto’s & kilometerstand). Daarna open je de auto volledig keyless, zonder fysieke sleuteloverdracht.
-                </p>
+            <!-- Stap 2 -->
+            <article class="step-item">
+                <div class="step-node">
+                    <div class="step-index">2</div>
+                    <div class="step-circle">
+                        <i class="fa-solid fa-mobile-screen-button"></i>
+                    </div>
+                </div>
+                <div class="step-content">
+                    <h3>Keyless check-in &amp; openen</h3>
+                    <p>
+                        Op de dag zelf loop je naar het voertuig en volg je de check-in stappen in de app
+                        (foto’s &amp; kilometerstand). Daarna open je de auto volledig keyless, zonder
+                        fysieke sleuteloverdracht.
+                    </p>
+                </div>
             </article>
 
-            <article class="step-card">
-                <div class="step-number">3</div>
-                <h3>Rijden, tanken/laden & inleveren</h3>
-                <p>
-                    Rij, tank of laad indien nodig en breng het voertuig terug op de vaste locatie. 
-                    Met een korte check-out sluit je de rit af. Extra kilometers of kosten worden automatisch verrekend.
-                </p>
+            <!-- Stap 3 -->
+            <article class="step-item">
+                <div class="step-node">
+                    <div class="step-index">3</div>
+                    <div class="step-circle">
+                        <i class="fa-solid fa-van-shuttle"></i>
+                    </div>
+                </div>
+                <div class="step-content">
+                    <h3>Rijden, tanken/laden &amp; inleveren</h3>
+                    <p>
+                        Rij je rit, tank of laad indien nodig en breng het voertuig terug op de vaste locatie.
+                        Met een korte check-out in de app sluit je de rit af. Extra kilometers of kosten worden
+                        automatisch via SnappCar verrekend.
+                    </p>
+                </div>
             </article>
 
         </div>
