@@ -219,41 +219,43 @@
 </footer>
 
 <!-- Leaflet JS -->
-<script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-    crossorigin=""
-></script>
+   <!-- Leaflet JS -->
+    <script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""
+    ></script>
 
-<!-- Eigen scripts -->
-<script src="assets/js/map.js"></script>
-<script src="assets/js/find-vehicle.js"></script>
+    <!-- KeylessGo data + map + filterlogica -->
+    <script src="assets/js/fleet.js"></script>
+    <script src="assets/js/map.js"></script>
+    <script src="assets/js/find-vehicle.js"></script>
 
-<script>
-    // Jaar in footer
-    document.getElementById("year").textContent = new Date().getFullYear();
+    <script>
+        // jaar in footer
+        document.getElementById("year").textContent = new Date().getFullYear();
 
-    // Hamburger
-    const hamburger = document.getElementById("hamburger");
-    const navMenu = document.querySelector(".nav-menu");
+        // hamburger menu
+        const hamburger = document.getElementById("hamburger");
+        const navMenu = document.querySelector(".nav-menu");
 
-    if (hamburger && navMenu) {
-        hamburger.addEventListener("click", () => {
-            const isActive = navMenu.classList.toggle("active");
-            hamburger.classList.toggle("open", isActive);
-            document.body.classList.toggle("nav-open", isActive);
-            hamburger.setAttribute("aria-expanded", isActive ? "true" : "false");
+        if (hamburger && navMenu) {
+            hamburger.addEventListener("click", () => {
+                const isActive = navMenu.classList.toggle("active");
+                hamburger.classList.toggle("open", isActive);
+                document.body.classList.toggle("nav-open", isActive);
+                hamburger.setAttribute("aria-expanded", isActive ? "true" : "false");
+            });
+        }
+
+        // mobile submenu toggle
+        document.querySelectorAll(".has-submenu > a").forEach((link) => {
+            link.addEventListener("click", (e) => {
+                if (window.innerWidth > 768) return; // desktop: hover
+                e.preventDefault();
+                link.parentElement.classList.toggle("open");
+            });
         });
-    }
-
-    // Submenu mobiel
-    document.querySelectorAll(".has-submenu > a").forEach(link => {
-        link.addEventListener("click", e => {
-            if (window.innerWidth > 768) return;
-            e.preventDefault();
-            link.parentElement.classList.toggle("open");
-        });
-    });
-</script>
+    </script>
 </body>
-</html>
+    </html>

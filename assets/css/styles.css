@@ -309,26 +309,29 @@ body.nav-open {
 /* =========================================
    3. HERO
 ========================================= */
+/* =========================================
+   3. HERO
+========================================= */
 .hero {
     position: relative;
-    padding-top: calc(var(--header-height) + 32px);
-    padding-bottom: 56px;
+    padding-top: calc(var(--header-height) + 24px);
+    padding-bottom: 38px;
     background: linear-gradient(
             115deg,
-            rgba(26, 44, 73, 0.97) 0%,
-            rgba(26, 44, 73, 0.85) 45%,
+            rgba(26, 44, 73, 0.95) 0%,
+            rgba(26, 44, 73, 0.86) 45%,
             rgba(26, 44, 73, 0.55) 100%
         ),
         url("../img/hero/hero-bg.jpg") no-repeat center center / cover;
     color: var(--text-white);
-    min-height: 58vh;
+    min-height: 460px; /* was 58vh */
 }
 
 .hero-inner {
     display: grid;
-    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.1fr);
-    gap: 32px;
-    align-items: center;
+    grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+    gap: 28px;
+    align-items: center; /* centreren in hoogte */
 }
 
 /* linkerkant */
@@ -341,27 +344,27 @@ body.nav-open {
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: #cbd5f5;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.35rem;
 }
 
 .hero-title {
-    font-size: 2.2rem;
-    line-height: 1.15;
-    margin-bottom: 0.75rem;
+    font-size: 2.1rem;
+    line-height: 1.12;
+    margin-bottom: 0.6rem;
     color: #ffffff;
 }
 
-.hero-sub {
-    font-size: 1rem;
-    color: #e0e7ff;
-    margin-bottom: 1.15rem;
+.hero-sub-alt {
+    font-size: 0.95rem;
+    color: #a5b4fc;
+    margin-bottom: 0.5rem;
     max-width: 540px;
 }
 
-.hero-sub-alt {
-    font-size: 0.98rem;
-    color: #a5b4fc;
-    margin-bottom: 1.15rem;
+.hero-sub {
+    font-size: 0.95rem;
+    color: #e0e7ff;
+    margin-bottom: 0.75rem;
     max-width: 540px;
 }
 
@@ -369,7 +372,7 @@ body.nav-open {
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
-    margin-bottom: 0.9rem;
+    margin-bottom: 0.6rem;
 }
 
 .hero-buttons .btn {
@@ -388,16 +391,135 @@ body.nav-open {
 }
 
 .trust-badge {
-    margin-top: 0.4rem;
-    font-size: 0.9rem;
+    margin-top: 0.3rem;
+    font-size: 0.85rem;
     opacity: 0.96;
     display: inline-flex;
     align-items: center;
     gap: 8px;
     background-color: rgba(15, 23, 42, 0.45);
-    padding: 6px 12px;
+    padding: 5px 11px;
     border-radius: 999px;
     border: 1px solid rgba(148, 163, 184, 0.9);
+}
+
+/* rechterkant hero */
+.hero-right {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+}
+
+.hero-logo-card {
+    background: rgba(15, 23, 42, 0.9);
+    border-radius: 14px;
+    padding: 14px 16px;
+    border: 1px solid rgba(148, 163, 184, 0.8);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+.hero-logo-img {
+    max-width: 140px;
+    margin-bottom: 8px;
+}
+
+.hero-logo-text {
+    font-size: 0.82rem;
+    color: #d1d5db;
+}
+
+/* USP-cards rechts iets compacter */
+.usp-card-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.usp-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255, 255, 255, 0.1);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+}
+
+.usp-card:hover {
+    background: rgba(255, 255, 255, 0.16);
+    transform: translateX(-2px);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.usp-icon-box {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+
+.usp-icon-box.box-blue {
+    background: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+}
+
+.usp-icon-box.box-green {
+    background: rgba(34, 197, 94, 0.2);
+    color: #4ade80;
+}
+
+.usp-content h4 {
+    color: #ffffff;
+    font-size: 0.95rem;
+    margin-bottom: 1px;
+    font-weight: 700;
+}
+
+.usp-content p {
+    color: #cbd5f5;
+    font-size: 0.8rem;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Hero mobiel – compacter */
+@media (max-width: 768px) {
+    .hero {
+        min-height: unset;
+        padding-top: calc(var(--header-height) + 16px);
+        padding-bottom: 34px;
+        text-align: center;
+    }
+
+    .hero-inner {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .hero-left {
+        margin: 0 auto;
+    }
+
+    .hero-buttons {
+        justify-content: center;
+    }
+
+    .hero-right {
+        max-width: 420px;
+        margin: 0 auto;
+    }
+
+    .btn {
+        width: 100%;
+    }
 }
 
 /* rechterkant */
@@ -1214,5 +1336,93 @@ footer {
 
     footer {
         padding-top: 32px;
+    }
+}
+/* --- HERO COMPACT --- */
+.hero-compact {
+    padding: 110px 0 70px; /* lager */
+    min-height: 420px;
+    display: flex;
+    align-items: center;
+}
+
+.hero-flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+}
+
+.hero-right-compact {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 360px;
+}
+
+/* App card */
+.hero-app-card {
+    background: rgba(15, 23, 42, 0.65);
+    border-radius: 12px;
+    padding: 12px 16px;
+    border: 1px solid rgba(255,255,255,0.25);
+    text-align: center;
+}
+
+.hero-app-card img {
+    max-width: 140px;
+    margin: 0 auto 10px;
+}
+
+.hero-app-card p {
+    color: #d1d5db;
+    font-size: .85rem;
+}
+
+/* USP MINI ICONS */
+.hero-usps-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.usp-mini {
+    flex: 1;
+    background: rgba(255,255,255,0.12);
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.18);
+    text-align: center;
+    color: #fff;
+    font-size: .85rem;
+}
+
+.usp-mini i {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 1.15rem;
+    opacity: .9;
+}
+
+/* MOBIEL */
+@media (max-width: 768px) {
+    .hero-compact {
+        padding: 100px 0 50px;
+        min-height: unset;
+        text-align: center;
+    }
+
+    .hero-flex {
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    .hero-right-compact {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .hero-usps-row {
+        flex-direction: column;
     }
 }

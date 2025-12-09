@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KeylessGo Advanced Strategy Command Center v4.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        slate: { 850: '#1e293b', 950: '#020617' } // Custom darks
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbars for Dashboard Feel */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        
+        body { background-color: #0f172a; color: #e2e8f0; } /* Dark Mode Base */
+        
+        .panel { background-color: #1e293b; border: 1px solid #334155; }
+        .input-group label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8; font-weight: 600; }
+        .input-field { background-color: #0f172a; border: 1px solid #334155; color: white; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; }
+        .input-field:focus { border-color: #0ea5e9; outline: none; }
+        
+        .tab-active { border-bottom: 2px solid #0ea5e9; color: #0ea5e9; }
+        .tab-inactive { border-bottom: 2px solid transparent; color: #64748b; }
+        .tab-inactive:hover { color: #94a3b8; }
+
+        /* Advice Cards */
+        .advice-good { border-left: 4px solid #10b981; background: rgba(16, 185, 129, 0.1); }
+        .advice-warn { border-left: 4px solid #f59e0b; background: rgba(245, 158, 11, 0.1); }
+        .advice-bad { border-left: 4px solid #ef4444; background: rgba(239, 68, 68, 0.1); }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden">
+
+    <!-- Top Bar -->
+    <header class="bg-slate-900 border-b border-slate-800 h-14 flex items-center justify-between px-6 flex-shrink-0">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-sky-600 rounded flex items-center justify-center text-white font-bold">KG</div>
+            <h1 class="font-bold text-lg tracking-wide text-white">Strategy Command Center <span class="text-xs bg-slate-800 text-sky-400 px-2 py-0.5 rounded ml-2">PRO v4.0</span></h1>
+        </div>
+        <div class="flex gap-4 text-xs font-mono text-slate-400">
+            <span>Scenario: <span id="current-scenario-name" class="text-white">Custom</span></span>
+            <span>Horizon: <span class="text-white">2025-2035</span></span>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="flex-1 flex overflow-hidden">
+        
+        <!-- SIDEBAR: PARAMETERS (Scrollable) -->
+        <aside class="w-80 bg-slate-900 border-r border-slate-800 flex flex-col overflow-y-auto z-10">
+            <div class="p-4 space-y-6">
+                
+                <!-- Quick Actions -->
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="setScenario('conservative')" class="px-2 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded text-xs text-slate-300 transition">Conservatief</button>
+                    <button onclick="setScenario('aggressive')" class="px-2 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded text-xs text-slate-300 transition">Aggressief</button>
+                    <button onclick="setScenario('balanced')" class="col-span-2 px-2 py-1.5 bg-sky-900/30 hover:bg-sky-900/50 border border-sky-800 text-sky-400 rounded text-xs transition font-bold">★ Reset: KeylessGo Base Case</button>
+                </div>
+
+                <!-- Group 1: Strategic Assets -->
+                <div class="space-y-3 border-t border-slate-800 pt-4">
+                    <h3 class="text-xs font-bold text-white flex items-center gap-2">🚀 Vloot & Groei</h3>
+                    
+                    <div class="input-group">
+                        <label>Start Vloot (Dec 2025)</label>
+                        <div class="flex items-center gap-2">
+                            <input type="range" id="p-start" min="5" max="50" class="flex-1 h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer" oninput="syncVal('p-start', 'v-start'); runModel()">
+                            <input type="number" id="v-start" class="input-field w-12 text-center rounded" value="10" onchange="syncVal('v-start', 'p-start'); runModel()">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Jaarlijkse Groei (%)</label>
+                        <div class="flex items-center gap-2">
+                            <input type="range" id="p-growth" min="0" max="100" class="flex-1 h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer" oninput="syncVal('p-growth', 'v-growth'); runModel()">
+                            <input type="number" id="v-growth" class="input-field w-12 text-center rounded" value="25" onchange="syncVal('v-growth', 'p-growth'); runModel()">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Mix: Busjes (%)</label>
+                        <div class="flex items-center gap-2">
+                            <input type="range" id="p-mix" min="0" max="100" class="flex-1 h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer" oninput="syncVal('p-mix', 'v-mix'); runModel()">
+                            <input type="number" id="v-mix" class="input-field w-12 text-center rounded" value="70" onchange="syncVal('v-mix', 'p-mix'); runModel()">
+                        </div>
+                        <p class="text-[10px] text-slate-500 mt-1">Advies: >70% voor maximale marge.</p>
+                    </div>
+                </div>
+
+                <!-- Group 2: Unit Economics -->
+                <div class="space-y-3 border-t border-slate-800 pt-4">
+                    <h3 class="text-xs font-bold text-white flex items-center gap-2">💶 Pricing & Bezettingsgraad</h3>
+                    
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="input-group">
+                            <label>Prijs Bus (€)</label>
+                            <input type="number" id="v-price-bus" class="input-field w-full px-2 py-1 rounded" value="85" onchange="runModel()">
+                        </div>
+                        <div class="input-group">
+                            <label>Prijs Auto (€)</label>
+                            <input type="number" id="v-price-car" class="input-field w-full px-2 py-1 rounded" value="45" onchange="runModel()">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Start Bezetting (%)</label>
+                        <input type="range" id="p-occ" min="15" max="70" class="w-full h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer mb-1" oninput="syncVal('p-occ', 'v-occ'); runModel()">
+                        <div class="flex justify-between text-xs text-slate-400">
+                            <span id="v-occ">35%</span>
+                            <span>(Stijgt naar 45% in jaar 3)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Group 3: Costs & Risk -->
+                <div class="space-y-3 border-t border-slate-800 pt-4">
+                    <h3 class="text-xs font-bold text-white flex items-center gap-2">⚠️ Kosten & Risico's</h3>
+                    
+                    <div class="input-group">
+                        <label>SnappCar Fee (%)</label>
+                        <input type="number" id="v-fee" class="input-field w-full px-2 py-1 rounded" value="30" onchange="runModel()">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Onvoorzien Buffer (% Omzet)</label>
+                        <input type="number" id="v-buffer" class="input-field w-full px-2 py-1 rounded" value="5" onchange="runModel()">
+                    </div>
+                </div>
+
+                <!-- Group 4: Macro Economics -->
+                <div class="space-y-3 border-t border-slate-800 pt-4 pb-10">
+                    <h3 class="text-xs font-bold text-white flex items-center gap-2">🌍 Macro Parameters</h3>
+                    
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="input-group">
+                            <label>Inflatie (CPI)</label>
+                            <input type="number" id="v-inf" class="input-field w-full px-2 py-1 rounded" value="2.5" step="0.1" onchange="runModel()">
+                        </div>
+                        <div class="input-group">
+                            <label>Vennootschapsbelasting</label>
+                            <input type="number" id="v-tax" class="input-field w-full px-2 py-1 rounded" value="19" step="1" onchange="runModel()">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </aside>
+
+        <!-- CONTENT AREA -->
+        <main class="flex-1 flex flex-col min-w-0 bg-slate-950">
+            
+            <!-- Dashboard Tabs -->
+            <div class="flex border-b border-slate-800 bg-slate-900/50 px-6">
+                <button class="px-6 py-4 text-sm font-medium tab-active transition" onclick="switchTab('dashboard', this)">📊 Financieel Dashboard</button>
+                <button class="px-6 py-4 text-sm font-medium tab-inactive transition" onclick="switchTab('operational', this)">🚐 Operationeel & Vloot</button>
+                <button class="px-6 py-4 text-sm font-medium tab-inactive transition" onclick="switchTab('data', this)">🔢 Data Grid (Export)</button>
+            </div>
+
+            <!-- Scrollable Content -->
+            <div class="flex-1 overflow-y-auto p-6 scroll-smooth">
+                
+                <!-- VIEW 1: FINANCIAL DASHBOARD -->
+                <div id="view-dashboard" class="space-y-6 animate-fade-in">
+                    
+                    <!-- KPI Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="panel rounded-xl p-4 relative overflow-hidden">
+                            <div class="absolute right-0 top-0 p-4 opacity-10 text-6xl">💰</div>
+                            <h4 class="text-slate-400 text-xs font-bold uppercase">Cumulatieve Cashflow (Yr 10)</h4>
+                            <div class="text-2xl font-mono font-bold text-white mt-1" id="kpi-cashflow">€ 1.4M</div>
+                            <div class="text-xs text-green-400 mt-2 flex items-center">Target: > €1.0M</div>
+                        </div>
+
+                        <div class="panel rounded-xl p-4 relative overflow-hidden">
+                            <div class="absolute right-0 top-0 p-4 opacity-10 text-6xl">📈</div>
+                            <h4 class="text-slate-400 text-xs font-bold uppercase">Netto Marge (Yr 1 vs Yr 10)</h4>
+                            <div class="text-2xl font-mono font-bold text-white mt-1">
+                                <span id="kpi-margin-start" class="text-slate-400 text-lg">12%</span> 
+                                <span class="text-slate-600 mx-1">→</span> 
+                                <span id="kpi-margin-end" class="text-green-400">34%</span>
+                            </div>
+                            <div class="text-xs text-slate-500 mt-2">Dankzij J-Curve Effect</div>
+                        </div>
+
+                        <div class="panel rounded-xl p-4 relative overflow-hidden">
+                            <div class="absolute right-0 top-0 p-4 opacity-10 text-6xl">🛡</div>
+                            <h4 class="text-slate-400 text-xs font-bold uppercase">Break-Even (Bus)</h4>
+                            <div class="text-2xl font-mono font-bold text-white mt-1" id="kpi-breakeven">28%</div>
+                            <div class="text-xs text-slate-500 mt-2">Huidige Bezetting: <span id="kpi-occ-current" class="text-sky-400 font-bold">35%</span></div>
+                        </div>
+
+                        <div class="panel rounded-xl p-4 relative overflow-hidden">
+                            <div class="absolute right-0 top-0 p-4 opacity-10 text-6xl">🏢</div>
+                            <h4 class="text-slate-400 text-xs font-bold uppercase">Activawaarde (Einde)</h4>
+                            <div class="text-2xl font-mono font-bold text-white mt-1" id="kpi-assets">€ 850k</div>
+                            <div class="text-xs text-slate-500 mt-2">Restwaarde eigendom</div>
+                        </div>
+                    </div>
+
+                    <!-- Main Charts Row -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- P&L Chart -->
+                        <div class="panel rounded-xl p-5 lg:col-span-2">
+                            <h3 class="text-white font-bold text-sm mb-4">Winst & Verlies Evolutie (10 Jaar)</h3>
+                            <div class="h-72 w-full">
+                                <canvas id="chart-pl"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Strategic Advice Panel -->
+                        <div class="panel rounded-xl p-5 flex flex-col">
+                            <h3 class="text-white font-bold text-sm mb-4 flex items-center gap-2">🤖 AI Strategisch Advies</h3>
+                            <div id="advice-container" class="space-y-3 flex-1 overflow-y-auto pr-2">
+                                <!-- Dynamic Advice Injected Here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Breakdown -->
+                    <div class="panel rounded-xl p-5">
+                         <h3 class="text-white font-bold text-sm mb-4">Kostenstructuur Analyse (Stapeling)</h3>
+                         <div class="h-64 w-full">
+                             <canvas id="chart-costs"></canvas>
+                         </div>
+                    </div>
+
+                </div>
+
+                <!-- VIEW 2: OPERATIONAL -->
+                <div id="view-operational" class="hidden space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="panel rounded-xl p-5">
+                            <h3 class="text-white font-bold text-sm mb-4">Vloot Groei & Samenstelling</h3>
+                            <div class="h-80 w-full">
+                                <canvas id="chart-fleet"></canvas>
+                            </div>
+                        </div>
+                        <div class="panel rounded-xl p-5">
+                            <h3 class="text-white font-bold text-sm mb-4">Lease Status (Asset-Backed vs. Schuld)</h3>
+                            <p class="text-xs text-slate-400 mb-4">Toont hoeveel voertuigen nog in de lease zitten vs. volledig eigendom (leasevrij).</p>
+                            <div class="h-80 w-full">
+                                <canvas id="chart-lease-status"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW 3: DATA GRID -->
+                <div id="view-data" class="hidden">
+                    <div class="panel rounded-xl overflow-hidden border-0">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm text-slate-400" id="data-table">
+                                <thead class="bg-slate-800 text-xs uppercase font-bold text-white">
+                                    <tr>
+                                        <th class="px-4 py-3">Jaar</th>
+                                        <th class="px-4 py-3 text-right">Vloot</th>
+                                        <th class="px-4 py-3 text-right">Omzet</th>
+                                        <th class="px-4 py-3 text-right">SnappCar Fee</th>
+                                        <th class="px-4 py-3 text-right">Lease</th>
+                                        <th class="px-4 py-3 text-right">Ops & Risk</th>
+                                        <th class="px-4 py-3 text-right">EBITDA</th>
+                                        <th class="px-4 py-3 text-right">Netto Winst</th>
+                                        <th class="px-4 py-3 text-right">Cum. Cash</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-800 font-mono text-xs" id="table-body">
+                                    <!-- JS Generated -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC ENGINE -->
+    <script>
+        // --- GLOBAL VARIABLES & CHARTS ---
+        let chartPL, chartCosts, chartFleet, chartLeaseStatus;
+
+        // --- HELPER FUNCTIONS ---
+        const formatCurrency = (val) => new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(val);
+        const formatPct = (val) => val + '%';
+        const syncVal = (src, dest) => document.getElementById(dest).value = document.getElementById(src).value;
+
+        function switchTab(viewId, btn) {
+            // Hide all views
+            ['dashboard', 'operational', 'data'].forEach(id => document.getElementById('view-'+id).classList.add('hidden'));
+            // Show selected
+            document.getElementById('view-'+viewId).classList.remove('hidden');
+            
+            // Reset buttons
+            document.querySelectorAll('button').forEach(b => {
+                if(b.classList.contains('tab-active')) {
+                    b.classList.remove('tab-active');
+                    b.classList.add('tab-inactive');
+                }
+            });
+            // Activate button
+            btn.classList.remove('tab-inactive');
+            btn.classList.add('tab-active');
+        }
+
+        function setScenario(type) {
+            const inputs = {
+                'start': 10, 'growth': 25, 'mix': 70, 'price-bus': 85, 'price-car': 45, 'occ': 35, 'fee': 30, 'buffer': 5, 'inf': 2.5, 'tax': 19
+            };
+
+            if (type === 'conservative') {
+                inputs['growth'] = 10;
+                inputs['occ'] = 30;
+                inputs['buffer'] = 8;
+                document.getElementById('current-scenario-name').innerText = "Conservatief";
+            } else if (type === 'aggressive') {
+                inputs['growth'] = 40;
+                inputs['occ'] = 40;
+                inputs['start'] = 15;
+                document.getElementById('current-scenario-name').innerText = "Aggressief";
+            } else {
+                document.getElementById('current-scenario-name').innerText = "Base Case (KeylessGo Plan)";
+            }
+
+            // Apply values
+            document.getElementById('v-start').value = inputs['start']; document.getElementById('p-start').value = inputs['start'];
+            document.getElementById('v-growth').value = inputs['growth']; document.getElementById('p-growth').value = inputs['growth'];
+            document.getElementById('v-mix').value = inputs['mix']; document.getElementById('p-mix').value = inputs['mix'];
+            document.getElementById('v-price-bus').value = inputs['price-bus'];
+            document.getElementById('v-price-car').value = inputs['price-car'];
+            document.getElementById('v-occ').value = inputs['occ']; document.getElementById('p-occ').value = inputs['occ'];
+            document.getElementById('v-fee').value = inputs['fee'];
+            document.getElementById('v-buffer').value = inputs['buffer'];
+            document.getElementById('v-inf').value = inputs['inf'];
+            document.getElementById('v-tax').value = inputs['tax'];
+
+            runModel();
+        }
+
+        // --- CORE MODELING ENGINE ---
+        function runModel() {
+            // 1. GET INPUTS
+            const startSize = parseInt(document.getElementById('v-start').value);
+            const growthRate = parseInt(document.getElementById('v-growth').value) / 100;
+            const mixBus = parseInt(document.getElementById('v-mix').value) / 100;
+            const startOcc = parseInt(document.getElementById('v-occ').value) / 100;
+            const pBus = parseInt(document.getElementById('v-price-bus').value);
+            const pCar = parseInt(document.getElementById('v-price-car').value);
+            const feeRate = parseInt(document.getElementById('v-fee').value) / 100;
+            const bufferRate = parseInt(document.getElementById('v-buffer').value) / 100;
+            const inflation = parseInt(document.getElementById('v-inf').value) / 100;
+            const taxRate = parseInt(document.getElementById('v-tax').value) / 100;
+
+            // Constants (Base Costs)
+            const LEASE_BUS = 450; const LEASE_CAR = 255;
+            const FIXED_OPS_BUS = 48; const FIXED_OPS_CAR = 38; // Ins+HW
+            const VAR_OPS_BUS = 80; const VAR_OPS_CAR = 60;
+
+            // Arrays for Data
+            const years = [];
+            const dRevenue = []; const dNetProfit = []; const dCumCash = [];
+            const dFleetTotal = []; const dFleetLeased = []; const dFleetOwned = [];
+            const dCostFee = []; const dCostLease = []; const dCostOps = []; const dCostTax = [];
+
+            let runningCash = 0;
+            let currentFleetSize = startSize;
+            
+            // Cohort Tracking for Lease Expiry (Index 0 = Year 1 cohort)
+            // Each entry is { count: int, type: 'bus'|'car', age: int }
+            let fleetCohorts = [];
+
+            // Initialize Year 1 Cohort
+            fleetCohorts.push({
+                count: startSize,
+                buses: Math.round(startSize * mixBus),
+                cars: startSize - Math.round(startSize * mixBus),
+                age: 0
+            });
+
+            // --- 10 YEAR SIMULATION LOOP ---
+            for (let i = 0; i < 10; i++) {
+                const year = 2025 + i;
+                years.push(year);
+
+                // 1. Fleet Dynamics (Growth)
+                if (i > 0) {
+                    const newVehicles = Math.round(currentFleetSize * growthRate);
+                    currentFleetSize += newVehicles;
+                    // Add new cohort
+                    fleetCohorts.push({
+                        count: newVehicles,
+                        buses: Math.round(newVehicles * mixBus),
+                        cars: newVehicles - Math.round(newVehicles * mixBus),
+                        age: 0
+                    });
+                }
+                
+                // Age all cohorts
+                fleetCohorts.forEach(c => c.age++);
+
+                // 2. Lease Calc (Only pay lease if age <= 5)
+                let activeLeaseBus = 0;
+                let activeLeaseCar = 0;
+                let ownedBus = 0;
+                let ownedCar = 0;
+
+                fleetCohorts.forEach(c => {
+                    if (c.age <= 5) {
+                        activeLeaseBus += c.buses;
+                        activeLeaseCar += c.cars;
+                    } else {
+                        ownedBus += c.buses;
+                        ownedCar += c.cars;
+                    }
+                });
+
+                const totalBus = activeLeaseBus + ownedBus;
+                const totalCar = activeLeaseCar + ownedCar;
+
+                // 3. Operational Logic (Inflation & Occupancy Ramp-up)
+                // Occupancy starts at startOcc, grows to cap of 55% over 4 years
+                let effectiveOcc = Math.min(0.55, startOcc + (i * 0.05));
+                // Price Inflation
+                let effPBus = pBus * Math.pow(1 + inflation, i);
+                let effPCar = pCar * Math.pow(1 + inflation, i);
+                
+                // 4. Revenue
+                const revBus = totalBus * 30.5 * effectiveOcc * effPBus;
+                const revCar = totalCar * 30.5 * effectiveOcc * effPCar;
+                const totalRev = (revBus + revCar) * 12; // Annual
+
+                // 5. Costs
+                const costFee = totalRev * feeRate;
+                const costLease = ((activeLeaseBus * LEASE_BUS) + (activeLeaseCar * LEASE_CAR)) * 12;
+                
+                // Ops Costs (Inflate over time + Age penalty for owned cars)
+                let baseOps = (((totalBus * FIXED_OPS_BUS) + (totalCar * FIXED_OPS_CAR)) + ((totalBus * VAR_OPS_BUS) + (totalCar * VAR_OPS_CAR))) * 12;
+                baseOps = baseOps * Math.pow(1 + inflation, i);
+                const agePenalty = (ownedBus + ownedCar) * 500; // Extra maintenance per year for old cars
+                const riskBuffer = totalRev * bufferRate;
+                const totalOps = baseOps + agePenalty + riskBuffer;
+
+                // 6. Profit
+                const ebitda = totalRev - costFee - totalOps;
+                // Tax (only on profit after lease interest - simplifying: Tax on (EBITDA - Lease))
+                // Note: Lease payment is part principal part interest, but for simplicity we deduct full lease for "Pre-Tax Cashflow" then tax the remainder if positive
+                let taxableIncome = ebitda - costLease;
+                let tax = taxableIncome > 0 ? taxableIncome * taxRate : 0;
+                
+                const netProfit = taxableIncome - tax;
+                runningCash += netProfit;
+
+                // 7. Store Data
+                dRevenue.push(totalRev);
+                dNetProfit.push(netProfit);
+                dCumCash.push(runningCash);
+                dFleetTotal.push(totalBus + totalCar);
+                dFleetLeased.push(activeLeaseBus + activeLeaseCar);
+                dFleetOwned.push(ownedBus + ownedCar);
+                
+                dCostFee.push(costFee);
+                dCostLease.push(costLease);
+                dCostOps.push(totalOps);
+                dCostTax.push(tax);
+            }
+
+            // --- RENDER UI ---
+            renderKPIs(dCumCash, dNetProfit, dRevenue, startOcc, dFleetOwned, pBus);
+            renderCharts(years, dRevenue, dNetProfit, dCostFee, dCostLease, dCostOps, dCostTax, dFleetLeased, dFleetOwned);
+            renderTable(years, dFleetTotal, dRevenue, dCostFee, dCostLease, dCostOps, dNetProfit, dCumCash);
+            generateAdvice(dNetProfit, dCumCash, mixBus, startOcc, bufferRate);
+        }
+
+        function renderKPIs(cash, profit, rev, occ, owned, busPrice) {
+            document.getElementById('kpi-cashflow').innerText = formatCurrency(cash[9]);
+            
+            // Margin Calc
+            const marginStart = (profit[0] / rev[0]) * 100;
+            const marginEnd = (profit[9] / rev[9]) * 100;
+            document.getElementById('kpi-margin-start').innerText = marginStart.toFixed(1) + '%';
+            document.getElementById('kpi-margin-end').innerText = marginEnd.toFixed(1) + '%';
+
+            // Break Even Logic (Simplified for Bus)
+            // Fixed cost approx = 450 + 48 + 80 = 578
+            // Rev per 1% occ = 30.5 * 0.01 * busPrice (~25 eur)
+            // BE = 578 / 25 = ~23%
+            const be = 578 / (30.5 * 0.01 * busPrice);
+            document.getElementById('kpi-breakeven').innerText = Math.round(be) + '%';
+            document.getElementById('kpi-occ-current').innerText = Math.round(occ*100) + '%';
+
+            // Asset Value (Conservative: 5k per owned vehicle)
+            const assets = owned[9] * 5000;
+            document.getElementById('kpi-assets').innerText = formatCurrency(assets);
+        }
+
+        function generateAdvice(profits, cash, mix, occ, buffer) {
+            const container = document.getElementById('advice-container');
+            container.innerHTML = ''; // Clear
+
+            const addCard = (title, text, type) => {
+                const div = document.createElement('div');
+                div.className = `p-3 rounded bg-slate-800 text-sm ${type === 'good' ? 'advice-good' : type === 'warn' ? 'advice-warn' : 'advice-bad'}`;
+                div.innerHTML = `<strong class="block mb-1 text-slate-200">${title}</strong><span class="text-slate-400 text-xs">${text}</span>`;
+                container.appendChild(div);
+            };
+
+            // 1. Liquidity Check
+            if (cash[0] < 0 || cash[1] < 0) {
+                addCard('⚠️ Liquiditeitsalarm (Jaar 1-2)', 'De cashflow is negatief in de startfase. Verhoog de start-bezettingsgraad of verlaag de kosten. Overweeg meer eigen inbreng.', 'bad');
+            } else if (cash[9] > 1000000) {
+                addCard('✅ Exponentiële Groei', 'Het compounding effect van herinvestering werkt uitstekend. U overtreft de €1M cashflow doelstelling.', 'good');
+            }
+
+            // 2. Mix Check
+            if (mix < 0.6) {
+                addCard('🛑 Vlootmix Waarschuwing', `U heeft slechts ${Math.round(mix*100)}% bussen. Dit verlaagt de winstgevendheid drastisch. Het KeylessGo model vereist minimaal 70% LCV's.`, 'bad');
+            } else {
+                addCard('✅ Vlootmix Optimaal', 'De focus op bussen maximaliseert de marge per voertuig.', 'good');
+            }
+
+            // 3. Risk
+            if (buffer < 0.05) {
+                addCard('⚠️ Risico Buffer Te Laag', 'Een buffer van <5% is gevaarlijk voor eigen risico en schades. Verhoog dit voor een realistischer beeld.', 'warn');
+            }
+
+            // 4. J-Curve
+            if (profits[5] > profits[4] * 1.3) {
+                 addCard('📈 J-Curve Effect Zichtbaar', 'In jaar 6 ziet u een enorme winstsprong doordat de eerste tranche voertuigen leasevrij wordt. Dit is het strategische kantelpunt.', 'good');
+            }
+        }
+
+        function renderTable(years, fleet, rev, fee, lease, ops, net, cum) {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+
+            years.forEach((y, i) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="px-4 py-2 font-bold text-white">${y}</td>
+                    <td class="px-4 py-2 text-right">${fleet[i]}</td>
+                    <td class="px-4 py-2 text-right text-slate-300">${formatCurrency(rev[i])}</td>
+                    <td class="px-4 py-2 text-right text-red-400/70">${formatCurrency(fee[i])}</td>
+                    <td class="px-4 py-2 text-right text-slate-500">${formatCurrency(lease[i])}</td>
+                    <td class="px-4 py-2 text-right text-slate-500">${formatCurrency(ops[i])}</td>
+                    <td class="px-4 py-2 text-right font-bold text-white">${formatCurrency(rev[i] - fee[i] - ops[i])}</td>
+                    <td class="px-4 py-2 text-right font-bold ${net[i] >= 0 ? 'text-green-400' : 'text-red-400'}">${formatCurrency(net[i])}</td>
+                    <td class="px-4 py-2 text-right font-bold text-sky-400">${formatCurrency(cum[i])}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderCharts(labels, rev, profit, cFee, cLease, cOps, cTax, fLeased, fOwned) {
+            // Chart 1: P&L
+            const ctxPL = document.getElementById('chart-pl').getContext('2d');
+            if(chartPL) chartPL.destroy();
+            chartPL = new Chart(ctxPL, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'Omzet', data: rev, borderColor: '#334155', borderDash: [5,5], tension: 0.4, pointRadius: 0 },
+                        { label: 'Netto Winst', data: profit, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.4 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } }, scales: { y: { grid: { color: '#1e293b' } }, x: { grid: { display: false } } } }
+            });
+
+            // Chart 2: Costs Stacked
+            const ctxCosts = document.getElementById('chart-costs').getContext('2d');
+            if(chartCosts) chartCosts.destroy();
+            chartCosts = new Chart(ctxCosts, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'SnappCar Fee', data: cFee, backgroundColor: '#ef4444' },
+                        { label: 'Lease', data: cLease, backgroundColor: '#64748b' },
+                        { label: 'Ops & Risk', data: cOps, backgroundColor: '#f59e0b' },
+                        { label: 'Belasting', data: cTax, backgroundColor: '#6366f1' }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, grid: { color: '#1e293b' } } } }
+            });
+
+            // Chart 3: Fleet
+            const ctxFleet = document.getElementById('chart-fleet').getContext('2d');
+            if(chartFleet) chartFleet.destroy();
+            chartFleet = new Chart(ctxFleet, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{ label: 'Totale Vloot', data: labels.map((_, i) => fLeased[i] + fOwned[i]), borderColor: '#0ea5e9', backgroundColor: '#0ea5e9', tension: 0.1 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#1e293b' } } } }
+            });
+
+            // Chart 4: Lease Status
+            const ctxLease = document.getElementById('chart-lease-status').getContext('2d');
+            if(chartLeaseStatus) chartLeaseStatus.destroy();
+            chartLeaseStatus = new Chart(ctxLease, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'In de Lease (Schuld)', data: fLeased, backgroundColor: '#ef4444' },
+                        { label: 'Eigendom (Leasevrij)', data: fOwned, backgroundColor: '#10b981' }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, grid: { color: '#1e293b' } } } }
+            });
+        }
+
+        // Init
+        window.addEventListener('DOMContentLoaded', runModel);
+    </script>
+</body>
+</html>
