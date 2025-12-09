@@ -655,6 +655,7 @@ body.nav-open {
     gap: 26px;
 }
 
+/* START WIJZIGINGEN VOOR .fleet-card */
 .fleet-card {
     background: #ffffff;
     border-radius: 12px;
@@ -663,7 +664,14 @@ body.nav-open {
     display: flex;
     flex-direction: column;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease; /* Toegevoegd voor de animatie */
 }
+
+.fleet-card:hover { /* Nieuwe hover-stijl */
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+/* EINDE WIJZIGINGEN VOOR .fleet-card */
 
 .fleet-card img {
     width: 100%;
@@ -1546,5 +1554,55 @@ footer {
     .hero-usps {
         flex-direction: column;
         align-items: center;
+    }
+}
+
+/* =========================================
+   NIEUW: HOW IT WORKS SUMMARY
+========================================= */
+.how-grid-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px;
+    margin-top: 30px;
+}
+
+.how-summary-card {
+    background: #ffffff;
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 6px 15px rgba(15, 23, 42, 0.05);
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.how-summary-card:hover {
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+    transform: translateY(-3px);
+    border-color: rgba(255, 122, 0, 0.2);
+}
+
+.how-icon-circle-new {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--accent-orange);
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 4px var(--accent-orange);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 auto 15px auto;
+    font-size: 1.1rem;
+}
+
+/* Responsive aanpassing voor mobiel */
+@media (max-width: 768px) {
+    .how-grid-summary {
+        grid-template-columns: 1fr;
+        gap: 16px;
     }
 }

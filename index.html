@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="KeylessGo biedt moderne deelauto's en busjes in de regio Utrecht. Boek via SnappCar en stap direct in, volledig keyless.">
 
-    <!-- Leaflet CSS (kaart) -->
     <link
         rel="stylesheet"
         href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -14,14 +13,12 @@
         crossorigin=""
     />
 
-    <!-- Font Awesome voor iconen -->
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         referrerpolicy="no-referrer"
     />
 
-    <!-- Eigen stylesheet -->
     <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
 <body>
@@ -64,11 +61,9 @@
 </header>
 
 <main>
-    <!-- HERO -->
-  <section class="hero hero-new">
+    <section class="hero hero-new">
     <div class="container hero-grid">
 
-        <!-- LINKERKANT -->
         <div class="hero-left">
             <span class="hero-eyebrow">24/7 BUSJES & AUTO VERHUUR</span>
 
@@ -92,14 +87,12 @@
             </div>
         </div>
 
-        <!-- RECHTERKANT -->
         <div class="hero-right-image">
             <img src="img/partner/KEYLESSGO_TRANSPORTER.png" alt="KeylessGo Transporter" class="hero-vehicle" />
         </div>
 
     </div>
 
-    <!-- USP CARDS -->
     <div class="container hero-usps">
         <div class="usp-card">
             <i class="fa-solid fa-mobile-screen usp-icon"></i>
@@ -125,8 +118,41 @@
     </div>
 </section>
 
-    <!-- KAART-OVERZICHT -->
-    <section class="map-section" id="zoek-en-boek">
+<section id="hoe-werkt-het-summary" class="py-20 bg-white">
+    <div class="container">
+        <h2 class="text-3xl font-bold text-center mb-4">4 Stappen naar Keyless Rijden</h2>
+        <p class="section-sub">
+            Het KeylessGo-proces is volledig geoptimaliseerd voor snelheid en gemak via de SnappCar app.
+        </p>
+
+        <div class="how-grid-summary">
+            <div class="how-summary-card">
+                <div class="how-icon-circle-new">1</div>
+                <h3 class="text-lg font-bold">Boek & Bevestig</h3>
+                <p class="text-sm">Vind het voertuig op een KeylessGo hotspot en boek via de SnappCar app. Geen wachttijd.</p>
+            </div>
+            <div class="how-summary-card">
+                <div class="how-icon-circle-new">2</div>
+                <h3 class="text-lg font-bold">Check-in & Foto's</h3>
+                <p class="text-sm">Maak foto's van de auto via de app. Dit is je digitale sleutel tot het Keyless systeem.</p>
+            </div>
+            <div class="how-summary-card">
+                <div class="how-icon-circle-new">3</div>
+                <h3 class="text-lg font-bold">Open via App</h3>
+                <p class="text-sm">Druk op de oranje 'Unlock' knop in de app. Stap in, start de motor en rij direct weg.</p>
+            </div>
+            <div class="how-summary-card">
+                <div class="how-icon-circle-new">4</div>
+                <h3 class="text-lg font-bold">Sluiten & Inleveren</h3>
+                <p class="text-sm">Parkeer terug op de hotspot, sluit af via de app ('Check-uit') en de boeking is voltooid.</p>
+            </div>
+        </div>
+         <div class="text-center mt-12">
+            <a href="hoe-werkt-het.html" class="btn btn-secondary">Bekijk het volledige stappenplan <i class="fa-solid fa-arrow-right ml-2"></i></a>
+        </div>
+    </div>
+</section>
+<section class="map-section" id="zoek-en-boek">
         <div class="container">
             <h2>Zoek &amp; boek een voertuig in jouw buurt</h2>
             <p class="section-sub">
@@ -180,7 +206,6 @@
         </div>
     </section>
 
-    <!-- ONZE VLOOT -->
     <section class="fleet-section" id="onze-vloot">
         <div class="container">
             <h2>Onze KeylessGo vloot</h2>
@@ -189,7 +214,6 @@
             </p>
 
             <div class="fleet-grid">
-                <!-- Busje Small -->
                 <article class="fleet-card">
                     <img src="img\fleet\van-small.jpg" alt="Busje Small huren – KeylessGo">
                     <div class="fleet-card-body">
@@ -213,7 +237,6 @@
                     </div>
                 </article>
 
-                <!-- Busje Medium -->
                 <article class="fleet-card">
                     <img src="img\fleet\van-medium.jpg" alt="Busje Medium – VW Transporter huren">
                     <div class="fleet-card-body">
@@ -237,7 +260,6 @@
                     </div>
                 </article>
 
-                <!-- Busje Large -->
                 <article class="fleet-card">
                     <img src="img\fleet\van-large.jpg" alt="Busje Large – vlootoverzicht">
                     <div class="fleet-card-body">
@@ -261,7 +283,6 @@
                     </div>
                 </article>
 
-                <!-- Auto -->
                 <article class="fleet-card">
                     <img src="img\fleet\compact.jpg" alt="Stadsauto huren – KeylessGo">
                     <div class="fleet-card-body">
@@ -285,7 +306,6 @@
                     </div>
                 </article>
 
-                <!-- Elektrisch -->
                 <article class="fleet-card">
                     <img src="img/fleet/ev.jpg" alt="Elektrische auto huren – KeylessGo">
                     <div class="fleet-card-body">
@@ -309,7 +329,6 @@
                     </div>
                 </article>
 
-                <!-- Allianz / vertrouwen -->
                 <article class="fleet-card">
                     <img src="img/partner/Allianz-1-720x594.png" alt="Allianz verzekering">
                     <div class="fleet-card-body">
@@ -335,7 +354,6 @@
         </div>
     </section>
 
-    <!-- WAAROM KEYLESSGO -->
     <section class="usp-blocks" id="waarom-keylessgo">
         <div class="container">
             <h2>Waarom huren via KeylessGo?</h2>
@@ -406,15 +424,12 @@
     </div>
 </footer>
 
-<!-- Leaflet JS -->
-    <!-- Leaflet JS -->
-    <script
+<script
         src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
         crossorigin=""
     ></script>
 
-    <!-- KeylessGo data + map + filterlogica -->
     <script src="assets/js/fleet.js"></script>
     <script src="assets/js/map.js"></script>
     <script src="assets/js/find-vehicle.js"></script>
