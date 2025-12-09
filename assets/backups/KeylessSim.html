@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="nl" class="dark">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KeylessGo Ultimate Fleet Intelligence v8.1</title>
+    <title>KeylessGo Ultimate Fleet Intelligence v8.2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -26,62 +26,71 @@
     <style>
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
-        body { @apply bg-slate-950 text-slate-200; font-size: 13px; }
-        .panel { @apply bg-slate-900 border border-slate-800 shadow-sm rounded-lg; }
-        .input-group label { @apply text-[10px] uppercase tracking-wider font-bold text-slate-500 block mb-1; }
-        .input-field { @apply w-full bg-slate-950 border border-slate-700 text-white text-xs rounded px-2 py-1.5 focus:border-sky-500 focus:outline-none transition-colors font-mono; }
-        .tab-active { @apply border-b-2 border-sky-500 text-sky-400 bg-sky-900/10; }
-        .tab-inactive { @apply border-b-2 border-transparent text-slate-500 hover:text-slate-300 hover:bg-slate-800; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+        
+        body { @apply bg-gray-50 text-slate-800 dark:bg-slate-950 dark:text-slate-200; font-size: 13px; }
+        .panel { @apply bg-white border border-gray-200 dark:bg-slate-900 dark:border-slate-800 shadow-sm rounded-lg transition-colors; }
+        .input-group label { @apply text-[10px] uppercase tracking-wider font-bold text-slate-500 dark:text-slate-500 block mb-1; }
+        .input-field { @apply w-full bg-gray-50 border border-gray-300 text-slate-900 text-xs rounded px-2 py-1.5 focus:border-sky-500 focus:outline-none transition-colors font-mono dark:bg-slate-950 dark:border-slate-700 dark:text-white; }
+        .tab-active { @apply border-b-2 border-sky-500 text-sky-600 bg-sky-50 dark:text-sky-400 dark:bg-sky-900/10; }
+        .tab-inactive { @apply border-b-2 border-transparent text-slate-500 hover:text-slate-700 hover:bg-gray-100 dark:text-slate-500 dark:hover:text-slate-300 dark:hover:bg-slate-800; }
         .metric-label { @apply text-[10px] uppercase font-bold text-slate-500 tracking-wider; }
-        .metric-value { @apply text-xl font-mono font-bold text-white mt-1; }
-        .risk-gauge { height: 6px; border-radius: 3px; background: #334155; overflow: hidden; margin-top: 8px; }
+        .metric-value { @apply text-xl font-mono font-bold text-slate-800 dark:text-white mt-1; }
+        .risk-gauge { height: 6px; border-radius: 3px; background: #e2e8f0; dark:background-slate-700; overflow: hidden; margin-top: 8px; }
         .risk-fill { height: 100%; transition: width 0.5s ease; }
     </style>
 </head>
 <body class="h-screen flex flex-col overflow-hidden">
 
     <!-- Header -->
-    <header class="bg-slate-900 border-b border-slate-800 h-14 flex items-center justify-between px-6 flex-shrink-0 z-20">
+    <header class="bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 h-14 flex items-center justify-between px-6 flex-shrink-0 z-20">
         <div class="flex items-center gap-3">
             <div class="w-8 h-8 bg-gradient-to-br from-sky-600 to-blue-700 rounded flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-sky-900/50">KG</div>
             <div>
-                <h1 class="font-bold text-sm text-white tracking-wide leading-tight">KeylessGo Fleet Intelligence</h1>
-                <div class="text-[10px] text-sky-500 font-mono font-bold">v8.1 ULTIMATE</div>
+                <h1 class="font-bold text-sm text-slate-800 dark:text-white tracking-wide leading-tight">KeylessGo Fleet Intelligence</h1>
+                <div class="text-[10px] text-sky-600 dark:text-sky-500 font-mono font-bold">v8.2 ULTIMATE (Light)</div>
             </div>
         </div>
         
-        <div class="flex items-center gap-8">
+        <div class="flex items-center gap-8 text-slate-600 dark:text-slate-400">
             <div class="flex flex-col items-end">
-                <span class="text-[9px] uppercase text-slate-500 font-bold">Startdatum</span>
-                <span class="text-xs font-mono text-white" id="disp-start-date">Maart 2026</span>
+                <span class="text-[9px] uppercase text-slate-400 font-bold">Startdatum</span>
+                <span class="text-xs font-mono font-bold text-slate-800 dark:text-white" id="disp-start-date">Maart 2026</span>
             </div>
             <div class="flex flex-col items-end">
-                <span class="text-[9px] uppercase text-slate-500 font-bold">Horizon</span>
-                <span class="text-xs font-mono text-white" id="disp-horizon">10 Jaar</span>
+                <span class="text-[9px] uppercase text-slate-400 font-bold">Horizon</span>
+                <span class="text-xs font-mono font-bold text-slate-800 dark:text-white" id="disp-horizon">10 Jaar</span>
             </div>
             <div class="flex flex-col items-end">
-                <span class="text-[9px] uppercase text-slate-500 font-bold">Betrouwbaarheid</span>
+                <span class="text-[9px] uppercase text-slate-400 font-bold">Betrouwbaarheid</span>
                 <div class="flex items-center gap-2">
-                    <div class="w-16 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                    <div class="w-16 h-1.5 bg-gray-200 dark:bg-slate-800 rounded-full overflow-hidden">
                         <div id="reliability-bar" class="h-full bg-green-500 w-3/4"></div>
                     </div>
-                    <span class="text-xs font-bold text-green-400" id="reliability-score">A</span>
+                    <span class="text-xs font-bold text-green-600 dark:text-green-400" id="reliability-score">A</span>
                 </div>
             </div>
+            <!-- Theme Toggle -->
+            <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors" title="Toggle Theme">
+                <!-- Sun (Dark Mode) -->
+                <svg class="w-5 h-5 hidden dark:block text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                <!-- Moon (Light Mode) -->
+                <svg class="w-5 h-5 block dark:hidden text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+            </button>
         </div>
     </header>
 
     <div class="flex-1 flex overflow-hidden">
         
         <!-- SIDEBAR: CONTROLS -->
-        <aside class="w-80 bg-slate-900 border-r border-slate-800 flex flex-col overflow-y-auto z-10 custom-scrollbar">
+        <aside class="w-80 bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800 flex flex-col overflow-y-auto z-10 custom-scrollbar">
             <div class="p-5 space-y-8 pb-20">
                 
                 <!-- Timing -->
                 <div class="space-y-3">
-                    <div class="flex items-center justify-between border-b border-slate-800 pb-1">
-                        <h3 class="text-xs font-bold text-white flex items-center gap-2">📅 Tijdlijn</h3>
+                    <div class="flex items-center justify-between border-b border-gray-200 dark:border-slate-800 pb-1">
+                        <h3 class="text-xs font-bold text-slate-800 dark:text-white flex items-center gap-2">📅 Tijdlijn</h3>
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <div class="input-group">
@@ -100,15 +109,15 @@
                     </div>
                     <div class="input-group">
                         <label>Horizon (Jaren)</label>
-                        <input type="range" id="p-horizon" min="3" max="15" value="10" class="w-full h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-sky-500" oninput="runModel()">
-                        <div class="text-right text-[10px] text-slate-400 mt-1 font-mono" id="val-horizon">10 Jaar</div>
+                        <input type="range" id="p-horizon" min="3" max="15" value="10" class="w-full h-1 bg-gray-300 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-sky-500" oninput="runModel()">
+                        <div class="text-right text-[10px] text-slate-500 dark:text-slate-400 mt-1 font-mono" id="val-horizon">10 Jaar</div>
                     </div>
                 </div>
 
                 <!-- Growth Strategy -->
                 <div class="space-y-3">
-                    <div class="flex items-center justify-between border-b border-slate-800 pb-1">
-                        <h3 class="text-xs font-bold text-white flex items-center gap-2">🚀 Groei & Mix</h3>
+                    <div class="flex items-center justify-between border-b border-gray-200 dark:border-slate-800 pb-1">
+                        <h3 class="text-xs font-bold text-slate-800 dark:text-white flex items-center gap-2">🚀 Groei & Mix</h3>
                     </div>
                     <div class="input-group">
                         <label>Start Vloot (Jaar 0)</label>
@@ -128,19 +137,19 @@
                     <!-- Mix Slider -->
                     <div class="input-group pt-2">
                         <label>Vlootmix (Auto vs. Bus)</label>
-                        <input type="range" id="p-mix" min="0" max="100" value="84" class="w-full h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-emerald-500" oninput="runModel()">
+                        <input type="range" id="p-mix" min="0" max="100" value="84" class="w-full h-1 bg-gray-300 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-emerald-500" oninput="runModel()">
                         <div class="flex justify-between text-[10px] mt-1 font-mono">
-                            <span class="text-emerald-400 font-bold" id="val-mix-bus">84% Bus</span>
-                            <span class="text-slate-400" id="val-mix-car">16% Auto</span>
+                            <span class="text-emerald-600 dark:text-emerald-400 font-bold" id="val-mix-bus">84% Bus</span>
+                            <span class="text-slate-500 dark:text-slate-400" id="val-mix-car">16% Auto</span>
                         </div>
-                        <p class="text-[9px] text-slate-600 mt-1 leading-tight">Bus = Mix van Caddy (Small), Transporter (Med), Crafter (Large) volgens CSV profiel.</p>
+                        <p class="text-[9px] text-slate-500 mt-1 leading-tight">Bus = Mix van Caddy (Small), Transporter (Med), Crafter (Large) volgens CSV profiel.</p>
                     </div>
                 </div>
 
                 <!-- Operations -->
                 <div class="space-y-3">
-                    <div class="flex items-center justify-between border-b border-slate-800 pb-1">
-                        <h3 class="text-xs font-bold text-white flex items-center gap-2">⚙️ Operatie & Prijzen</h3>
+                    <div class="flex items-center justify-between border-b border-gray-200 dark:border-slate-800 pb-1">
+                        <h3 class="text-xs font-bold text-slate-800 dark:text-white flex items-center gap-2">⚙️ Operatie & Prijzen</h3>
                     </div>
                     
                     <div class="grid grid-cols-2 gap-2">
@@ -156,8 +165,8 @@
 
                     <div class="input-group">
                         <label>Target Bezetting (Jaargemiddelde)</label>
-                        <input type="range" id="p-occ" min="20" max="70" value="38" class="w-full h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-sky-500" oninput="runModel()">
-                        <div class="text-right text-[10px] text-sky-400 mt-1 font-mono" id="val-occ">38%</div>
+                        <input type="range" id="p-occ" min="20" max="70" value="38" class="w-full h-1 bg-gray-300 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-sky-500" oninput="runModel()">
+                        <div class="text-right text-[10px] text-sky-600 dark:text-sky-400 mt-1 font-mono" id="val-occ">38%</div>
                     </div>
                     
                     <!-- Hidden but kept for logic compatibility if needed or expanded -->
@@ -166,8 +175,8 @@
 
                 <!-- Finance -->
                 <div class="space-y-3">
-                    <div class="flex items-center justify-between border-b border-slate-800 pb-1">
-                        <h3 class="text-xs font-bold text-white flex items-center gap-2">💰 Finance</h3>
+                    <div class="flex items-center justify-between border-b border-gray-200 dark:border-slate-800 pb-1">
+                        <h3 class="text-xs font-bold text-slate-800 dark:text-white flex items-center gap-2">💰 Finance</h3>
                     </div>
                     <div class="input-group">
                         <label>Start Kapitaal (€)</label>
@@ -185,8 +194,8 @@
                     </div>
                     <div class="input-group pt-2">
                         <label>Dividend Payout (% van Winst)</label>
-                        <input type="range" id="p-div" min="0" max="100" value="0" class="w-full h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-purple-500" oninput="runModel()">
-                        <div class="text-right text-[10px] text-purple-400 mt-1 font-mono" id="val-div">0%</div>
+                        <input type="range" id="p-div" min="0" max="100" value="0" class="w-full h-1 bg-gray-300 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-purple-500" oninput="runModel()">
+                        <div class="text-right text-[10px] text-purple-600 dark:text-purple-400 mt-1 font-mono" id="val-div">0%</div>
                     </div>
                 </div>
 
@@ -194,10 +203,10 @@
         </aside>
 
         <!-- MAIN DASHBOARD AREA -->
-        <main class="flex-1 flex flex-col min-w-0 bg-slate-950 relative">
+        <main class="flex-1 flex flex-col min-w-0 bg-gray-50 dark:bg-slate-950 relative">
             
             <!-- Tab Navigation -->
-            <div class="flex border-b border-slate-800 bg-slate-900/50 px-4 sticky top-0 z-10 backdrop-blur-sm">
+            <div class="flex border-b border-gray-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 px-4 sticky top-0 z-10 backdrop-blur-sm">
                 <button class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider tab-active transition-all" onclick="switchTab('dashboard', this)">📊 Dashboard</button>
                 <button class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider tab-inactive transition-all" onclick="switchTab('monthly', this)">📅 Maandelijkse Trends</button>
                 <button class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider tab-inactive transition-all" onclick="switchTab('financials', this)">📑 P&L & Balans</button>
@@ -212,9 +221,9 @@
                     
                     <!-- KPI Row -->
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div class="panel p-4 bg-gradient-to-br from-slate-900 to-slate-800">
+                        <div class="panel p-4">
                             <h4 class="metric-label">Cumulatieve Netto Winst</h4>
-                            <div class="metric-value text-emerald-400" id="kpi-cum-profit">€ 0</div>
+                            <div class="metric-value text-emerald-600 dark:text-emerald-400" id="kpi-cum-profit">€ 0</div>
                             <div class="text-[10px] text-slate-500 mt-1">Einde Looptijd (Na Belasting)</div>
                         </div>
                         <div class="panel p-4">
@@ -224,12 +233,12 @@
                         </div>
                         <div class="panel p-4">
                             <h4 class="metric-label">Gemiddelde ROI</h4>
-                            <div class="metric-value text-sky-400" id="kpi-roi">0%</div>
+                            <div class="metric-value text-sky-600 dark:text-sky-400" id="kpi-roi">0%</div>
                             <div class="text-[10px] text-slate-500 mt-1">Jaarlijks rendement</div>
                         </div>
                         <div class="panel p-4">
                             <h4 class="metric-label">Vloot Activa Waarde</h4>
-                            <div class="metric-value text-purple-400" id="kpi-assets">€ 0</div>
+                            <div class="metric-value text-purple-600 dark:text-purple-400" id="kpi-assets">€ 0</div>
                             <div class="text-[10px] text-slate-500 mt-1">Restwaarde Eigendom</div>
                         </div>
                     </div>
@@ -238,8 +247,8 @@
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div class="panel p-5 lg:col-span-2 shadow-lg">
                             <div class="flex justify-between items-center mb-4">
-                                <h3 class="text-white font-bold text-xs uppercase">Financiële Performance (Jaarlijks)</h3>
-                                <div class="flex gap-2 text-[10px] text-slate-400">
+                                <h3 class="text-slate-800 dark:text-white font-bold text-xs uppercase">Financiële Performance (Jaarlijks)</h3>
+                                <div class="flex gap-2 text-[10px] text-slate-500">
                                     <span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-blue-500"></div> Omzet</span>
                                     <span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-emerald-500"></div> Winst</span>
                                 </div>
@@ -250,15 +259,15 @@
                         </div>
                         
                         <!-- Intelligent Advice Panel -->
-                        <div class="panel p-5 flex flex-col shadow-lg border-t-4 border-t-sky-600">
-                            <h3 class="text-white font-bold text-xs uppercase mb-4 flex items-center gap-2">
+                        <div class="panel p-5 flex flex-col shadow-lg border-t-4 border-t-sky-600 dark:border-t-sky-600">
+                            <h3 class="text-slate-800 dark:text-white font-bold text-xs uppercase mb-4 flex items-center gap-2">
                                 <svg class="w-4 h-4 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 Strategisch AI Advies
                             </h3>
                             <div id="advice-list" class="flex-1 overflow-y-auto space-y-3 pr-2 custom-scrollbar max-h-80">
                                 <!-- Dynamic Content -->
                             </div>
-                            <div class="mt-4 pt-4 border-t border-slate-800 text-[10px] text-slate-500">
+                            <div class="mt-4 pt-4 border-t border-gray-100 dark:border-slate-800 text-[10px] text-slate-500">
                                 <p class="font-bold mb-1">⚠️ Exogene Risico's (Niet in model):</p>
                                 <ul class="list-disc pl-4 space-y-1">
                                     <li>Brandstofprijs schokken >15%</li>
@@ -273,7 +282,7 @@
                 <!-- VIEW 2: MONTHLY TRENDS (Deep Dive) -->
                 <div id="view-monthly" class="hidden space-y-6">
                     <div class="panel p-5">
-                        <h3 class="text-white font-bold text-xs uppercase mb-1">Maandelijkse Cashflow & Seizoensinvloeden</h3>
+                        <h3 class="text-slate-800 dark:text-white font-bold text-xs uppercase mb-1">Maandelijkse Cashflow & Seizoensinvloeden</h3>
                         <p class="text-[10px] text-slate-500 mb-4">Toont de operationele realiteit incl. winterdips en investeringsmomenten.</p>
                         <div class="h-72 w-full">
                             <canvas id="chart-monthly-cash"></canvas>
@@ -282,13 +291,13 @@
                     
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div class="panel p-5">
-                            <h3 class="text-white font-bold text-xs uppercase mb-4">Operationele Kostenopbouw</h3>
+                            <h3 class="text-slate-800 dark:text-white font-bold text-xs uppercase mb-4">Operationele Kostenopbouw</h3>
                             <div class="h-64 w-full">
                                 <canvas id="chart-monthly-opex"></canvas>
                             </div>
                         </div>
                         <div class="panel p-5">
-                            <h3 class="text-white font-bold text-xs uppercase mb-4">Vloot Lifecycle (Actieve KM)</h3>
+                            <h3 class="text-slate-800 dark:text-white font-bold text-xs uppercase mb-4">Vloot Lifecycle (Actieve KM)</h3>
                             <div class="h-64 w-full">
                                 <canvas id="chart-monthly-km"></canvas>
                             </div>
@@ -299,16 +308,16 @@
                 <!-- VIEW 3: FINANCIAL STATEMENTS -->
                 <div id="view-financials" class="hidden space-y-8">
                     <div class="panel overflow-hidden">
-                        <div class="bg-slate-800/50 px-4 py-3 border-b border-slate-800 flex justify-between items-center">
-                            <h3 class="text-white font-bold text-xs uppercase">Winst- en Verliesrekening (x €1.000)</h3>
-                            <button onclick="copyTable('table-pl')" class="text-[10px] text-sky-400 hover:text-white transition">Kopieer Data</button>
+                        <div class="bg-gray-100 dark:bg-slate-800/50 px-4 py-3 border-b border-gray-200 dark:border-slate-800 flex justify-between items-center">
+                            <h3 class="text-slate-800 dark:text-white font-bold text-xs uppercase">Winst- en Verliesrekening (x €1.000)</h3>
+                            <button onclick="copyTable('table-pl')" class="text-[10px] text-sky-600 dark:text-sky-400 hover:text-sky-800 transition">Kopieer Data</button>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-right text-[11px] font-mono" id="table-pl">
-                                <thead class="bg-slate-900 text-slate-400 font-bold border-b border-slate-800">
-                                    <tr><th class="text-left px-4 py-3 sticky left-0 bg-slate-900">Post</th><!-- Headers --></tr>
+                                <thead class="bg-gray-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 font-bold border-b border-gray-200 dark:border-slate-800">
+                                    <tr><th class="text-left px-4 py-3 sticky left-0 bg-gray-50 dark:bg-slate-900">Post</th><!-- Headers --></tr>
                                 </thead>
-                                <tbody class="divide-y divide-slate-800 text-slate-300"></tbody>
+                                <tbody class="divide-y divide-gray-200 dark:divide-slate-800 text-slate-600 dark:text-slate-300"></tbody>
                             </table>
                         </div>
                     </div>
@@ -318,34 +327,34 @@
                 <div id="view-fleet" class="hidden space-y-6">
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div class="panel p-5 lg:col-span-2">
-                            <h3 class="text-white font-bold text-xs uppercase mb-4">Vlootontwikkeling: Lease vs Eigendom</h3>
+                            <h3 class="text-slate-800 dark:text-white font-bold text-xs uppercase mb-4">Vlootontwikkeling: Lease vs Eigendom</h3>
                             <div class="h-72 w-full">
                                 <canvas id="chart-fleet-stack"></canvas>
                             </div>
                         </div>
                         <div class="panel p-5">
-                            <h3 class="text-white font-bold text-xs uppercase mb-4">Huidige Vlootprofielen</h3>
+                            <h3 class="text-slate-800 dark:text-white font-bold text-xs uppercase mb-4">Huidige Vlootprofielen</h3>
                             <div class="space-y-3">
                                 <!-- Cards generated dynamically based on mix but hardcoded for visuals here -->
-                                <div class="bg-slate-800 p-3 rounded border border-slate-700 flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-slate-700 rounded flex items-center justify-center text-lg">🚐</div>
+                                <div class="bg-gray-50 dark:bg-slate-800 p-3 rounded border border-gray-200 dark:border-slate-700 flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-gray-200 dark:bg-slate-700 rounded flex items-center justify-center text-lg">🚐</div>
                                     <div>
-                                        <div class="text-xs font-bold text-white">VW Transporter (Med)</div>
-                                        <div class="text-[10px] text-slate-400">Lease: €310/mnd | Max: 340k km</div>
+                                        <div class="text-xs font-bold text-slate-800 dark:text-white">VW Transporter (Med)</div>
+                                        <div class="text-[10px] text-slate-500 dark:text-slate-400">Lease: €310/mnd | Max: 340k km</div>
                                     </div>
                                 </div>
-                                <div class="bg-slate-800 p-3 rounded border border-slate-700 flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-slate-700 rounded flex items-center justify-center text-lg">🚚</div>
+                                <div class="bg-gray-50 dark:bg-slate-800 p-3 rounded border border-gray-200 dark:border-slate-700 flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-gray-200 dark:bg-slate-700 rounded flex items-center justify-center text-lg">🚚</div>
                                     <div>
-                                        <div class="text-xs font-bold text-white">VW Crafter (Large)</div>
-                                        <div class="text-[10px] text-slate-400">Lease: €355/mnd | Max: 400k km</div>
+                                        <div class="text-xs font-bold text-slate-800 dark:text-white">VW Crafter (Large)</div>
+                                        <div class="text-[10px] text-slate-500 dark:text-slate-400">Lease: €355/mnd | Max: 400k km</div>
                                     </div>
                                 </div>
-                                <div class="bg-slate-800 p-3 rounded border border-slate-700 flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-slate-700 rounded flex items-center justify-center text-lg">🚗</div>
+                                <div class="bg-gray-50 dark:bg-slate-800 p-3 rounded border border-gray-200 dark:border-slate-700 flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-gray-200 dark:bg-slate-700 rounded flex items-center justify-center text-lg">🚗</div>
                                     <div>
-                                        <div class="text-xs font-bold text-white">VW Up! (Compact)</div>
-                                        <div class="text-[10px] text-slate-400">Lease: €180/mnd | Max: 260k km</div>
+                                        <div class="text-xs font-bold text-slate-800 dark:text-white">VW Up! (Compact)</div>
+                                        <div class="text-[10px] text-slate-500 dark:text-slate-400">Lease: €180/mnd | Max: 260k km</div>
                                     </div>
                                 </div>
                             </div>
@@ -376,6 +385,11 @@
         let charts = {};
         const fmtMoney = (v) => new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(v);
         const fmtK = (v) => Math.round(v/1000).toLocaleString('nl-NL');
+
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            runModel(); // Re-render charts
+        }
 
         function switchTab(id, btn) {
             ['dashboard','monthly','financials','fleet'].forEach(v => document.getElementById('view-'+v).classList.add('hidden'));
@@ -647,7 +661,7 @@
             // KPIs
             document.getElementById('kpi-cum-profit').innerText = fmtMoney(cumProfit);
             document.getElementById('kpi-end-cash').innerText = fmtMoney(last.cash);
-            document.getElementById('kpi-end-cash').className = last.cash < 0 ? "metric-value text-red-500" : "metric-value text-white";
+            document.getElementById('kpi-end-cash').className = last.cash < 0 ? "metric-value text-red-500" : "metric-value text-slate-800 dark:text-white";
             
             const avgProfit = cumProfit / y.length;
             const roi = (avgProfit / inv) * 100;
@@ -715,14 +729,14 @@
             const thead = document.querySelector('#table-pl thead tr');
             
             // Build Head
-            let hHtml = '<th class="text-left px-4 py-3 sticky left-0 bg-slate-900 z-10">Post</th>';
+            let hHtml = '<th class="text-left px-4 py-3 sticky left-0 bg-gray-50 dark:bg-slate-900 z-10">Post</th>';
             y.forEach(d => hHtml += `<th class="px-2 py-2">${d.year}</th>`);
             thead.innerHTML = hHtml;
 
             // Build Rows
             const addRow = (lbl, key, bold=false) => {
-                let html = `<tr><td class="text-left px-4 py-2 sticky left-0 bg-slate-900 border-r border-slate-800 ${bold?'font-bold text-white':'text-slate-400'}">${lbl}</td>`;
-                y.forEach(d => html += `<td class="px-2 py-2 text-slate-300 ${bold?'font-bold':''}">${fmtK(d[key])}</td>`);
+                let html = `<tr><td class="text-left px-4 py-2 sticky left-0 bg-gray-50 dark:bg-slate-900 border-r border-slate-300 dark:border-slate-800 ${bold?'font-bold text-slate-900 dark:text-white':'text-slate-500 dark:text-slate-400'}">${lbl}</td>`;
+                y.forEach(d => html += `<td class="px-2 py-2 text-slate-600 dark:text-slate-300 ${bold?'font-bold':''}">${fmtK(d[key])}</td>`);
                 return html + '</tr>';
             }
 
@@ -774,10 +788,10 @@
             const bar = document.getElementById('reliability-bar');
             const txt = document.getElementById('reliability-score');
             
-            if(score >= 80) { bar.className = "h-full bg-emerald-500 transition-all"; txt.className="text-xs font-bold text-emerald-400"; txt.innerText="A (Uitstekend)"; }
-            else if(score >= 60) { bar.className = "h-full bg-sky-500 transition-all"; txt.className="text-xs font-bold text-sky-400"; txt.innerText="B (Goed)"; }
-            else if(score >= 40) { bar.className = "h-full bg-amber-500 transition-all"; txt.className="text-xs font-bold text-amber-400"; txt.innerText="C (Risicovol)"; }
-            else { bar.className = "h-full bg-red-500 transition-all"; txt.className="text-xs font-bold text-red-400"; txt.innerText="D (Kritiek)"; }
+            if(score >= 80) { bar.className = "h-full bg-emerald-500 transition-all"; txt.className="text-xs font-bold text-emerald-600 dark:text-emerald-400"; txt.innerText="A (Uitstekend)"; }
+            else if(score >= 60) { bar.className = "h-full bg-sky-500 transition-all"; txt.className="text-xs font-bold text-sky-600 dark:text-sky-400"; txt.innerText="B (Goed)"; }
+            else if(score >= 40) { bar.className = "h-full bg-amber-500 transition-all"; txt.className="text-xs font-bold text-amber-600 dark:text-amber-400"; txt.innerText="C (Risicovol)"; }
+            else { bar.className = "h-full bg-red-500 transition-all"; txt.className="text-xs font-bold text-red-600 dark:text-red-400"; txt.innerText="D (Kritiek)"; }
             
             bar.style.width = score + "%";
         }
@@ -785,7 +799,11 @@
         // Chart Helper
         function updateChart(id, conf, mixed=false, stacked=false) {
             const ctx = document.getElementById(id).getContext('2d');
-            if (charts[id]) charts[id].destroy();
+            const isDark = document.documentElement.classList.contains('dark');
+            const colorGrid = isDark ? '#334155' : '#e2e8f0';
+            const colorText = isDark ? '#94a3b8' : '#64748b';
+
+            if(charts[id]) charts[id].destroy();
             charts[id] = new Chart(ctx, {
                 type: mixed ? 'bar' : (conf.datasets[0].type || 'bar'),
                 data: conf,
@@ -794,10 +812,10 @@
                     maintainAspectRatio: false,
                     interaction: { mode: 'index', intersect: false },
                     scales: {
-                        y: { stacked: stacked, grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
-                        x: { stacked: stacked, grid: { display: false }, ticks: { color: '#94a3b8', maxTicksLimit: 12 } }
+                        y: { stacked: stacked, grid: { color: colorGrid }, ticks: { color: colorText } },
+                        x: { stacked: stacked, grid: { display: false }, ticks: { color: colorText, maxTicksLimit: 12 } }
                     },
-                    plugins: { legend: { labels: { color: '#94a3b8', boxWidth: 10 } } }
+                    plugins: { legend: { labels: { color: colorText, boxWidth: 10 } } }
                 }
             });
         }

@@ -4,386 +4,466 @@
     <meta charset="UTF-8" />
     <title>Hoe werkt het – KeylessGo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Ontdek stap voor stap hoe huren bij KeylessGo werkt – van boeken via SnappCar tot keyless openen, rijden en weer inleveren.">
-
+    <meta name="description" content="Ontdek stap voor stap hoe huren bij KeylessGo werkt – van reserveren tot keyless openen, rijden en inleveren.">
+    
     <!-- Hoofd CSS -->
     <link rel="stylesheet" href="assets/css/styles.css" />
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-        referrerpolicy="no-referrer"
-    >
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <style>
-        /* Pagina-specifieke layout */
+<style>
+/* ======================================================
+   PAGINA SPECIFIEKE STYLING – HOE HET WERKT (PREMIUM V4)
+====================================================== */
 
-        .how-page-hero {
-            padding-top: calc(var(--header-height) + 40px);
-            padding-bottom: 50px;
-            background-color: var(--bg-light);
-            border-bottom: 1px solid #e5e7eb;
-        }
+.page-hero {
+    padding-top: calc(var(--header-height) + 40px);
+    padding-bottom: 40px;
+    background-color: var(--bg-light);
+    text-align: center;
+}
 
-        .how-page-hero h1 {
-            text-align: center;
-            font-size: 2.3rem;
-            margin-bottom: 0.75rem;
-        }
+.page-hero h1 {
+    font-size: 2.4rem;
+    margin-bottom: 0.5rem;
+}
 
-        .how-page-hero .section-sub {
-            margin-bottom: 1.8rem;
-        }
+.page-hero p {
+    max-width: 720px;
+    margin: 0 auto;
+    color: var(--text-light);
+}
 
-        .how-video-wrapper {
-            max-width: 980px;
-            margin: 0 auto;
-            background-color: #ffffff;
-            border-radius: 18px;
-            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
-            border: 1px solid #e5e7eb;
-            overflow: hidden;
-        }
+/* ====== STAPPEN BLOK ====== */
 
-        .how-video-inner {
-            padding: 18px 20px 16px;
-        }
+.steps-section {
+    background: #ffffff;
+    padding: 50px 0 60px;
+}
 
-        .how-video-label {
-            font-size: 0.78rem;
-            letter-spacing: 0.16em;
-            text-transform: uppercase;
-            color: #6b7280;
-            margin-bottom: 0.35rem;
-        }
+.steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+    margin-top: 32px;
+}
 
-        .how-video-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--primary-blue);
-            margin-bottom: 0.4rem;
-        }
+.step-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 24px 22px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+    position: relative;
+    overflow: hidden;
+}
 
-        .how-video-text {
-            font-size: 0.9rem;
-            color: var(--text-light);
-            margin-bottom: 0.75rem;
-        }
+.step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    background: var(--accent-orange);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    margin-bottom: 14px;
+}
 
-        .how-video-frame {
-            border-radius: 14px;
-            overflow: hidden;
-            background-color: #020617;
-            border: 1px solid #0f172a;
-        }
+.step-card h3 {
+    margin-bottom: 6px;
+    font-size: 1.15rem;
+}
 
-        .how-video-frame video {
-            display: block;
-            width: 100%;
-            height: auto;
-        }
+.step-card p {
+    font-size: 0.92rem;
+    color: var(--text-light);
+}
 
-        .how-video-footer {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            margin-top: 0.65rem;
-            font-size: 0.8rem;
-            color: #6b7280;
-        }
+/* ====== WAT TE VERWACHTEN ====== */
 
-        .how-video-footer span {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
+.expect-section {
+    background-color: var(--bg-section);
+    padding: 60px 0 70px;
+}
 
-        .how-video-footer i {
-            color: var(--accent-orange);
-        }
+.expect-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 24px;
+}
 
-        /* Verdere inhoud van de pagina */
-        .how-page-steps {
-            padding: 50px 0 60px;
-            background-color: #ffffff;
-        }
+.expect-group {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+    padding: 22px 22px;
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+}
 
-        .how-page-steps .how-grid {
-            margin-top: 26px;
-        }
+.expect-group h3 {
+    margin-bottom: 0.5rem;
+}
 
-        .how-extra-section {
-            background-color: var(--bg-section);
-            padding: 60px 0 70px;
-        }
+.expect-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
 
-        .how-extra-grid {
-            display: grid;
-            grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.2fr);
-            gap: 26px;
-            margin-top: 24px;
-        }
+.expect-list li {
+    margin-bottom: 6px;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    font-size: 0.92rem;
+}
 
-        .how-extra-card {
-            background: #ffffff;
-            border-radius: 14px;
-            padding: 20px 20px 18px;
-            border: 1px solid #e5e7eb;
-            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
-        }
+.expect-list li i {
+    margin-top: 4px;
+    color: var(--accent-orange);
+}
 
-        .how-extra-card h3 {
-            margin-bottom: 0.6rem;
-        }
+/* ====== FAQ (ACCORDION) ====== */
 
-        .how-extra-card ul {
-            margin: 0;
-            padding-left: 1.1rem;
-            font-size: 0.92rem;
-            color: var(--text-light);
-        }
+.faq-section {
+    padding: 70px 0 70px;
+    background: #ffffff;
+}
 
-        .how-extra-card li {
-            margin-bottom: 0.35rem;
-        }
+.faq-item {
+    border-bottom: 1px solid #e5e7eb;
+    padding: 14px 0;
+}
 
-        .how-faq-list {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
+.faq-question {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--primary-blue);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
 
-        .how-faq-item + .how-faq-item {
-            border-top: 1px solid #e5e7eb;
-            margin-top: 10px;
-            padding-top: 12px;
-        }
+.faq-answer {
+    display: none;
+    font-size: 0.92rem;
+    color: var(--text-light);
+    margin-top: 8px;
+    padding-right: 10px;
+}
 
-        .how-faq-q {
-            font-weight: 700;
-            color: var(--primary-blue);
-            margin-bottom: 0.2rem;
-        }
+.faq-open .faq-answer {
+    display: block;
+}
 
-        .how-faq-a {
-            font-size: 0.9rem;
-            color: var(--text-light);
-        }
+.faq-open .faq-question i {
+    transform: rotate(180deg);
+}
 
-        @media (max-width: 992px) {
-            .how-video-wrapper {
-                border-radius: 14px;
-            }
-            .how-extra-grid {
-                grid-template-columns: 1fr;
-            }
-        }
+/* ===== VIDEO BLOK (ONDERAAN) ===== */
 
-        @media (max-width: 768px) {
-            .how-page-hero {
-                padding-top: calc(var(--header-height) + 24px);
-                padding-bottom: 40px;
-            }
-            .how-page-hero h1 {
-                font-size: 2rem;
-            }
-            .how-video-inner {
-                padding: 14px 12px 14px;
-            }
-        }
-    </style>
+.video-section {
+    padding: 70px 0;
+    background-color: var(--bg-light);
+}
+
+.video-card {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 18px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 18px 45px rgba(15,23,42,0.12);
+    padding: 20px;
+}
+
+.video-inner {
+    border-radius: 14px;
+    overflow: hidden;
+    background: #0f172a;
+    border: 1px solid #1e293b;
+}
+
+.video-inner video {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+@media(max-width: 768px) {
+    .expect-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
 </head>
 <body>
 
+<!-- ======================================================
+                     HEADER
+====================================================== -->
+
 <header>
     <div class="container header-content">
-        <a href="index.html" class="logo" aria-label="KeylessGo home">
+        <a href="index.html" class="logo">
             <img src="img/partner/keylessgo-logo.png" alt="KeylessGo logo">
         </a>
 
         <nav class="nav-menu">
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
-                <li><a href="zoek-en-boek.html">Zoek &amp; Boek</a></li>
-
-                <li class="has-submenu">
-                    <a href="index.html#onze-vloot">Voertuigen</a>
-                    <ul class="submenu">
-                        <li><a href="index.html#onze-vloot">Busjes</a></li>
-                        <li><a href="index.html#onze-vloot">Auto's</a></li>
-                        <li><a href="index.html#onze-vloot">Elektrisch</a></li>
-                    </ul>
-                </li>
-
+                <li><a href="zoek-en-boek.html">Zoek & Boek</a></li>
+                <li><a href="waarom-keylessgo.html">Waarom KeylessGo</a></li>
                 <li><a href="hoe-werkt-het.html" class="active">Hoe het werkt</a></li>
-                <li><a href="index.html#waarom-keylessgo.html">Waarom KeylessGo</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
-            <a href="https://www.snappcar.nl" target="_blank" rel="noopener" class="btn btn-primary nav-cta">
-                Direct huren via SnappCar
-            </a>
+            <a href="https://www.snappcar.nl" class="btn btn-primary nav-cta">Direct huren via SnappCar</a>
         </nav>
 
-        <button class="hamburger" id="hamburger" aria-label="Menu openen" aria-expanded="false">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
+        <button class="hamburger" id="hamburger">
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
         </button>
     </div>
 </header>
 
-<main>
-    <!-- HERO + VIDEO -->
-    <section class="how-page-hero">
-        <div class="container">
-            <h1>Hoe werkt huren bij KeylessGo?</h1>
-            <p class="section-sub">
-                In deze korte video laten we je zien hoe je in een paar stappen een KeylessGo voertuig boekt, 
-                opent via de app en weer netjes inlevert. Geen balie, geen sleuteloverdracht – gewoon direct rijden.
-            </p>
 
-            <div class="how-video-wrapper">
-                <div class="how-video-inner">
-                    <div class="how-video-label">UITLEGVIDEO</div>
-                    <div class="how-video-title">KeylessGo – zo werkt huren via SnappCar</div>
-                    <p class="how-video-text">
-                        Klik op afspelen om de instructievideo te bekijken. Je ziet stap voor stap hoe de 
-                        boeking, check-in, keyless toegang en check-out werken.
-                    </p>
+<!-- ======================================================
+                     HERO INTRO
+====================================================== -->
 
-                    <div class="how-video-frame">
-                        <video
-                            controls
-                            preload="metadata"
-                            playsinline
-                        >
-                            <source src="assets/media/KeylessGo_Instructievideo.mp4" type="video/mp4">
-                            Je browser ondersteunt het afspelen van deze video niet. 
-                            <a href="assets/media/KeylessGo_Instructievideo.mp4">Download de video</a>.
-                        </video>
-                    </div>
+<section class="page-hero">
+    <div class="container">
+        <h1>Hoe werkt huren bij KeylessGo?</h1>
+        <p>
+            Huren bij KeylessGo is ontworpen om zo eenvoudig mogelijk te zijn. 
+            Je regelt alles via de SnappCar app – van boeken tot openen en afsluiten.
+            Hieronder zie je in drie stappen precies hoe het werkt.
+        </p>
+    </div>
+</section>
 
-                    <div class="how-video-footer">
-                        <span><i class="fa-solid fa-circle-play"></i> Duur: ca. 1–3 minuten</span>
-                        <span><i class="fa-solid fa-shield-halved"></i> Boeken &amp; verzekering altijd via SnappCar</span>
-                    </div>
-                </div>
-            </div>
+
+<!-- ======================================================
+                3 STAPPEN BLOK
+====================================================== -->
+
+<section class="steps-section">
+    <div class="container">
+        <h2>In 3 stappen op weg</h2>
+
+        <div class="steps-grid">
+
+            <article class="step-card">
+                <div class="step-number">1</div>
+                <h3>Zoek & boek online</h3>
+                <p>
+                    Kies jouw deelauto of busje op onze kaart of via SnappCar, selecteer datum en tijd en rond de reservering af. 
+                    Je ziet vooraf duidelijk de kosten, borg en voorwaarden.
+                </p>
+            </article>
+
+            <article class="step-card">
+                <div class="step-number">2</div>
+                <h3>Keyless check-in & openen</h3>
+                <p>
+                    Loop op de dag zelf naar het voertuig en volg de check-in stappen in de app 
+                    (foto’s & kilometerstand). Daarna open je de auto volledig keyless, zonder fysieke sleuteloverdracht.
+                </p>
+            </article>
+
+            <article class="step-card">
+                <div class="step-number">3</div>
+                <h3>Rijden, tanken/laden & inleveren</h3>
+                <p>
+                    Rij, tank of laad indien nodig en breng het voertuig terug op de vaste locatie. 
+                    Met een korte check-out sluit je de rit af. Extra kilometers of kosten worden automatisch verrekend.
+                </p>
+            </article>
+
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- 3 STAPPEN BLOK -->
-    <section class="how-page-steps">
-        <div class="container">
-            <h2>In 3 stappen op weg</h2>
-            <p class="section-sub">
-                Huren bij KeylessGo werkt altijd volgens dezelfde eenvoudige stappen. 
-                Je boekt via SnappCar, opent het voertuig keyless en levert het weer in op de vaste locatie.
-            </p>
 
-            <div class="how-grid">
-                <article class="how-card">
-                    <div class="how-icon-circle">1</div>
-                    <h3>Zoek &amp; boek online</h3>
-                    <p>
-                        Kies jouw deelauto of busje op onze kaart of via SnappCar, selecteer datum en tijd 
-                        en rond de reservering af. Je ziet vooraf duidelijk de kosten, borg en voorwaarden.
-                    </p>
-                </article>
+<!-- ======================================================
+            WAT TE VERWACHTEN
+====================================================== -->
 
-                <article class="how-card">
-                    <div class="how-icon-circle">2</div>
-                    <h3>Keyless check-in &amp; openen</h3>
-                    <p>
-                        Op de dag zelf loop je naar het voertuig en volg je de check-in stappen in de app 
-                        (foto’s &amp; kilometerstand). Daarna open je de auto volledig keyless, zonder 
-                        fysieke sleuteloverdracht.
-                    </p>
-                </article>
+<section class="expect-section">
+    <div class="container">
+        <h2>Wat kun je verwachten tijdens je huur?</h2>
+        <p class="section-sub" style="text-align:center; max-width:700px; margin:auto;">
+            KeylessGo werkt samen met SnappCar om een soepele, transparante en veilige huurervaring te bieden. 
+            Hieronder vind je precies wat je mag verwachten tijdens iedere fase van je rit.
+        </p>
 
-                <article class="how-card">
-                    <div class="how-icon-circle">3</div>
-                    <h3>Rijden, tanken/laden &amp; inleveren</h3>
-                    <p>
-                        Rij je rit, tank of laad indien nodig en breng het voertuig terug op de vaste locatie. 
-                        Met een korte check-out in de app sluit je de rit af. Extra kilometers of kosten worden 
-                        automatisch via SnappCar verrekend.
-                    </p>
-                </article>
-            </div>
-        </div>
-    </section>
+        <div class="expect-grid">
 
-    <!-- EXTRA INFO + FAQ -->
-    <section class="how-extra-section">
-        <div class="container">
-            <h2>Wat kun je verwachten tijdens je huur?</h2>
-            <p class="section-sub">
-                KeylessGo combineert de flexibiliteit van deelauto’s met de betrouwbaarheid van een 
-                professionele vloot. Hieronder lees je hoe we omgaan met brandstof, schade, borg en support.
-            </p>
-
-            <div class="how-extra-grid">
-                <div class="how-extra-card">
-                    <h3>Brandstof, laden &amp; kilometers</h3>
-                    <ul>
-                        <li><strong>Dagprijs inclusief km:</strong> per voertuig staat aangegeven hoeveel kilometers er inbegrepen zijn.</li>
-                        <li><strong>Extra kilometers:</strong> worden automatisch verrekend via SnappCar tegen het afgesproken tarief.</li>
-                        <li><strong>Brandstof:</strong> breng het voertuig terug met ongeveer hetzelfde brandstofniveau als bij vertrek.</li>
-                        <li><strong>Elektrisch rijden:</strong> laad indien mogelijk weer bij op de vaste laadlocatie; laadkosten worden transparant verwerkt.</li>
-                    </ul>
-                </div>
-
-                <div class="how-extra-card">
-                    <h3>Schade, borg &amp; support</h3>
-                    <ul>
-                        <li><strong>Verzekering:</strong> elke rit is all-risk verzekerd via SnappCar, inclusief eigen risico.</li>
-                        <li><strong>Borg:</strong> SnappCar kan een borg reserveren, afhankelijk van je account en voertuigtype.</li>
-                        <li><strong>Schade-melding:</strong> nieuwe schade registreer je direct in de app tijdens de check-out.</li>
-                        <li><strong>Hulp nodig?</strong> Voor technische storingen kun je contact opnemen met SnappCar support; 
-                            voor locatie- of vlootvragen kun je KeylessGo mailen.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="how-extra-card" style="margin-top:28px;">
-                <h3>Veelgestelde vragen</h3>
-                <ul class="how-faq-list">
-                    <li class="how-faq-item">
-                        <div class="how-faq-q">Moet ik altijd via de app openen?</div>
-                        <div class="how-faq-a">
-                            Ja, alle KeylessGo-voertuigen worden via de SnappCar app geopend en vergrendeld. 
-                            Je ontvangt geen fysieke sleutel en hoeft geen sleuteloverdracht af te spreken.
-                        </div>
-                    </li>
-                    <li class="how-faq-item">
-                        <div class="how-faq-q">Kan ik langer doorrijden dan gepland?</div>
-                        <div class="how-faq-a">
-                            Vaak wel. Als het voertuig na jouw reservering niet direct weer geboekt is, 
-                            kun je in de app de eindtijd verlengen. De extra uren/kilometers worden automatisch meegerekend.
-                        </div>
-                    </li>
-                    <li class="how-faq-item">
-                        <div class="how-faq-q">Wat als ik te laat terug ben?</div>
-                        <div class="how-faq-a">
-                            Neem zo snel mogelijk contact op via de app. SnappCar rekent in dat geval een toeslag 
-                            of extra uren door. Structureel te laat terugbrengen kan gevolgen hebben voor je beoordeling.
-                        </div>
-                    </li>
-                    <li class="how-faq-item">
-                        <div class="how-faq-q">Mag ik het voertuig zakelijk gebruiken?</div>
-                        <div class="how-faq-a">
-                            Ja, veel gebruikers zetten onze busjes en auto’s in voor klussen, verhuizingen en 
-                            zakelijke ritten. De facturen en betalingen lopen via SnappCar, zodat je deze makkelijk 
-                            kunt verwerken in je administratie.
-                        </div>
-                    </li>
+            <div class="expect-group">
+                <h3>Reserveren & voorbereiden</h3>
+                <ul class="expect-list">
+                    <li><i class="fa-solid fa-check"></i>Duidelijke prijzen & inbegrepen kilometers</li>
+                    <li><i class="fa-solid fa-check"></i>Geen balie, alles via de SnappCar app</li>
+                    <li><i class="fa-solid fa-check"></i>Voertuigdetails, foto's & locatie zichtbaar voor boeking</li>
+                    <li><i class="fa-solid fa-check"></i>Borg en verzekering transparant weergegeven</li>
                 </ul>
             </div>
+
+            <div class="expect-group">
+                <h3>Bij aankomst</h3>
+                <ul class="expect-list">
+                    <li><i class="fa-solid fa-check"></i>Volg de app voor check-in stappen</li>
+                    <li><i class="fa-solid fa-check"></i>Foto’s maken van binnen- & buitenkant</li>
+                    <li><i class="fa-solid fa-check"></i>Direct keyless openen zonder sleutel</li>
+                </ul>
+            </div>
+
+            <div class="expect-group">
+                <h3>Tijdens je rit</h3>
+                <ul class="expect-list">
+                    <li><i class="fa-solid fa-check"></i>Rij in een jong, goed onderhouden voertuig</li>
+                    <li><i class="fa-solid fa-check"></i>Brandstof of laden volgens vermelde regels</li>
+                    <li><i class="fa-solid fa-check"></i>Chat met support via de SnappCar app</li>
+                </ul>
+            </div>
+
+            <div class="expect-group">
+                <h3>Inleveren & afronden</h3>
+                <ul class="expect-list">
+                    <li><i class="fa-solid fa-check"></i>Breng het voertuig terug op de vaste locatie</li>
+                    <li><i class="fa-solid fa-check"></i>Volg de check-out stappen met foto's</li>
+                    <li><i class="fa-solid fa-check"></i>Kosten worden automatisch verrekend</li>
+                </ul>
+            </div>
+
         </div>
-    </section>
-</main>
+    </div>
+</section>
+
+
+<!-- ======================================================
+                     FAQ
+====================================================== -->
+
+<section class="faq-section">
+    <div class="container">
+        <h2>Veelgestelde vragen</h2>
+        <p class="section-sub" style="text-align:center; max-width:700px; margin:auto;">
+            Vind snel antwoord op de meest gestelde vragen over reserveren, check-in, ritten en inleveren.
+        </p>
+
+        <div id="faq-list">
+
+            <!-- Stap 1 FAQ -->
+            <div class="faq-item">
+                <div class="faq-question">Hoe werkt reserveren via SnappCar? <i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-answer">
+                    Je kiest een voertuig, selecteert datum en tijd en rondt de betaling af. 
+                    Je ziet vooraf alle kosten, voorwaarden en de locatie van het voertuig.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Moet ik een borg betalen? <i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-answer">
+                    SnappCar kan een borg reserveren afhankelijk van je account, rijgedrag en type voertuig.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Kan ik mijn boeking wijzigen? <i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-answer">
+                    Ja, dat kan zolang er geen vervolghuur is. Wijzigingen regel je volledig via de SnappCar app.
+                </div>
+            </div>
+
+            <!-- Stap 2 FAQ -->
+            <div class="faq-item">
+                <div class="faq-question">Hoe werkt de keyless check-in? <i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-answer">
+                    Je volgt de checklist in de app. Je maakt foto’s, vult de kilometerstand in en ontgrendelt het voertuig via de app.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Wat als de app het voertuig niet opent? <i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-answer">
+                    Zorg dat je bluetooth aanstaat en dat je dichtbij het voertuig bent. 
+                    Werkt het nog niet? Neem dan contact op met SnappCar support via de app.
+                </div>
+            </div>
+
+            <!-- Stap 3 FAQ -->
+            <div class="faq-item">
+                <div class="faq-question">Moet ik het voertuig volladen of voltanken? <i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-answer">
+                    Meestal lever je terug met vergelijkbaar niveau. Exacte regels staan vermeld bij de boeking.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Wat gebeurt er bij schade? <i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-answer">
+                    Schade meld je direct in de app bij het afronden van de rit. 
+                    De all-risk verzekering via Allianz & SnappCar behandelt de claim.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Kan ik te laat terugkomen? <i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-answer">
+                    Verlengen kan meestal via de app. Bij te laat terugbrengen kan SnappCar extra kosten rekenen.
+                </div>
+            </div>
+
+            <!-- Overige vragen -->
+            <div class="faq-item">
+                <div class="faq-question">Mag ik zakelijk huren? <i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-answer">
+                    Ja, voertuigen worden vaak gebruikt voor klussen, leveringen en zakelijke ritten. 
+                    Betaling en facturen lopen via SnappCar.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Hoe weet ik welk voertuig ik krijg? <i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-answer">
+                    Je ziet altijd exact het voertuig dat je boekt, inclusief foto’s, afmetingen, laadruimte en locatie.
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ======================================================
+                     VIDEO BOTTOM
+====================================================== -->
+
+<section class="video-section">
+    <div class="container">
+        <h2 style="text-align:center; margin-bottom: 20px;">Bekijk de uitlegvideo</h2>
+
+        <div class="video-card">
+            <div class="video-inner">
+                <video controls preload="metadata" playsinline>
+                    <source src="assets/media/KeylessGo_Instructievideo.mp4" type="video/mp4">
+                    Je browser ondersteunt deze video niet.
+                </video>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ======================================================
+                     FOOTER
+====================================================== -->
 
 <footer>
     <div class="container footer-grid">
@@ -398,51 +478,35 @@
             <h4>Menu</h4>
             <ul>
                 <li><a href="index.html">Home</a></li>
-                <li><a href="zoek-en-boek.html">Zoek &amp; Boek</a></li>
-                <li><a href="index.html#onze-vloot">Onze vloot</a></li>
-                <li><a href="hoe-werkt-het.html">Hoe het werkt</a></li>
-                <li><a href="index.html#waarom-keylessgo.html">Waarom KeylessGo</a></li>
+                <li><a href="zoek-en-boek.html">Zoek & Boek</a></li>
+                <li><a href="waarom-keylessgo.html">Waarom KeylessGo</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="hoe-werkt-het.html" class="active">Hoe het werkt</a></li>
             </ul>
         </div>
         <div class="footer-col">
             <h4>Contact</h4>
             <ul>
-                <li><a href="contact.html">Contactformulier</a></li>
                 <li><a href="mailto:info@keylessgo.nl">info@keylessgo.nl</a></li>
-                <li><a href="privacy.html">Privacy &amp; cookies</a></li>
+                <li><a href="contact.html">Contactformulier</a></li>
             </ul>
         </div>
     </div>
     <div class="copyright">
-        © <span id="year"></span> KeylessGo. Boekingen, verificatie en verzekering verlopen via SnappCar.
+        © <span id="year"></span> KeylessGo. Boekingen en verzekeringen verlopen via SnappCar.
     </div>
 </footer>
 
 <script>
-    // jaar in footer
-    document.getElementById("year").textContent = new Date().getFullYear();
+// Footer jaar
+document.getElementById("year").textContent = new Date().getFullYear();
 
-    // hamburger menu
-    const hamburger = document.getElementById("hamburger");
-    const navMenu = document.querySelector(".nav-menu");
-
-    if (hamburger && navMenu) {
-        hamburger.addEventListener("click", () => {
-            const isActive = navMenu.classList.toggle("active");
-            hamburger.classList.toggle("open", isActive);
-            document.body.classList.toggle("nav-open", isActive);
-            hamburger.setAttribute("aria-expanded", isActive ? "true" : "false");
-        });
-    }
-
-    // mobile submenu toggle
-    document.querySelectorAll(".has-submenu > a").forEach(link => {
-        link.addEventListener("click", (e) => {
-            if (window.innerWidth > 768) return; // desktop: hover
-            e.preventDefault();
-            link.parentElement.classList.toggle("open");
-        });
+// FAQ accordion toggle
+document.querySelectorAll('.faq-question').forEach(q => {
+    q.addEventListener('click', () => {
+        q.parentElement.classList.toggle('faq-open');
     });
+});
 </script>
 
 </body>
