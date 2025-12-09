@@ -650,6 +650,27 @@
           q.parentElement.classList.toggle("faq-open");
       });
   });
+  
 </script>
+
+<script>
+// Automatische actieve navigatie highlight
+(function () {
+    const current = window.location.pathname.split("/").pop() || "index.html";
+
+    document.querySelectorAll(".nav-links a").forEach(link => {
+        const href = link.getAttribute("href");
+
+        // Cleanup: verwijder eerdere .active klassen
+        link.classList.remove("active");
+
+        // Markeer item als href overeenkomt met huidige pagina
+        if (href === current) {
+            link.classList.add("active");
+        }
+    });
+})();
+</script>
+
 </body>
 </html>
