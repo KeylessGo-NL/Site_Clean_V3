@@ -6,10 +6,13 @@
     <meta name="description" content="Ontdek stap voor stap hoe huren bij KeylessGo werkt – van reserveren tot keyless openen, rijden en inleveren.">
     <title>Hoe werkt het | KeylessGo - SnappCar Partner+</title>
     
+    <!-- Tailwind voor layout/utility classes -->
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
+    <!-- Font -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
@@ -27,7 +30,6 @@
             --bg-section: #f9fafb;
             --font-stack: "Montserrat", system-ui, -apple-system, sans-serif;
             --header-height: 76px;
-            --header-bg: #1a2c49;
         }
 
         body { 
@@ -73,7 +75,6 @@
            2. INTERACTIEVE EXPLAINER STYLES
         ========================================= */
         
-        /* Visuele Transities (Rechterkant) */
         .scene-visual {
             transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             position: absolute;
@@ -93,14 +94,13 @@
             pointer-events: auto;
         }
 
-        /* Navigatie Items (Linkerkant) */
         .step-nav-item {
             transition: all 0.3s ease;
             border-left: 4px solid transparent;
         }
 
         .step-nav-item.active {
-            background-color: #f8fafc; /* Lichte achtergrond */
+            background-color: #f8fafc;
             border-left-color: var(--accent-orange);
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
         }
@@ -115,32 +115,33 @@
             background-color: rgba(248, 250, 252, 0.5);
         }
 
-        /* Mobiele Progress Bar */
         .progress-bar-mobile {
             transition: width 0.3s ease;
         }
 
         /* =========================================
-           3. OVERIGE STIJLEN
+           3. HEADER & MOBILE MENU (zoals index)
         ========================================= */
-        
-        /* Header Nav Override */
-        header {
-            background-color: var(--header-bg);
-            height: var(--header-height);
+
+        /* Header wrapper */
+        header.site-header {
             position: fixed;
-            width: 100%;
             top: 0;
+            left: 0;
+            width: 100%;
             z-index: 2000;
+            background: rgba(255,255,255,0.96);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(15,23,42,0.06);
         }
 
-        /* Mobile Menu */
+        /* Mobile menu */
         .mobile-menu {
             position: fixed;
             top: var(--header-height);
             left: 0;
             width: 100%;
-            background: white;
+            background: #ffffff;
             transform: translateY(-100%);
             transition: transform 0.3s ease-in-out;
             z-index: 1900;
@@ -164,37 +165,52 @@
 </head>
 <body class="flex flex-col min-h-screen pt-[76px]">
 
-    <header class="shadow-lg border-b border-slate-700/50">
-        <div class="max-w-[1200px] w-[90%] mx-auto h-full flex justify-between items-center text-white">
-            <a href="index.html" class="flex items-center gap-2 text-xl font-bold text-white no-underline">
-                <img src="img/partner/keylessgo-logo.png" alt="KeylessGo Logo" class="h-10 w-auto object-contain bg-white/10 rounded p-1">
+    <!-- =========================================
+         HEADER – afgestemd op index.html
+    ========================================== -->
+    <header class="site-header">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 h-[76px] flex justify-between items-center">
+            <!-- Logo -->
+            <a href="index.html" class="flex items-center gap-2 text-xl font-bold text-[var(--primary-blue)] no-underline">
+                <img src="img/partner/keylessgo-logo.png" alt="KeylessGo Logo" class="h-9 w-auto object-contain bg-white/0 rounded">
                 <span>Keyless<span style="color: var(--accent-orange);">Go</span></span>
             </a>
 
-            <nav class="hidden md:flex items-center gap-8">
-                <a href="index.html" class="text-slate-200 hover:text-white font-semibold text-[0.93rem] transition-colors">Home</a>
-                <a href="zoek-en-boek.html" class="text-slate-200 hover:text-white font-semibold text-[0.93rem] transition-colors">Zoek & Boek</a>
-                <a href="hoe-werkt-het.html" class="text-[var(--accent-orange)] font-semibold text-[0.93rem]">Hoe het werkt</a>
-                <a href="contact.html" class="text-slate-200 hover:text-white font-semibold text-[0.93rem] transition-colors">Contact</a>
-                <a href="https://www.snappcar.nl" target="_blank" class="btn btn-primary ml-2">
+            <!-- Desktop nav -->
+            <nav class="hidden md:flex items-center gap-7 text-sm font-semibold">
+                <a href="index.html" class="text-slate-600 hover:text-[var(--primary-blue)] transition-colors">Home</a>
+                <a href="zoek-en-boek.html" class="text-slate-600 hover:text-[var(--primary-blue)] transition-colors">Zoek &amp; Boek</a>
+                <a href="waarom-keylessgo.html" class="text-slate-600 hover:text-[var(--primary-blue)] transition-colors">Waarom KeylessGo</a>
+                <a href="hoe-werkt-het.html" class="text-[var(--accent-orange)]">Hoe werkt het</a>
+                <a href="faq.html" class="text-slate-600 hover:text-[var(--primary-blue)] transition-colors">FAQ</a>
+                <a href="contact.html" class="text-slate-600 hover:text-[var(--primary-blue)] transition-colors">Contact</a>
+
+                <a href="https://www.snappcar.nl" target="_blank" class="btn btn-primary ml-1">
                     Direct huren <i class="fa-solid fa-arrow-up-right-from-square ml-2"></i>
                 </a>
             </nav>
 
-            <button id="hamburger" class="md:hidden text-white text-2xl focus:outline-none">
+            <!-- Mobile hamburger -->
+            <button id="hamburger" class="md:hidden text-[var(--primary-blue)] text-2xl focus:outline-none">
                 <i class="fa-solid fa-bars"></i>
             </button>
         </div>
     </header>
 
+    <!-- Mobile menu -->
     <div id="mobile-menu" class="mobile-menu md:hidden flex flex-col p-6 gap-4 border-t">
         <a href="index.html" class="text-[var(--primary-blue)] font-semibold">Home</a>
-        <a href="zoek-en-boek.html" class="text-[var(--primary-blue)] font-semibold">Zoek & Boek</a>
-        <a href="hoe-werkt-het.html" class="text-[var(--accent-orange)] font-bold">Hoe het werkt</a>
+        <a href="zoek-en-boek.html" class="text-[var(--primary-blue)] font-semibold">Zoek &amp; Boek</a>
+        <a href="waarom-keylessgo.html" class="text-[var(--primary-blue)] font-semibold">Waarom KeylessGo</a>
+        <a href="hoe-werkt-het.html" class="text-[var(--accent-orange)] font-bold">Hoe werkt het</a>
+        <a href="faq.html" class="text-[var(--primary-blue)] font-semibold">FAQ</a>
         <a href="contact.html" class="text-[var(--primary-blue)] font-semibold">Contact</a>
         <a href="https://www.snappcar.nl" target="_blank" class="btn btn-primary w-full text-center">Direct huren</a>
     </div>
 
+    <!-- =========================================
+         HERO
+    ========================================== -->
     <section class="relative bg-[var(--primary-blue)] text-white overflow-hidden py-16 lg:py-24">
         <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-[var(--accent-orange)] opacity-10 rounded-full blur-3xl translate-x-1/3 -translate-y-1/4 pointer-events-none"></div>
 
@@ -225,7 +241,7 @@
                 </div>
             </div>
 
-            <div class="relative group animate-fade-in-up">
+            <div class="relative group">
                 <div class="absolute inset-0 bg-gradient-to-tr from-[var(--primary-blue)] to-[var(--accent-orange)] opacity-20 blur-2xl rounded-full transform scale-90"></div>
                 <img src="img/fleet/van-medium.jpg" alt="KeylessGo VW Transporter" class="relative w-full h-auto drop-shadow-2xl transform transition-transform duration-500 hover:scale-105">
                 
@@ -242,6 +258,7 @@
         </div>
     </section>
 
+    <!-- VIDEO -->
     <section id="video-uitleg" class="relative z-20 -mt-10 px-4 mb-20">
         <div class="max-w-4xl mx-auto">
             <div class="bg-black rounded-2xl shadow-2xl overflow-hidden border-4 border-white aspect-video relative group reveal-on-scroll">
@@ -257,10 +274,9 @@
         </div>
     </section>
 
+    <!-- INTERACTIEVE EXPLAINER -->
     <section id="interactive-explainer" class="py-16 lg:py-24 relative overflow-hidden bg-white">
-            
         <div class="container mx-auto px-6 max-w-7xl relative z-10">
-            
             <div class="text-center mb-16 max-w-3xl mx-auto">
                 <span class="text-[var(--accent-orange)] font-bold tracking-wider uppercase text-sm mb-2 block">Zo werkt het</span>
                 <h2 class="text-3xl md:text-5xl font-extrabold text-[var(--primary-blue)] mb-6 leading-tight">
@@ -272,9 +288,8 @@
             </div>
 
             <div class="flex flex-col lg:flex-row gap-8 lg:gap-16 items-start">
-                
+                <!-- STAPPEN -->
                 <div class="w-full lg:w-5/12 flex flex-col gap-4 relative" id="step-triggers">
-                    
                     <div class="lg:hidden w-full h-1 bg-gray-200 rounded-full mb-6 overflow-hidden">
                         <div id="mobile-progress" class="h-full bg-[var(--accent-orange)] w-1/3 progress-bar-mobile"></div>
                     </div>
@@ -321,14 +336,13 @@
                         </div>
                         <div>
                             <strong class="text-[var(--primary-blue)] block text-sm">Veilig & Verzekerd</strong>
-                            <span class="text-xs text-slate-500">Elke rit is all-risk verzekerd via Allianz & SnappCar.</span>
+                            <span class="text-xs text-slate-500">Elke rit is all-risk verzekerd via Allianz &amp; SnappCar.</span>
                         </div>
                     </div>
-
                 </div>
 
+                <!-- VISUALS -->
                 <div class="w-full lg:w-7/12 relative h-[450px] md:h-[550px] lg:h-[600px] sticky top-32">
-                    
                     <div id="visual-1" class="scene-visual active">
                         <div class="bg-white rounded-3xl shadow-2xl overflow-hidden h-full border border-slate-200 relative group">
                             <img src="img/partner/keylessgo-keyless-huren-app.png" alt="App Boeken" class="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105">
@@ -342,7 +356,7 @@
                             </div>
 
                             <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-[#1a2c49]/90 to-transparent flex flex-col justify-end p-8 text-white">
-                                <h4 class="text-2xl font-bold mb-1">Kies & Boek</h4>
+                                <h4 class="text-2xl font-bold mb-1">Kies &amp; Boek</h4>
                                 <p class="text-slate-200 text-sm">Transparante prijzen, geen verborgen kosten.</p>
                             </div>
                         </div>
@@ -368,7 +382,7 @@
 
                     <div id="visual-3" class="scene-visual">
                         <div class="bg-white rounded-3xl shadow-2xl overflow-hidden h-full border border-slate-200 relative group">
-                            <img src="img\fleet\keylessgo-fullfleet.jpg" alt="Rijden en Inleveren" class="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105">
+                            <img src="img/fleet/keylessgo-fullfleet.jpg" alt="Rijden en Inleveren" class="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105">
                             
                             <div class="absolute top-8 left-8 bg-[var(--primary-blue)] text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
                                 <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
@@ -397,6 +411,7 @@
         </div>
     </section>
 
+    <!-- INCLUSIEF BIJ ELKE RIT -->
     <section class="bg-[var(--bg-light)] py-20 border-t border-gray-200">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center max-w-3xl mx-auto mb-16">
@@ -437,6 +452,7 @@
         </div>
     </section>
 
+    <!-- KORTE FAQ BLIJFT -->
     <section class="py-20 bg-white">
         <div class="max-w-4xl mx-auto px-6">
             <h2 class="text-3xl text-center mb-12">Veelgestelde Vragen</h2>
@@ -481,6 +497,7 @@
         </div>
     </section>
 
+    <!-- FOOTER (ongewijzigd) -->
     <footer class="bg-[var(--primary-blue)] text-white pt-16 pb-8">
         <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8 mb-12 border-b border-slate-700 pb-12">
             <div class="col-span-1">
@@ -498,7 +515,9 @@
                 <ul class="space-y-2 text-sm text-slate-300">
                     <li><a href="index.html" class="hover:text-[var(--accent-orange)] transition">Home</a></li>
                     <li><a href="zoek-en-boek.html" class="hover:text-[var(--accent-orange)] transition">Voertuigen</a></li>
+                    <li><a href="waarom-keylessgo.html" class="hover:text-[var(--accent-orange)] transition">Waarom KeylessGo</a></li>
                     <li><a href="hoe-werkt-het.html" class="text-[var(--accent-orange)]">Hoe werkt het</a></li>
+                    <li><a href="faq.html" class="hover:text-[var(--accent-orange)] transition">FAQ</a></li>
                     <li><a href="contact.html" class="hover:text-[var(--accent-orange)] transition">Contact</a></li>
                 </ul>
             </div>
@@ -537,7 +556,7 @@
 
         hamburger.addEventListener('click', () => {
             mobileMenu.classList.toggle('open');
-            if(mobileMenu.classList.contains('open')) {
+            if (mobileMenu.classList.contains('open')) {
                 icon.classList.remove('fa-bars');
                 icon.classList.add('fa-xmark');
             } else {
@@ -567,17 +586,14 @@
         const totalSteps = 3;
 
         function switchScene(stepNumber) {
-            // Update state
             currentStep = stepNumber;
             
-            // 1. Update Visuals
             document.querySelectorAll('.scene-visual').forEach(el => {
                 el.classList.remove('active');
             });
             const visual = document.getElementById(`visual-${stepNumber}`);
-            if(visual) visual.classList.add('active');
+            if (visual) visual.classList.add('active');
 
-            // 2. Update Nav Items (Left side)
             const navItems = document.querySelectorAll('.step-nav-item');
             navItems.forEach((item, index) => {
                 if (index + 1 === stepNumber) {
@@ -587,21 +603,18 @@
                 }
             });
 
-            // 3. Update Mobile Progress Bar
             const progress = document.getElementById('mobile-progress');
             if (progress) {
                 const percentage = (stepNumber / totalSteps) * 100;
                 progress.style.width = `${percentage}%`;
             }
 
-            // Stop auto-rotation if user interacts manually
             if (autoRotateTimer) {
                 clearInterval(autoRotateTimer);
                 autoRotateTimer = null;
             }
         }
 
-        // Auto-rotation logic (wisselt elke 5 seconden)
         function startAutoRotation() {
             autoRotateTimer = setInterval(() => {
                 let next = currentStep + 1;
@@ -610,13 +623,12 @@
             }, 5000);
         }
 
-        // Helper: Switch scene zonder timer te stoppen (voor auto-loop)
         function switchSceneWithoutStoppingTimer(stepNumber) {
             currentStep = stepNumber;
             
             document.querySelectorAll('.scene-visual').forEach(el => el.classList.remove('active'));
             const visual = document.getElementById(`visual-${stepNumber}`);
-            if(visual) visual.classList.add('active');
+            if (visual) visual.classList.add('active');
 
             const navItems = document.querySelectorAll('.step-nav-item');
             navItems.forEach((item, index) => {
@@ -628,10 +640,10 @@
             });
 
             const progress = document.getElementById('mobile-progress');
-            if(progress) progress.style.width = `${(stepNumber / totalSteps) * 100}%`;
+            if (progress) progress.style.width = `${(stepNumber / totalSteps) * 100}%`;
         }
 
-        // Start bij laden
+        // Auto-rotation starten na load
         document.addEventListener('DOMContentLoaded', () => {
             startAutoRotation();
         });
