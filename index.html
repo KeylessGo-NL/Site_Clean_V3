@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="KeylessGo biedt moderne deelauto's en busjes in de regio Utrecht. Boek via SnappCar en stap direct in, volledig keyless.">
 
+    <!-- Leaflet CSS -->
     <link
         rel="stylesheet"
         href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -13,12 +14,14 @@
         crossorigin=""
     />
 
+    <!-- Font Awesome -->
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         referrerpolicy="no-referrer"
     />
 
+    <!-- Eigen styles -->
     <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
 <body>
@@ -44,6 +47,7 @@
 
                 <li><a href="hoe-werkt-het.html">Hoe het werkt</a></li>
                 <li><a href="waarom-keylessgo.html">Waarom KeylessGo</a></li>
+                <li><a href="faq.html">FAQ</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
 
@@ -61,98 +65,116 @@
 </header>
 
 <main>
+    <!-- HERO: zelfde stijl als hoe-werkt-het, maar met home-content -->
     <section class="hero hero-new">
-    <div class="container hero-grid">
+        <div class="container hero-grid">
 
-        <div class="hero-left">
-            <span class="hero-eyebrow">24/7 BUSJES & AUTO VERHUUR</span>
+            <div class="hero-left-new">
+                <span class="hero-eyebrow">24/7 BUSJES &amp; AUTO VERHUUR</span>
 
-            <h1 class="hero-title">
-            Altijd in de buurt. <br />Helemaal keyless.
-            </h1>
+                <h1 class="hero-title-new">
+                    Altijd in de buurt.<br>Helemaal keyless.
+                </h1>
 
-            <p class="hero-sub">
-                Boek via SnappCar, open volledig via de app en rij direct weg. 
-                Geen balie, geen sleuteloverdracht – gewoon meteen rijden.
+                <p class="hero-sub-new">
+                    Boek via SnappCar, open volledig via de app en rij direct weg. 
+                    Geen balie, geen sleuteloverdracht – gewoon meteen rijden.
+                </p>
+
+                <div class="hero-buttons">
+                    <a href="zoek-en-boek.html" class="btn btn-primary">
+                        Zoek &amp; boek voertuig
+                    </a>
+                    <a href="hoe-werkt-het.html" class="btn hero-btn-secondary">
+                        Hoe werkt het?
+                    </a>
+                </div>
+
+                <div class="trust-badge">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    All-risk verzekerd via Allianz &amp; SnappCar
+                </div>
+            </div>
+
+            <div class="hero-right-image">
+                <img src="img/partner/KEYLESSGO_TRANSPORTER.png" alt="KeylessGo Transporter" class="hero-vehicle">
+            </div>
+
+        </div>
+
+        <div class="container hero-usps">
+            <div class="usp-card">
+                <div class="usp-icon-box box-blue">
+                    <i class="fa-solid fa-mobile-screen"></i>
+                </div>
+                <div class="usp-content">
+                    <h4>Volledig keyless</h4>
+                    <p>Open en sluit jouw voertuig via de SnappCar-app.</p>
+                </div>
+            </div>
+
+            <div class="usp-card">
+                <div class="usp-icon-box box-green">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <div class="usp-content">
+                    <h4>Direct beschikbaar</h4>
+                    <p>Boek en rij binnen enkele minuten weg.</p>
+                </div>
+            </div>
+
+            <div class="usp-card">
+                <div class="usp-icon-box">
+                    <i class="fa-solid fa-tag"></i>
+                </div>
+                <div class="usp-content">
+                    <h4>Scherpe tarieven</h4>
+                    <p>Heldere all-in prijzen en verzekering via SnappCar.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4-stappen blok -->
+    <section id="hoe-werkt-het-summary" class="py-20 bg-white">
+        <div class="container">
+            <h2 class="text-3xl font-bold text-center mb-4">4 Stappen naar Keyless Rijden</h2>
+            <p class="section-sub">
+                Het KeylessGo-proces is volledig geoptimaliseerd voor snelheid en gemak via de SnappCar app.
             </p>
 
-            <div class="hero-buttons">
-                <a href="zoek-en-boek.html" class="btn btn-primary">Zoek & boek voertuig</a>
-                <a href="hoe-werkt-het.html" class="btn hero-btn-secondary">Hoe werkt het?</a>
+            <div class="how-grid-summary">
+                <div class="how-summary-card">
+                    <div class="how-icon-circle-new">1</div>
+                    <h3 class="text-lg font-bold">Boek &amp; bevestig</h3>
+                    <p class="text-sm">Vind het voertuig op een KeylessGo hotspot en boek via de SnappCar app. Geen wachttijd.</p>
+                </div>
+                <div class="how-summary-card">
+                    <div class="how-icon-circle-new">2</div>
+                    <h3 class="text-lg font-bold">Check-in &amp; foto's</h3>
+                    <p class="text-sm">Maak foto's van de auto via de app. Dit is je digitale sleutel tot het Keyless systeem.</p>
+                </div>
+                <div class="how-summary-card">
+                    <div class="how-icon-circle-new">3</div>
+                    <h3 class="text-lg font-bold">Open via app</h3>
+                    <p class="text-sm">Druk op de oranje 'Unlock' knop in de app. Stap in, start de motor en rij direct weg.</p>
+                </div>
+                <div class="how-summary-card">
+                    <div class="how-icon-circle-new">4</div>
+                    <h3 class="text-lg font-bold">Sluiten &amp; inleveren</h3>
+                    <p class="text-sm">Parkeer terug op de hotspot, sluit af via de app ('Check-uit') en de boeking is voltooid.</p>
+                </div>
             </div>
+            <div class="text-center mt-12">
+                <a href="hoe-werkt-het.html" class="btn btn-secondary">
+                    Bekijk het volledige stappenplan <i class="fa-solid fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
 
-            <div class="trust-badge">
-                <i class="fa-solid fa-shield-halved"></i>
-                All-risk verzekerd via Allianz & SnappCar
-            </div>
-        </div>
-
-        <div class="hero-right-image">
-            <img src="img/partner/KEYLESSGO_TRANSPORTER.png" alt="KeylessGo Transporter" class="hero-vehicle" />
-        </div>
-
-    </div>
-
-    <div class="container hero-usps">
-        <div class="usp-card">
-            <i class="fa-solid fa-mobile-screen usp-icon"></i>
-            <div>
-                <h4>Volledig keyless</h4>
-                <p>Open en sluit jouw voertuig via de SnappCar-app.</p>
-            </div>
-        </div>
-        <div class="usp-card">
-            <i class="fa-solid fa-bolt usp-icon"></i>
-            <div>
-                <h4>Direct beschikbaar</h4>
-                <p>Boek en rij binnen enkele minuten weg.</p>
-            </div>
-        </div>
-        <div class="usp-card">
-            <i class="fa-solid fa-tag usp-icon"></i>
-            <div>
-                <h4>Scherpe tarieven</h4>
-                <p>Heldere all-in prijzen en verzekering via SnappCar.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section id="hoe-werkt-het-summary" class="py-20 bg-white">
-    <div class="container">
-        <h2 class="text-3xl font-bold text-center mb-4">4 Stappen naar Keyless Rijden</h2>
-        <p class="section-sub">
-            Het KeylessGo-proces is volledig geoptimaliseerd voor snelheid en gemak via de SnappCar app.
-        </p>
-
-        <div class="how-grid-summary">
-            <div class="how-summary-card">
-                <div class="how-icon-circle-new">1</div>
-                <h3 class="text-lg font-bold">Boek & Bevestig</h3>
-                <p class="text-sm">Vind het voertuig op een KeylessGo hotspot en boek via de SnappCar app. Geen wachttijd.</p>
-            </div>
-            <div class="how-summary-card">
-                <div class="how-icon-circle-new">2</div>
-                <h3 class="text-lg font-bold">Check-in & Foto's</h3>
-                <p class="text-sm">Maak foto's van de auto via de app. Dit is je digitale sleutel tot het Keyless systeem.</p>
-            </div>
-            <div class="how-summary-card">
-                <div class="how-icon-circle-new">3</div>
-                <h3 class="text-lg font-bold">Open via App</h3>
-                <p class="text-sm">Druk op de oranje 'Unlock' knop in de app. Stap in, start de motor en rij direct weg.</p>
-            </div>
-            <div class="how-summary-card">
-                <div class="how-icon-circle-new">4</div>
-                <h3 class="text-lg font-bold">Sluiten & Inleveren</h3>
-                <p class="text-sm">Parkeer terug op de hotspot, sluit af via de app ('Check-uit') en de boeking is voltooid.</p>
-            </div>
-        </div>
-         <div class="text-center mt-12">
-            <a href="hoe-werkt-het.html" class="btn btn-secondary">Bekijk het volledige stappenplan <i class="fa-solid fa-arrow-right ml-2"></i></a>
-        </div>
-    </div>
-</section>
-<section class="map-section" id="zoek-en-boek">
+    <!-- MAP -->
+    <section class="map-section" id="zoek-en-boek">
         <div class="container">
             <h2>Zoek &amp; boek een voertuig in jouw buurt</h2>
             <p class="section-sub">
@@ -206,6 +228,7 @@
         </div>
     </section>
 
+    <!-- VLOOT -->
     <section class="fleet-section" id="onze-vloot">
         <div class="container">
             <h2>Onze KeylessGo vloot</h2>
@@ -215,7 +238,7 @@
 
             <div class="fleet-grid">
                 <article class="fleet-card">
-                    <img src="img\fleet\van-small.jpg" alt="Busje Small huren – KeylessGo">
+                    <img src="img/fleet/van-small.jpg" alt="Busje Small huren – KeylessGo">
                     <div class="fleet-card-body">
                         <h3>Busje Small</h3>
                         <p>Compact en wendbaar. Ideaal voor kleine verhuizingen, klussen of bezorgen in de stad.</p>
@@ -238,7 +261,7 @@
                 </article>
 
                 <article class="fleet-card">
-                    <img src="img\fleet\van-medium.jpg" alt="Busje Medium – VW Transporter huren">
+                    <img src="img/fleet/van-medium.jpg" alt="Busje Medium – VW Transporter huren">
                     <div class="fleet-card-body">
                         <h3>Busje Medium</h3>
                         <p>VW Transporter of vergelijkbaar. Perfect voor meubels, grotere klussen en weekendjes weg.</p>
@@ -261,7 +284,7 @@
                 </article>
 
                 <article class="fleet-card">
-                    <img src="img\fleet\van-large.jpg" alt="Busje Large – vlootoverzicht">
+                    <img src="img/fleet/van-large.jpg" alt="Busje Large – vlootoverzicht">
                     <div class="fleet-card-body">
                         <h3>Busje Large</h3>
                         <p>Extra grote busjes voor complete verhuizingen, events en zakelijke logistiek.</p>
@@ -284,7 +307,7 @@
                 </article>
 
                 <article class="fleet-card">
-                    <img src="img\fleet\compact.jpg" alt="Stadsauto huren – KeylessGo">
+                    <img src="img/fleet/compact.jpg" alt="Stadsauto huren – KeylessGo">
                     <div class="fleet-card-body">
                         <h3>Stadsauto</h3>
                         <p>Compacte, zuinige auto voor dagelijkse ritten in en rond de stad.</p>
@@ -354,6 +377,7 @@
         </div>
     </section>
 
+    <!-- WAAROM KEYLESSGO -->
     <section class="usp-blocks" id="waarom-keylessgo">
         <div class="container">
             <h2>Waarom huren via KeylessGo?</h2>
@@ -406,6 +430,7 @@
                 <li><a href="zoek-en-boek.html">Zoek &amp; Boek</a></li>
                 <li><a href="#onze-vloot">Onze vloot</a></li>
                 <li><a href="hoe-werkt-het.html">Hoe het werkt</a></li>
+                <li><a href="faq.html">FAQ</a></li>
             </ul>
         </div>
 
@@ -424,42 +449,44 @@
     </div>
 </footer>
 
+<!-- Leaflet JS -->
 <script
-        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-        crossorigin=""
-    ></script>
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+></script>
 
-    <script src="assets/js/fleet.js"></script>
-    <script src="assets/js/map.js"></script>
-    <script src="assets/js/find-vehicle.js"></script>
+<!-- Eigen JS -->
+<script src="assets/js/fleet.js"></script>
+<script src="assets/js/map.js"></script>
+<script src="assets/js/find-vehicle.js"></script>
 
-    <script>
-        // jaar in footer
-        document.getElementById("year").textContent = new Date().getFullYear();
+<script>
+    // jaar in footer
+    document.getElementById("year").textContent = new Date().getFullYear();
 
-        // hamburger menu
-        const hamburger = document.getElementById("hamburger");
-        const navMenu = document.querySelector(".nav-menu");
+    // hamburger menu
+    const hamburger = document.getElementById("hamburger");
+    const navMenu = document.querySelector(".nav-menu");
 
-        if (hamburger && navMenu) {
-            hamburger.addEventListener("click", () => {
-                const isActive = navMenu.classList.toggle("active");
-                hamburger.classList.toggle("open", isActive);
-                document.body.classList.toggle("nav-open", isActive);
-                hamburger.setAttribute("aria-expanded", isActive ? "true" : "false");
-            });
-        }
-
-        // mobile submenu toggle
-        document.querySelectorAll(".has-submenu > a").forEach((link) => {
-            link.addEventListener("click", (e) => {
-                if (window.innerWidth > 768) return; // desktop: hover
-                e.preventDefault();
-                link.parentElement.classList.toggle("open");
-            });
+    if (hamburger && navMenu) {
+        hamburger.addEventListener("click", () => {
+            const isActive = navMenu.classList.toggle("active");
+            hamburger.classList.toggle("open", isActive);
+            document.body.classList.toggle("nav-open", isActive);
+            hamburger.setAttribute("aria-expanded", isActive ? "true" : "false");
         });
-    </script>
-    
+    }
+
+    // mobile submenu toggle
+    document.querySelectorAll(".has-submenu > a").forEach((link) => {
+        link.addEventListener("click", (e) => {
+            if (window.innerWidth > 768) return; // desktop: hover
+            e.preventDefault();
+            link.parentElement.classList.toggle("open");
+        });
+    });
+</script>
+
 </body>
-    </html>
+</html>

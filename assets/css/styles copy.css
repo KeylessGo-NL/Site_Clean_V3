@@ -519,7 +519,7 @@ body.nav-open {
     }
 }
 
-/* rechterkant (dubbele definitie gecorrigeerd) */
+/* rechterkant */
 .hero-right {
     display: flex;
     flex-direction: column;
@@ -1343,7 +1343,6 @@ footer {
         padding-top: 32px;
     }
 }
-
 /* --- HERO COMPACT --- */
 .hero-compact {
     padding: 110px 0 70px; /* lager */
@@ -1459,23 +1458,21 @@ footer {
 }
 
 /* LINKERKANT */
-.hero-left-new {
+.hero-left {
     z-index: 5;
 }
 
-.hero-title-new {
+.hero-title {
     font-size: 2.4rem;
     font-weight: 800;
     line-height: 1.15;
     margin-bottom: 12px;
-    color: #fff;
 }
 
-.hero-sub-new {
+.hero-sub {
     font-size: 1.05rem;
     margin-bottom: 18px;
     max-width: 540px;
-    color: #e5e7eb;
 }
 
 /* VOERTUIGBLOK */
@@ -1497,7 +1494,7 @@ footer {
 
 .hero-vehicle {
     width: 100%;
-    max-width: 1360px;
+    max-width:1360px;
     position: relative;
     z-index: 2;
     transform: translateX(20px);
@@ -1536,7 +1533,7 @@ footer {
     font-size: 0.85rem;
 }
 
-.hero-usps .usp-icon {
+.usp-icon {
     font-size: 1.4rem;
     color: var(--accent-orange);
 }
@@ -1609,14 +1606,64 @@ footer {
         gap: 16px;
     }
 }
-
 /* ===========================
    FAQ PAGINA – KEYLESSGO
    =========================== */
 
-/* Let op: FAQ gebruikt overal dezelfde header/footer & buttons als de rest van de site.
-   Hier alleen specifieke layout/kleuren voor de FAQ content. */
+:root {
+    --primary-blue: #1A2C49;
+    --accent-orange: #FF7A00;
+    --bg-light: #f7f8fa;
+}
 
+/* Basic layout */
+body {
+    font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Header (simpel, gebruik anders je eigen) */
+.kg-header {
+    background: #ffffff;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.kg-header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.kg-logo a {
+    font-size: 1.3rem;
+    font-weight: 800;
+    text-decoration: none;
+    color: var(--primary-blue);
+}
+
+.kg-nav a {
+    margin-left: 18px;
+    font-size: 0.95rem;
+    text-decoration: none;
+    color: #444;
+    font-weight: 500;
+    position: relative;
+}
+
+.kg-nav a:hover {
+    color: var(--primary-blue);
+}
+
+.kg-nav a.active {
+    color: var(--accent-orange);
+}
+
+/* Hero */
 .faq-page {
     background: var(--bg-light);
     min-height: 100vh;
@@ -1660,6 +1707,42 @@ footer {
     gap: 12px;
 }
 
+/* Buttons */
+.btn-primary,
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 18px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all 0.25s ease;
+}
+
+.btn-primary {
+    background: var(--accent-orange);
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 26px rgba(0,0,0,0.35);
+}
+
+.btn-secondary {
+    border: 1px solid rgba(255,255,255,0.7);
+    color: #fff;
+    background: transparent;
+}
+
+.btn-secondary:hover {
+    background: rgba(255,255,255,0.12);
+}
+
+/* FAQ layout */
 .faq-content-section {
     padding: 30px 20px 60px;
 }
@@ -1683,15 +1766,6 @@ footer {
     font-size: 0.9rem;
     color: #555;
     margin-bottom: 16px;
-}
-
-.faq-search-input {
-    width: 100%;
-    padding: 10px 12px;
-    border-radius: 999px;
-    border: 1px solid rgba(26,44,73,0.18);
-    font-size: 0.92rem;
-    margin-bottom: 14px;
 }
 
 .faq-filters {
@@ -1841,18 +1915,35 @@ footer {
     line-height: 1.6;
 }
 
-.faq-empty-state {
-    max-width: 800px;
-    margin: 0 auto;
-    font-size: 0.95rem;
-    text-align: center;
-    color: #6b7280;
+/* Footer */
+.kg-footer {
+    padding: 18px 20px;
+    border-top: 1px solid rgba(0,0,0,0.06);
+    background: #ffffff;
 }
 
-/* Responsive FAQ */
+.kg-footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+/* Responsive */
 @media (max-width: 900px) {
     .faq-layout {
         grid-template-columns: 1fr;
+    }
+
+    .kg-header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .kg-nav a {
+        margin-left: 0;
+        margin-right: 14px;
     }
 }
 
