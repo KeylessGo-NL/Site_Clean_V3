@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KeylessGo – Veelgestelde vragen (FAQ)</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Algemene stylesheet (in assets/css/) -->
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+    <!-- Header (eventueel vervangen door jouw bestaande header) -->
+    <header class="kg-header">
+        <div class="kg-header-inner">
+            <div class="kg-logo">
+                <a href="index.html">KeylessGo</a>
+            </div>
+            <nav class="kg-nav">
+                <a href="index.html">Home</a>
+                <a href="hoe-werkt-het.html">Hoe werkt het</a>
+                <a href="zoek-en-boek.html">Zoek & boek</a>
+                <a href="waarom-keylessgo.html">Waarom KeylessGo</a>
+                <a href="faq.html" class="active">FAQ</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="faq-page">
+        <!-- HERO / INTRO -->
+        <section class="faq-hero">
+            <div class="faq-hero-inner">
+                <p class="faq-kicker">Support & uitleg</p>
+                <h1>Veelgestelde vragen over KeylessGo</h1>
+                <p class="faq-subtitle">
+                    Hier vind je snelle antwoorden op de meest gestelde vragen over boeken, gebruik, kosten en verzekering.
+                    Staat jouw vraag er niet tussen? Neem dan gerust contact met ons op.
+                </p>
+                <div class="faq-hero-actions">
+                    <a href="#faq-content" class="btn-primary">Bekijk FAQ</a>
+                    <a href="contact.html" class="btn-secondary">Neem contact op</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ LAYOUT -->
+        <section class="faq-content-section" id="faq-content">
+            <div class="faq-layout">
+                <!-- SIDEBAR -->
+                <aside class="faq-sidebar">
+                    <h2>Filter & zoek</h2>
+                    <p class="faq-sidebar-text">
+                        Zoek op trefwoord of filter op categorie om snel het juiste antwoord te vinden.
+                    </p>
+
+                    <!-- Zoekveld -->
+                    <input
+                        type="search"
+                        id="faq-search"
+                        class="faq-search-input"
+                        placeholder="Zoek op trefwoord (bijv. borg, verzekering, bus)..."
+                        autocomplete="off"
+                    />
+
+                    <!-- Filterknoppen worden via JS gevuld -->
+                    <div id="faq-filters" class="faq-filters"></div>
+
+                    <div class="faq-help-box">
+                        <h3>Hulp nodig?</h3>
+                        <p>
+                            Kom je er niet uit of heb je een specifieke vraag over jouw reservering?
+                        </p>
+                        <ul>
+                            <li>📩 Mail: info@keylessgo.nl</li>
+                            <li>📞 Telefonisch support (kantooruren)</li>
+                        </ul>
+                        <a href="contact.html" class="faq-help-link">Ga naar contactpagina →</a>
+                    </div>
+                </aside>
+
+                <!-- MAIN FAQ – wordt volledig via JS opgebouwd -->
+                <section class="faq-main" id="faq-main">
+                    <!-- JS injecteert hier de categorieblokken en vragen -->
+                </section>
+            </div>
+
+            <!-- Placeholder “geen resultaten” -->
+            <p id="faq-empty-state" class="faq-empty-state" style="display:none;">
+                Geen resultaten gevonden. Probeer een andere zoekterm of categorie.
+            </p>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="kg-footer">
+        <div class="kg-footer-inner">
+            <p>© <span id="year"></span> KeylessGo. Alle rechten voorbehouden.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts: eerst data, dan logica (in assets/js/) -->
+    <script src="assets/js/faqData.js"></script>
+    <script src="assets/js/faq.js"></script>
+</body>
+</html>
