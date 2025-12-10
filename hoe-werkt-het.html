@@ -8,73 +8,18 @@
     
     <!-- Tailwind voor layout/utility classes -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
+
     <!-- Font -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
+    <!-- Globale site-styles -->
+    <link rel="stylesheet" href="assets/css/styles.css">
+
     <style>
-        /* =========================================
-           1. ALGEMENE STIJLEN & VARIABELEN
-        ========================================= */
-        :root {
-            --primary-blue: #1a2c49;
-            --accent-orange: #ff7a00;
-            --accent-orange-hover: #e06b00;
-            --text-dark: #1a2c49;
-            --text-light: #666666;
-            --text-white: #ffffff;
-            --bg-light: #f4f7fa;
-            --bg-section: #f9fafb;
-            --font-stack: "Montserrat", system-ui, -apple-system, sans-serif;
-            --header-height: 76px;
-        }
-
-        body { 
-            font-family: var(--font-stack); 
-            color: var(--text-dark);
-            background-color: #ffffff;
-        }
-
-        h1, h2, h3, h4 {
-            font-weight: 800;
-            color: var(--primary-blue);
-        }
-
-        /* Buttons */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 12px 26px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            text-decoration: none;
-            border-radius: 6px;
-            transition: all 0.25s ease;
-            cursor: pointer;
-            border: 2px solid transparent;
-        }
-
-        .btn-primary {
-            background-color: var(--accent-orange);
-            color: var(--text-white);
-            border-color: var(--accent-orange);
-        }
-
-        .btn-primary:hover {
-            background-color: var(--accent-orange-hover);
-            border-color: var(--accent-orange-hover);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 10px rgba(255, 122, 0, 0.3);
-        }
-
-        /* =========================================
-           2. INTERACTIEVE EXPLAINER STYLES
-        ========================================= */
-        
+        /* INTERACTIEVE EXPLAINER STYLES + REVEAL */
         .scene-visual {
             transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             position: absolute;
@@ -111,7 +56,7 @@
             border-color: var(--accent-orange);
         }
 
-        .step-nav-item:hover:not(.active) {
+        .step-nav-item:hover:not(.active)) {
             background-color: rgba(248, 250, 252, 0.5);
         }
 
@@ -119,39 +64,6 @@
             transition: width 0.3s ease;
         }
 
-        /* =========================================
-           3. HEADER & MOBILE MENU (zoals index)
-        ========================================= */
-
-        /* Header wrapper */
-        header.site-header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 2000;
-            background: rgba(255,255,255,0.96);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(15,23,42,0.06);
-        }
-
-        /* Mobile menu */
-        .mobile-menu {
-            position: fixed;
-            top: var(--header-height);
-            left: 0;
-            width: 100%;
-            background: #ffffff;
-            transform: translateY(-100%);
-            transition: transform 0.3s ease-in-out;
-            z-index: 1900;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        .mobile-menu.open {
-            transform: translateY(0);
-        }
-
-        /* Video Reveal */
         .reveal-on-scroll {
             opacity: 0;
             transform: translateY(20px);
@@ -163,341 +75,365 @@
         }
     </style>
 </head>
-<body class="flex flex-col min-h-screen pt-[76px]">
+
+<body class="flex flex-col min-h-screen">
 
     <!-- =========================================
-         HEADER – afgestemd op index.html
+         HEADER – zelfde markup als index.html
     ========================================== -->
-    <header class="site-header">
-        <div class="max-w-7xl mx-auto px-4 md:px-6 h-[76px] flex justify-between items-center">
-            <!-- Logo -->
-            <a href="index.html" class="flex items-center gap-2 text-xl font-bold text-[var(--primary-blue)] no-underline">
-                <img src="img/partner/keylessgo-logo.png" alt="KeylessGo Logo" class="h-9 w-auto object-contain bg-white/0 rounded">
-                <span>Keyless<span style="color: var(--accent-orange);">Go</span></span>
+    <header>
+        <div class="container header-content">
+            <a href="index.html" class="logo" aria-label="KeylessGo home">
+                <img src="img/partner/keylessgo-logo.png" alt="KeylessGo logo">
             </a>
 
-            <!-- Desktop nav -->
-            <nav class="hidden md:flex items-center gap-7 text-sm font-semibold">
-                <a href="index.html" class="text-slate-600 hover:text-[var(--primary-blue)] transition-colors">Home</a>
-                <a href="zoek-en-boek.html" class="text-slate-600 hover:text-[var(--primary-blue)] transition-colors">Zoek &amp; Boek</a>
-                <a href="waarom-keylessgo.html" class="text-slate-600 hover:text-[var(--primary-blue)] transition-colors">Waarom KeylessGo</a>
-                <a href="hoe-werkt-het.html" class="text-[var(--accent-orange)]">Hoe werkt het</a>
-                <a href="faq.html" class="text-slate-600 hover:text-[var(--primary-blue)] transition-colors">FAQ</a>
-                <a href="contact.html" class="text-slate-600 hover:text-[var(--primary-blue)] transition-colors">Contact</a>
+            <nav class="nav-menu">
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="zoek-en-boek.html">Zoek &amp; Boek</a></li>
 
-                <a href="https://www.snappcar.nl" target="_blank" class="btn btn-primary ml-1">
-                    Direct huren <i class="fa-solid fa-arrow-up-right-from-square ml-2"></i>
+                    <li class="has-submenu">
+                        <a href="index.html#onze-vloot">Voertuigen</a>
+                        <ul class="submenu">
+                            <li><a href="index.html#onze-vloot">Busjes</a></li>
+                            <li><a href="index.html#onze-vloot">Auto's</a></li>
+                            <li><a href="index.html#onze-vloot">Elektrisch</a></li>
+                        </ul>
+                    </li>
+
+                    <li><a href="hoe-werkt-het.html" class="active" aria-current="page">Hoe het werkt</a></li>
+                    <li><a href="waarom-keylessgo.html">Waarom KeylessGo</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+
+                <a href="https://www.snappcar.nl" target="_blank" rel="noopener" class="btn btn-primary nav-cta">
+                    Direct huren via SnappCar
                 </a>
             </nav>
 
-            <!-- Mobile hamburger -->
-            <button id="hamburger" class="md:hidden text-[var(--primary-blue)] text-2xl focus:outline-none">
-                <i class="fa-solid fa-bars"></i>
+            <button class="hamburger" id="hamburger" aria-label="Menu openen" aria-expanded="false">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
             </button>
         </div>
     </header>
 
-    <!-- Mobile menu -->
-    <div id="mobile-menu" class="mobile-menu md:hidden flex flex-col p-6 gap-4 border-t">
-        <a href="index.html" class="text-[var(--primary-blue)] font-semibold">Home</a>
-        <a href="zoek-en-boek.html" class="text-[var(--primary-blue)] font-semibold">Zoek &amp; Boek</a>
-        <a href="waarom-keylessgo.html" class="text-[var(--primary-blue)] font-semibold">Waarom KeylessGo</a>
-        <a href="hoe-werkt-het.html" class="text-[var(--accent-orange)] font-bold">Hoe werkt het</a>
-        <a href="faq.html" class="text-[var(--primary-blue)] font-semibold">FAQ</a>
-        <a href="contact.html" class="text-[var(--primary-blue)] font-semibold">Contact</a>
-        <a href="https://www.snappcar.nl" target="_blank" class="btn btn-primary w-full text-center">Direct huren</a>
-    </div>
+    <main class="flex-1">
 
-    <!-- =========================================
-         HERO
-    ========================================== -->
-    <section class="relative bg-[var(--primary-blue)] text-white overflow-hidden py-16 lg:py-24">
-        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-[var(--accent-orange)] opacity-10 rounded-full blur-3xl translate-x-1/3 -translate-y-1/4 pointer-events-none"></div>
+        <!-- =========================================
+             HERO
+        ========================================== -->
+        <section class="relative bg-[var(--primary-blue)] text-white overflow-hidden py-16 lg:py-24">
+            <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-[var(--accent-orange)] opacity-10 rounded-full blur-3xl translate-x-1/3 -translate-y-1/4 pointer-events-none"></div>
 
-        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
-            <div class="text-center lg:text-left">
-                <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 backdrop-blur-sm px-4 py-1.5 rounded-full mb-6">
-                    <i class="fa-solid fa-award text-[var(--accent-orange)]"></i>
-                    <span class="text-sm font-semibold tracking-wide uppercase text-white/90">SnappCar Partner+</span>
-                </div>
-                
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight text-white">
-                    Huren zonder gedoe,<br>
-                    <span class="text-[var(--accent-orange)]">rijden binnen minuten.</span>
-                </h1>
-                
-                <p class="text-lg text-slate-300 max-w-xl mx-auto lg:mx-0 mb-8 leading-relaxed">
-                    Wij beheren de vloot, jij regelt alles via de app. 
-                    Geen wachtrijen, geen fysieke sleutels, gewoon instappen en wegwezen met onze moderne VW Transporters en personenauto's.
-                </p>
-
-                <div class="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
-                    <a href="#video-uitleg" class="btn bg-white text-[var(--primary-blue)] hover:bg-slate-100 border-white">
-                        <i class="fa-solid fa-play-circle mr-2 text-[var(--accent-orange)]"></i> Bekijk video
-                    </a>
-                    <a href="#interactive-explainer" class="btn border border-white/30 text-white hover:bg-white/10">
-                        Stappenplan <i class="fa-solid fa-arrow-down ml-2"></i>
-                    </a>
-                </div>
-            </div>
-
-            <div class="relative group">
-                <div class="absolute inset-0 bg-gradient-to-tr from-[var(--primary-blue)] to-[var(--accent-orange)] opacity-20 blur-2xl rounded-full transform scale-90"></div>
-                <img src="img/fleet/van-medium.jpg" alt="KeylessGo VW Transporter" class="relative w-full h-auto drop-shadow-2xl transform transition-transform duration-500 hover:scale-105">
-                
-                <div class="absolute -bottom-4 -left-4 bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-xl hidden md:flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-[var(--accent-orange)] flex items-center justify-center text-white">
-                        <i class="fa-solid fa-mobile-screen"></i>
+            <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+                <div class="text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 backdrop-blur-sm px-4 py-1.5 rounded-full mb-6">
+                        <i class="fa-solid fa-award text-[var(--accent-orange)]"></i>
+                        <span class="text-sm font-semibold tracking-wide uppercase text-white/90">SnappCar Partner+</span>
                     </div>
-                    <div>
-                        <p class="text-xs text-slate-300 uppercase font-bold">Technologie</p>
-                        <p class="text-white font-bold">100% App based</p>
+                    
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight text-white">
+                        Huren zonder gedoe,<br>
+                        <span class="text-[var(--accent-orange)]">rijden binnen minuten.</span>
+                    </h1>
+                    
+                    <p class="text-lg text-slate-300 max-w-xl mx-auto lg:mx-0 mb-8 leading-relaxed">
+                        Wij beheren de vloot, jij regelt alles via de app. 
+                        Geen wachtrijen, geen fysieke sleutels, gewoon instappen en wegwezen met onze moderne VW Transporters en personenauto's.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
+                        <a href="#video-uitleg" class="btn bg-white text-[var(--primary-blue)] hover:bg-slate-100 border-white">
+                            <i class="fa-solid fa-play-circle mr-2 text-[var(--accent-orange)]"></i> Bekijk video
+                        </a>
+                        <a href="#interactive-explainer" class="btn border border-white/30 text-white hover:bg-white/10">
+                            Stappenplan <i class="fa-solid fa-arrow-down ml-2"></i>
+                        </a>
                     </div>
                 </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- VIDEO -->
-    <section id="video-uitleg" class="relative z-20 -mt-10 px-4 mb-20">
-        <div class="max-w-4xl mx-auto">
-            <div class="bg-black rounded-2xl shadow-2xl overflow-hidden border-4 border-white aspect-video relative group reveal-on-scroll">
-                <iframe 
-                    class="absolute inset-0 w-full h-full"
-                    src="https://www.youtube.com/embed/sorrV77BJVQ" 
-                    title="SnappCar uitleg"
-                    frameborder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                    allowfullscreen>
-                </iframe>
-            </div>
-        </div>
-    </section>
-
-    <!-- INTERACTIEVE EXPLAINER -->
-    <section id="interactive-explainer" class="py-16 lg:py-24 relative overflow-hidden bg-white">
-        <div class="container mx-auto px-6 max-w-7xl relative z-10">
-            <div class="text-center mb-16 max-w-3xl mx-auto">
-                <span class="text-[var(--accent-orange)] font-bold tracking-wider uppercase text-sm mb-2 block">Zo werkt het</span>
-                <h2 class="text-3xl md:text-5xl font-extrabold text-[var(--primary-blue)] mb-6 leading-tight">
-                    Altijd een auto in de buurt.<br>Helemaal keyless.
-                </h2>
-                <p class="text-lg text-[var(--text-light)] leading-relaxed">
-                    Geen balie, geen wachtrijen en geen sleutels. Ontdek hoe je binnen enkele minuten op weg bent met KeylessGo in 3 simpele stappen.
-                </p>
-            </div>
-
-            <div class="flex flex-col lg:flex-row gap-8 lg:gap-16 items-start">
-                <!-- STAPPEN -->
-                <div class="w-full lg:w-5/12 flex flex-col gap-4 relative" id="step-triggers">
-                    <div class="lg:hidden w-full h-1 bg-gray-200 rounded-full mb-6 overflow-hidden">
-                        <div id="mobile-progress" class="h-full bg-[var(--accent-orange)] w-1/3 progress-bar-mobile"></div>
-                    </div>
-
-                    <div class="step-nav-item active cursor-pointer p-6 rounded-2xl group" onclick="switchScene(1)">
-                        <div class="flex items-start gap-5">
-                            <div class="step-number w-10 h-10 rounded-full border-2 border-slate-300 text-slate-400 flex items-center justify-center font-bold text-lg flex-shrink-0 transition-colors duration-300 mt-1">1</div>
-                            <div>
-                                <h3 class="text-xl font-bold text-[var(--primary-blue)] mb-2 group-hover:text-[var(--accent-orange)] transition-colors">Zoek & boek online</h3>
-                                <p class="text-[var(--text-light)] text-sm leading-relaxed">
-                                    Open de SnappCar app en kies een voertuig in jouw buurt. Selecteer je tijdslot en zie direct de <strong>all-in prijs</strong> en voorwaarden. Met één klik is je reservering rond.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="step-nav-item cursor-pointer p-6 rounded-2xl group" onclick="switchScene(2)">
-                        <div class="flex items-start gap-5">
-                            <div class="step-number w-10 h-10 rounded-full border-2 border-slate-300 text-slate-400 flex items-center justify-center font-bold text-lg flex-shrink-0 transition-colors duration-300 mt-1">2</div>
-                            <div>
-                                <h3 class="text-xl font-bold text-[var(--primary-blue)] mb-2 group-hover:text-[var(--accent-orange)] transition-colors">Keyless check-in</h3>
-                                <p class="text-[var(--text-light)] text-sm leading-relaxed">
-                                    Loop naar de auto en start de check-in via de app. Maak een paar foto's van de buitenkant en klik op <strong>'Open Auto'</strong>. De deuren gaan direct voor je open.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="step-nav-item cursor-pointer p-6 rounded-2xl group" onclick="switchScene(3)">
-                        <div class="flex items-start gap-5">
-                            <div class="step-number w-10 h-10 rounded-full border-2 border-slate-300 text-slate-400 flex items-center justify-center font-bold text-lg flex-shrink-0 transition-colors duration-300 mt-1">3</div>
-                            <div>
-                                <h3 class="text-xl font-bold text-[var(--primary-blue)] mb-2 group-hover:text-[var(--accent-orange)] transition-colors">Rijden & Inleveren</h3>
-                                <p class="text-[var(--text-light)] text-sm leading-relaxed">
-                                    Start de auto en ga op pad. Klaar? Parkeer terug op de vaste plek, tank of laad hem vol, en sluit af met de app. Kosten worden <strong>automatisch verrekend</strong>.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-6 p-5 bg-white border border-slate-200 rounded-xl shadow-sm flex items-center gap-4">
-                        <div class="bg-blue-50 p-3 rounded-full text-blue-600">
-                            <i class="fa-solid fa-shield-halved text-xl"></i>
+                <div class="relative group">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-[var(--primary-blue)] to-[var(--accent-orange)] opacity-20 blur-2xl rounded-full transform scale-90"></div>
+                    <img src="img/fleet/van-medium.jpg" alt="KeylessGo VW Transporter" class="relative w-full h-auto drop-shadow-2xl transform transition-transform duration-500 hover:scale-105">
+                    
+                    <div class="absolute -bottom-4 -left-4 bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-xl hidden md:flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-[var(--accent-orange)] flex items-center justify-center text-white">
+                            <i class="fa-solid fa-mobile-screen"></i>
                         </div>
                         <div>
-                            <strong class="text-[var(--primary-blue)] block text-sm">Veilig & Verzekerd</strong>
-                            <span class="text-xs text-slate-500">Elke rit is all-risk verzekerd via Allianz &amp; SnappCar.</span>
+                            <p class="text-xs text-slate-300 uppercase font-bold">Technologie</p>
+                            <p class="text-white font-bold">100% App based</p>
                         </div>
                     </div>
-                </div>
-
-                <!-- VISUALS -->
-                <div class="w-full lg:w-7/12 relative h-[450px] md:h-[550px] lg:h-[600px] sticky top-32">
-                    <div id="visual-1" class="scene-visual active">
-                        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden h-full border border-slate-200 relative group">
-                            <img src="img\partner\mapsearch.jpg" alt="App Boeken" class="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105">
-                            
-                            <div class="absolute top-8 right-8 bg-white/90 backdrop-blur-md p-4 rounded-xl shadow-lg max-w-[220px]">
-                                <div class="flex items-center gap-2 mb-1">
-                                    <i class="fa-solid fa-calendar-check text-[var(--accent-orange)]"></i>
-                                    <span class="font-bold text-xs text-[var(--primary-blue)] uppercase">Direct Beschikbaar</span>
-                                </div>
-                                <p class="text-xs text-slate-600">Zie live welke auto's er nu in jouw buurt staan.</p>
-                            </div>
-
-                            <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-[#1a2c49]/90 to-transparent flex flex-col justify-end p-8 text-white">
-                                <h4 class="text-2xl font-bold mb-1">Kies &amp; Boek</h4>
-                                <p class="text-slate-200 text-sm">Transparante prijzen, geen verborgen kosten.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="visual-2" class="scene-visual">
-                        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden h-full border border-slate-200 relative group">
-                            <img src="img\partner\keylessgo-keyless-huren-app.png" alt="Keyless Openen" class="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105">
-                            
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <div class="bg-[var(--accent-orange)] text-white w-24 h-24 rounded-full flex flex-col items-center justify-center shadow-2xl animate-bounce cursor-pointer hover:bg-[#e06b00] transition-colors border-4 border-white/30 backdrop-blur-sm">
-                                    <i class="fa-solid fa-lock-open text-2xl mb-1"></i>
-                                    <span class="text-[10px] font-bold uppercase tracking-wider">Open</span>
-                                </div>
-                            </div>
-
-                            <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-[#1a2c49]/90 to-transparent flex flex-col justify-end p-8 text-white">
-                                <h4 class="text-2xl font-bold mb-1">Jouw telefoon is de sleutel</h4>
-                                <p class="text-slate-200 text-sm">Via 4G en Bluetooth verbinding.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="visual-3" class="scene-visual">
-                        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden h-full border border-slate-200 relative group">
-                            <img src="img/fleet/keylessgo-fullfleet.jpg" alt="Rijden en Inleveren" class="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105">
-                            
-                            <div class="absolute top-8 left-8 bg-[var(--primary-blue)] text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
-                                <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                                <span class="text-xs font-bold">Rit actief</span>
-                            </div>
-
-                            <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-[#1a2c49]/90 to-transparent flex flex-col justify-end p-8 text-white">
-                                <h4 class="text-2xl font-bold mb-1">Simpel retourneren</h4>
-                                <p class="text-slate-200 text-sm">Parkeren, afsluiten en de rit beëindigen in de app.</p>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
+        </section>
 
-            <div class="mt-16 text-center">
-                <a href="zoek-en-boek.html" class="inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-200 bg-[var(--accent-orange)] border border-transparent rounded-lg hover:bg-[var(--accent-orange-hover)] hover:shadow-lg hover:-translate-y-1">
-                    Start nu met huren <i class="fa-solid fa-arrow-right ml-3"></i>
-                </a>
-                <p class="mt-4 text-sm text-[var(--text-light)]">
-                    Zoek direct een KeylessGo voertuig in de SnappCar app
+        <!-- VIDEO -->
+        <section id="video-uitleg" class="relative z-20 -mt-10 px-4 mb-20">
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-black rounded-2xl shadow-2xl overflow-hidden border-4 border-white aspect-video relative group reveal-on-scroll">
+                    <iframe 
+                        class="absolute inset-0 w-full h-full"
+                        src="https://www.youtube.com/embed/sorrV77BJVQ" 
+                        title="SnappCar uitleg"
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+        </section>
+
+        <!-- INTERACTIEVE EXPLAINER -->
+        <section id="interactive-explainer" class="py-16 lg:py-24 relative overflow-hidden bg-white">
+            <div class="container mx-auto px-6 max-w-7xl relative z-10">
+                <div class="text-center mb-16 max-w-3xl mx-auto">
+                    <span class="text-[var(--accent-orange)] font-bold tracking-wider uppercase text-sm mb-2 block">Zo werkt het</span>
+                    <h2 class="text-3xl md:text-5xl font-extrabold text-[var(--primary-blue)] mb-6 leading-tight">
+                        Altijd een auto in de buurt.<br>Helemaal keyless.
+                    </h2>
+                    <p class="text-lg text-[var(--text-light)] leading-relaxed">
+                        Geen balie, geen wachtrijen en geen sleutels. Ontdek hoe je binnen enkele minuten op weg bent met KeylessGo in 3 simpele stappen.
+                    </p>
+                </div>
+
+                <div class="flex flex-col lg:flex-row gap-8 lg:gap-16 items-start">
+                    <!-- STAPPEN -->
+                    <div class="w-full lg:w-5/12 flex flex-col gap-4 relative" id="step-triggers">
+                        <div class="lg:hidden w-full h-1 bg-gray-200 rounded-full mb-6 overflow-hidden">
+                            <div id="mobile-progress" class="h-full bg-[var(--accent-orange)] w-1/3 progress-bar-mobile"></div>
+                        </div>
+
+                        <div class="step-nav-item active cursor-pointer p-6 rounded-2xl group" onclick="switchScene(1)">
+                            <div class="flex items-start gap-5">
+                                <div class="step-number w-10 h-10 rounded-full border-2 border-slate-300 text-slate-400 flex items-center justify-center font-bold text-lg flex-shrink-0 transition-colors duration-300 mt-1">1</div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-[var(--primary-blue)] mb-2 group-hover:text-[var(--accent-orange)] transition-colors">Zoek &amp; boek online</h3>
+                                    <p class="text-[var(--text-light)] text-sm leading-relaxed">
+                                        Open de SnappCar app en kies een voertuig in jouw buurt. Selecteer je tijdslot en zie direct de <strong>all-in prijs</strong> en voorwaarden. Met één klik is je reservering rond.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="step-nav-item cursor-pointer p-6 rounded-2xl group" onclick="switchScene(2)">
+                            <div class="flex items-start gap-5">
+                                <div class="step-number w-10 h-10 rounded-full border-2 border-slate-300 text-slate-400 flex items-center justify-center font-bold text-lg flex-shrink-0 transition-colors duration-300 mt-1">2</div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-[var(--primary-blue)] mb-2 group-hover:text-[var(--accent-orange)] transition-colors">Keyless check-in</h3>
+                                    <p class="text-[var(--text-light)] text-sm leading-relaxed">
+                                        Loop naar de auto en start de check-in via de app. Maak een paar foto's van de buitenkant en klik op <strong>'Open Auto'</strong>. De deuren gaan direct voor je open.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="step-nav-item cursor-pointer p-6 rounded-2xl group" onclick="switchScene(3)">
+                            <div class="flex items-start gap-5">
+                                <div class="step-number w-10 h-10 rounded-full border-2 border-slate-300 text-slate-400 flex items-center justify-center font-bold text-lg flex-shrink-0 transition-colors duration-300 mt-1">3</div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-[var(--primary-blue)] mb-2 group-hover:text-[var(--accent-orange)] transition-colors">Rijden &amp; Inleveren</h3>
+                                    <p class="text-[var(--text-light)] text-sm leading-relaxed">
+                                        Start de auto en ga op pad. Klaar? Parkeer terug op de vaste plek, tank of laad hem vol, en sluit af met de app. Kosten worden <strong>automatisch verrekend</strong>.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 p-5 bg-white border border-slate-200 rounded-xl shadow-sm flex items-center gap-4">
+                            <div class="bg-blue-50 p-3 rounded-full text-blue-600">
+                                <i class="fa-solid fa-shield-halved text-xl"></i>
+                            </div>
+                            <div>
+                                <strong class="text-[var(--primary-blue)] block text-sm">Veilig &amp; Verzekerd</strong>
+                                <span class="text-xs text-slate-500">Elke rit is all-risk verzekerd via Allianz &amp; SnappCar.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- VISUALS -->
+                    <div class="w-full lg:w-7/12 relative h-[450px] md:h-[550px] lg:h-[600px] sticky top-32">
+                        <div id="visual-1" class="scene-visual active">
+                            <div class="bg-white rounded-3xl shadow-2xl overflow-hidden h-full border border-slate-200 relative group">
+                                <img src="img/partner/mapsearch.jpg" alt="App Boeken" class="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105">
+                                
+                                <div class="absolute top-8 right-8 bg-white/90 backdrop-blur-md p-4 rounded-xl shadow-lg max-w-[220px]">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <i class="fa-solid fa-calendar-check text-[var(--accent-orange)]"></i>
+                                        <span class="font-bold text-xs text-[var(--primary-blue)] uppercase">Direct Beschikbaar</span>
+                                    </div>
+                                    <p class="text-xs text-slate-600">Zie live welke auto's er nu in jouw buurt staan.</p>
+                                </div>
+
+                                <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-[#1a2c49]/90 to-transparent flex flex-col justify-end p-8 text-white">
+                                    <h4 class="text-2xl font-bold mb-1">Kies &amp; Boek</h4>
+                                    <p class="text-slate-200 text-sm">Transparante prijzen, geen verborgen kosten.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="visual-2" class="scene-visual">
+                            <div class="bg-white rounded-3xl shadow-2xl overflow-hidden h-full border border-slate-200 relative group">
+                                <img src="img/partner/keylessgo-keyless-huren-app.png" alt="Keyless Openen" class="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105">
+                                
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="bg-[var(--accent-orange)] text-white w-24 h-24 rounded-full flex flex-col items-center justify-center shadow-2xl animate-bounce cursor-pointer hover:bg-[#e06b00] transition-colors border-4 border-white/30 backdrop-blur-sm">
+                                        <i class="fa-solid fa-lock-open text-2xl mb-1"></i>
+                                        <span class="text-[10px] font-bold uppercase tracking-wider">Open</span>
+                                    </div>
+                                </div>
+
+                                <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-[#1a2c49]/90 to-transparent flex flex-col justify-end p-8 text-white">
+                                    <h4 class="text-2xl font-bold mb-1">Jouw telefoon is de sleutel</h4>
+                                    <p class="text-slate-200 text-sm">Via 4G en Bluetooth verbinding.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="visual-3" class="scene-visual">
+                            <div class="bg-white rounded-3xl shadow-2xl overflow-hidden h-full border border-slate-200 relative group">
+                                <img src="img/fleet/keylessgo-fullfleet.jpg" alt="Rijden en Inleveren" class="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105">
+                                
+                                <div class="absolute top-8 left-8 bg-[var(--primary-blue)] text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
+                                    <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                                    <span class="text-xs font-bold">Rit actief</span>
+                                </div>
+
+                                <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-[#1a2c49]/90 to-transparent flex flex-col justify-end p-8 text-white">
+                                    <h4 class="text-2xl font-bold mb-1">Simpel retourneren</h4>
+                                    <p class="text-slate-200 text-sm">Parkeren, afsluiten en de rit beëindigen in de app.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="mt-16 text-center">
+                    <a href="zoek-en-boek.html" class="inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-200 bg-[var(--accent-orange)] border border-transparent rounded-lg hover:bg-[var(--accent-orange-hover)] hover:shadow-lg hover:-translate-y-1">
+                        Start nu met huren <i class="fa-solid fa-arrow-right ml-3"></i>
+                    </a>
+                    <p class="mt-4 text-sm text-[var(--text-light)]">
+                        Zoek direct een KeylessGo voertuig in de SnappCar app
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- INCLUSIEF BIJ ELKE RIT -->
+        <section class="bg-[var(--bg-light)] py-20 border-t border-gray-200">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="text-center max-w-3xl mx-auto mb-16">
+                    <span class="text-[var(--accent-orange)] font-bold tracking-wide uppercase text-sm">Zorgeloos onderweg</span>
+                    <h2 class="text-3xl mt-2 mb-4">Inclusief bij elke rit</h2>
+                    <p class="text-[var(--text-light)]">Omdat wij via SnappCar verhuren, profiteer je van premium voorwaarden.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+                        <img src="img/partner/Allianz-1-720x594.png" alt="Allianz Verzekering" class="h-16 mb-6 object-contain">
+                        <h4 class="text-xl mb-2">All-risk Verzekerd</h4>
+                        <p class="text-[var(--text-light)] text-sm">
+                            Elke rit is volledig all-risk verzekerd via Allianz. Je gaat altijd met een gerust hart op pad.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+                        <div class="w-16 h-16 rounded-full bg-yellow-50 text-yellow-600 flex items-center justify-center text-2xl mb-6">
+                            <i class="fa-solid fa-wrench"></i>
+                        </div>
+                        <h4 class="text-xl mb-2">24/7 Pechhulp</h4>
+                        <p class="text-[var(--text-light)] text-sm">
+                            Pech onderweg? SnappCar biedt 24/7 pechhulp in binnen- en buitenland via Eurocross.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+                        <div class="w-16 h-16 rounded-full bg-blue-50 text-[var(--primary-blue)] flex items-center justify-center text-2xl mb-6">
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                        <h4 class="text-xl mb-2">Partner+ Kwaliteit</h4>
+                        <p class="text-[var(--text-light)] text-sm">
+                            Onze vloot wordt professioneel beheerd. Schone auto's, goed onderhoud en directe acceptatie.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VOLLEDIGE FAQ-INTEGRATIE -->
+        <section id="faq-volledig" class="faq-page">
+            <!-- FAQ HERO (compact onderaan) -->
+            <section class="faq-hero">
+                <div class="faq-hero-inner">
+                    <p class="faq-kicker">Support &amp; uitleg</p>
+                    <h2>Alle veelgestelde vragen op een rij</h2>
+                    <p class="faq-subtitle">
+                        Nog meer details nodig? Hieronder vind je alle veelgestelde vragen over boeken, gebruik, kosten en verzekering.
+                    </p>
+                    <div class="faq-hero-actions">
+                        <a href="#faq-content" class="btn-primary">Spring naar FAQ</a>
+                        <a href="contact.html" class="btn-secondary">Neem contact op</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FAQ LAYOUT -->
+            <section class="faq-content-section" id="faq-content">
+                <div class="faq-layout">
+                    <!-- SIDEBAR -->
+                    <aside class="faq-sidebar">
+                        <h2>Filter &amp; zoek</h2>
+                        <p class="faq-sidebar-text">
+                            Zoek op trefwoord of filter op categorie om snel het juiste antwoord te vinden.
+                        </p>
+
+                        <!-- Zoekveld -->
+                        <input
+                            type="search"
+                            id="faq-search"
+                            class="faq-search-input"
+                            placeholder="Zoek op trefwoord (bijv. borg, verzekering, bus)..."
+                            autocomplete="off"
+                        />
+
+                        <!-- Filterknoppen worden via JS gevuld -->
+                        <div id="faq-filters" class="faq-filters"></div>
+
+                        <div class="faq-help-box">
+                            <h3>Hulp nodig?</h3>
+                            <p>
+                                Kom je er niet uit of heb je een specifieke vraag over jouw reservering?
+                            </p>
+                            <ul>
+                                <li>📩 Mail: info@keylessgo.nl</li>
+                                <li>📞 Telefonisch support (kantooruren)</li>
+                            </ul>
+                            <a href="contact.html" class="faq-help-link">Ga naar contactpagina →</a>
+                        </div>
+                    </aside>
+
+                    <!-- MAIN FAQ – wordt via JS opgebouwd -->
+                    <section class="faq-main" id="faq-main">
+                        <!-- faq.js injecteert hier de categorieblokken en vragen -->
+                    </section>
+                </div>
+
+                <!-- Placeholder “geen resultaten” -->
+                <p id="faq-empty-state" class="faq-empty-state" style="display:none;">
+                    Geen resultaten gevonden. Probeer een andere zoekterm of categorie.
                 </p>
-            </div>
+            </section>
+        </section>
 
-        </div>
-    </section>
+    </main>
 
-    <!-- INCLUSIEF BIJ ELKE RIT -->
-    <section class="bg-[var(--bg-light)] py-20 border-t border-gray-200">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <span class="text-[var(--accent-orange)] font-bold tracking-wide uppercase text-sm">Zorgeloos onderweg</span>
-                <h2 class="text-3xl mt-2 mb-4">Inclusief bij elke rit</h2>
-                <p class="text-[var(--text-light)]">Omdat wij via SnappCar verhuren, profiteer je van premium voorwaarden.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-shadow">
-                    <img src="img/partner/Allianz-1-720x594.png" alt="Allianz Verzekering" class="h-16 mb-6 object-contain">
-                    <h4 class="text-xl mb-2">All-risk Verzekerd</h4>
-                    <p class="text-[var(--text-light)] text-sm">
-                        Elke rit is volledig all-risk verzekerd via Allianz. Je gaat altijd met een gerust hart op pad.
-                    </p>
-                </div>
-
-                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-shadow">
-                    <div class="w-16 h-16 rounded-full bg-yellow-50 text-yellow-600 flex items-center justify-center text-2xl mb-6">
-                        <i class="fa-solid fa-wrench"></i>
-                    </div>
-                    <h4 class="text-xl mb-2">24/7 Pechhulp</h4>
-                    <p class="text-[var(--text-light)] text-sm">
-                        Pech onderweg? SnappCar biedt 24/7 pechhulp in binnen- en buitenland via Eurocross.
-                    </p>
-                </div>
-
-                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-shadow">
-                    <div class="w-16 h-16 rounded-full bg-blue-50 text-[var(--primary-blue)] flex items-center justify-center text-2xl mb-6">
-                        <i class="fa-solid fa-star"></i>
-                    </div>
-                    <h4 class="text-xl mb-2">Partner+ Kwaliteit</h4>
-                    <p class="text-[var(--text-light)] text-sm">
-                        Onze vloot wordt professioneel beheerd. Schone auto's, goed onderhoud en directe acceptatie.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- KORTE FAQ BLIJFT -->
-    <section class="py-20 bg-white">
-        <div class="max-w-4xl mx-auto px-6">
-            <h2 class="text-3xl text-center mb-12">Veelgestelde Vragen</h2>
-            
-            <div class="space-y-4">
-                <details class="group bg-[var(--bg-light)] p-5 rounded-xl cursor-pointer border border-transparent hover:border-gray-200 open:bg-white open:shadow-sm transition-all">
-                    <summary class="flex justify-between items-center font-bold text-[var(--primary-blue)] list-none text-lg">
-                        Moet ik tanken of laden voor inleveren?
-                        <span class="transition-transform group-open:rotate-180 text-[var(--accent-orange)]">
-                            <i class="fa-solid fa-chevron-down"></i>
-                        </span>
-                    </summary>
-                    <div class="text-[var(--text-light)] mt-4 text-base leading-relaxed border-t border-gray-100 pt-4">
-                        Ja, de regel is 'vol voor vol' (of 80% voor 80%). Voor elektrische auto's geldt vaak dat je hem aan de lader moet koppelen bij terugkomst. Check de specifieke instructies in de app tijdens je boeking.
-                    </div>
-                </details>
-
-                <details class="group bg-[var(--bg-light)] p-5 rounded-xl cursor-pointer border border-transparent hover:border-gray-200 open:bg-white open:shadow-sm transition-all">
-                    <summary class="flex justify-between items-center font-bold text-[var(--primary-blue)] list-none text-lg">
-                        Wat als de app de deur niet opent?
-                        <span class="transition-transform group-open:rotate-180 text-[var(--accent-orange)]">
-                            <i class="fa-solid fa-chevron-down"></i>
-                        </span>
-                    </summary>
-                    <div class="text-[var(--text-light)] mt-4 text-base leading-relaxed border-t border-gray-100 pt-4">
-                        Zorg dat je Bluetooth en Locatievoorzieningen aan staan en dat je dicht bij de auto staat. Werkt het nog niet? Bel dan direct de SnappCar support via de app; zij kunnen de auto vaak op afstand resetten of openen.
-                    </div>
-                </details>
-
-                <details class="group bg-[var(--bg-light)] p-5 rounded-xl cursor-pointer border border-transparent hover:border-gray-200 open:bg-white open:shadow-sm transition-all">
-                    <summary class="flex justify-between items-center font-bold text-[var(--primary-blue)] list-none text-lg">
-                        Kan ik de auto langer houden?
-                        <span class="transition-transform group-open:rotate-180 text-[var(--accent-orange)]">
-                            <i class="fa-solid fa-chevron-down"></i>
-                        </span>
-                    </summary>
-                    <div class="text-[var(--text-light)] mt-4 text-base leading-relaxed border-t border-gray-100 pt-4">
-                        Dit kan alleen als er na jou geen andere boeking is. Je kunt via de app een verlengingsverzoek indienen. Als dit geaccepteerd wordt, kun je langer doorrijden.
-                    </div>
-                </details>
-            </div>
-        </div>
-    </section>
-
-    <!-- FOOTER (ongewijzigd) -->
+    <!-- FOOTER – zelfde stijl als hoe-werkt-het / rest -->
     <footer class="bg-[var(--primary-blue)] text-white pt-16 pb-8">
         <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8 mb-12 border-b border-slate-700 pb-12">
             <div class="col-span-1">
@@ -545,24 +481,34 @@
         </div>
     </footer>
 
+    <!-- FAQ data + logic -->
+    <script src="assets/js/faqData.js"></script>
+    <script src="assets/js/faq.js"></script>
+
     <script>
-        // Update Year
+        // Year in footer
         document.getElementById('year').textContent = new Date().getFullYear();
 
-        // Mobile Menu Toggle
-        const hamburger = document.getElementById('hamburger');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const icon = hamburger.querySelector('i');
+        // Hamburger / nav-menu (zelfde logic als index)
+        const hamburger = document.getElementById("hamburger");
+        const navMenu = document.querySelector(".nav-menu");
 
-        hamburger.addEventListener('click', () => {
-            mobileMenu.classList.toggle('open');
-            if (mobileMenu.classList.contains('open')) {
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-xmark');
-            } else {
-                icon.classList.remove('fa-xmark');
-                icon.classList.add('fa-bars');
-            }
+        if (hamburger && navMenu) {
+            hamburger.addEventListener("click", () => {
+                const isActive = navMenu.classList.toggle("active");
+                hamburger.classList.toggle("open", isActive);
+                document.body.classList.toggle("nav-open", isActive);
+                hamburger.setAttribute("aria-expanded", isActive ? "true" : "false");
+            });
+        }
+
+        // Mobile submenu toggle
+        document.querySelectorAll(".has-submenu > a").forEach((link) => {
+            link.addEventListener("click", (e) => {
+                if (window.innerWidth > 768) return; // desktop: hover
+                e.preventDefault();
+                link.parentElement.classList.toggle("open");
+            });
         });
 
         // Reveal animations on scroll
@@ -580,7 +526,6 @@
         // ============================================
         //  LOGICA VOOR INTERACTIEVE EXPLAINER
         // ============================================
-        
         let currentStep = 1;
         let autoRotateTimer;
         const totalSteps = 3;
@@ -615,14 +560,6 @@
             }
         }
 
-        function startAutoRotation() {
-            autoRotateTimer = setInterval(() => {
-                let next = currentStep + 1;
-                if (next > totalSteps) next = 1;
-                switchSceneWithoutStoppingTimer(next);
-            }, 5000);
-        }
-
         function switchSceneWithoutStoppingTimer(stepNumber) {
             currentStep = stepNumber;
             
@@ -643,7 +580,14 @@
             if (progress) progress.style.width = `${(stepNumber / totalSteps) * 100}%`;
         }
 
-        // Auto-rotation starten na load
+        function startAutoRotation() {
+            autoRotateTimer = setInterval(() => {
+                let next = currentStep + 1;
+                if (next > totalSteps) next = 1;
+                switchSceneWithoutStoppingTimer(next);
+            }, 5000);
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             startAutoRotation();
         });

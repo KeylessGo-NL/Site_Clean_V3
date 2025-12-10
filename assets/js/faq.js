@@ -1,184 +1,212 @@
-// faq.js
-// Renderen van de FAQ-pagina op basis van FAQ_CATEGORIES en FAQ_DATA
+// assets/js/faq.js
+// Gebruikt window.faqData uit faqData.js
 
-document.addEventListener("DOMContentLoaded", function () {
-    // Dynamisch jaar in footer
-    const yearSpan = document.getElementById("year");
-    if (yearSpan) {
-        yearSpan.textContent = new Date().getFullYear();
-    }
+(function () {
+    const data = window.faqData || [];
 
-    // Check of data aanwezig is
-    if (typeof FAQ_CATEGORIES === "undefined" || typeof FAQ_DATA === "undefined") {
-        console.error("FAQ_CATEGORIES of FAQ_DATA ontbreekt. Controleer assets/js/faqData.js.");
-        return;
-    }
+    /**
+     * Helper: maakt een FAQ-item (accordion) aan
+     */
+    function createFaqItemElement(item) {
+        const wrapper = document.createElement("article");
+        wrapper.className = "faq-item";
 
-    renderFilters();
-    renderFaqContent();
-    setupSearchAndFiltering();
-    setupAccordionBehaviour();
-});
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "faq-question";
+        button.textContent = item.question;
 
-function renderFilters() {
-    const filtersContainer = document.getElementById("faq-filters");
-    if (!filtersContainer) return;
+        const answer = document.createElement("div");
+        answer.className = "faq-answer";
 
-    filtersContainer.innerHTML = "";
+        const p = document.createElement("p");
+        p.textContent = item.answer;
 
-    // "Alle vragen" knop
-    const allBtn = createFilterButton("all", "Alle vragen");
-    allBtn.classList.add("active");
-    filtersContainer.appendChild(allBtn);
+        answer.appendChild(p);
+        wrapper.appendChild(button);
+        wrapper.appendChild(answer);
 
-    // Knoppen op basis van categorieën
-    FAQ_CATEGORIES.forEach(cat => {
-        const btn = createFilterButton(cat.key, cat.label);
-        filtersContainer.appendChild(btn);
-    });
-}
-
-function createFilterButton(categoryKey, label) {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "faq-filter-btn";
-    btn.dataset.category = categoryKey;
-    btn.textContent = label;
-    return btn;
-}
-
-function renderFaqContent() {
-    const main = document.getElementById("faq-main");
-    if (!main) return;
-
-    main.innerHTML = "";
-
-    // Voor elke categorie een blok (alleen als er vragen zijn)
-    FAQ_CATEGORIES.forEach(cat => {
-        const itemsForCategory = FAQ_DATA.filter(item => item.category === cat.key);
-        if (itemsForCategory.length === 0) return;
-
-        const block = document.createElement("div");
-        block.className = "faq-category-block";
-        block.dataset.category = cat.key;
-
-        const title = document.createElement("h2");
-        title.className = "faq-category-title";
-        title.textContent = cat.label;
-        block.appendChild(title);
-
-        itemsForCategory.forEach(item => {
-            const itemEl = createFaqItemElement(item);
-            block.appendChild(itemEl);
+        // toggle logica
+        button.addEventListener("click", () => {
+            const isActive = button.classList.toggle("active");
+            if (isActive) {
+                answer.style.maxHeight = answer.scrollHeight + "px";
+            } else {
+                answer.style.maxHeight = "0px";
+            }
         });
 
-        main.appendChild(block);
-    });
-}
+        return wrapper;
+    }
 
-function createFaqItemElement(item) {
-    const wrapper = document.createElement("div");
-    wrapper.className = "faq-item";
-    wrapper.dataset.category = item.category;
+    /**
+     * Flatten: alle vragen in één lijst
+     */
+    function getAllQuestions() {
+        const all = [];
+        data.forEach(cat => {
+            (cat.items || []).forEach(item => {
+                all.push({
+                    categoryId: cat.id,
+                    categoryLabel: cat.label,
+                    ...item
+                });
+            });
+        });
+        return all;
+    }
 
-    // Voor zoekfunctie: tekstveld waarin vraag+antwoord (lowercased) zitten
-    const searchable = (item.question + " " + item.answer)
-        .replace(/<[^>]+>/g, "") // HTML tags eruit
-        .toLowerCase();
-    wrapper.dataset.search = searchable;
+    /**
+     * Volledige FAQ op faq.html
+     */
+    function renderFaqFull() {
+        const mainEl = document.getElementById("faq-main");
+        const filtersEl = document.getElementById("faq-filters");
+        const searchInput = document.getElementById("faq-search");
+        const emptyState = document.getElementById("faq-empty-state");
 
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "faq-question";
-    button.textContent = item.question;
+        if (!mainEl || !filtersEl) return;
 
-    const answer = document.createElement("div");
-    answer.className = "faq-answer";
-    answer.innerHTML = "<p>" + item.answer + "</p>";
+        let activeCategory = "all";
+        let searchTerm = "";
 
-    wrapper.appendChild(button);
-    wrapper.appendChild(answer);
+        // Filters opbouwen (All + per categorie)
+        function buildFilters() {
+            filtersEl.innerHTML = "";
 
-    return wrapper;
-}
+            const allBtn = document.createElement("button");
+            allBtn.type = "button";
+            allBtn.className = "faq-filter-btn active";
+            allBtn.dataset.category = "all";
+            allBtn.textContent = "Alle vragen";
+            filtersEl.appendChild(allBtn);
 
-function setupAccordionBehaviour() {
-    const main = document.getElementById("faq-main");
-    if (!main) return;
+            allBtn.addEventListener("click", () => setCategory("all"));
 
-    main.addEventListener("click", function (e) {
-        const btn = e.target.closest(".faq-question");
-        if (!btn) return;
-
-        btn.classList.toggle("active");
-        const answer = btn.nextElementSibling;
-        if (!answer) return;
-
-        if (answer.style.maxHeight) {
-            answer.style.maxHeight = null;
-        } else {
-            answer.style.maxHeight = answer.scrollHeight + "px";
+            data.forEach(cat => {
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "faq-filter-btn";
+                btn.dataset.category = cat.id;
+                btn.textContent = cat.label;
+                btn.addEventListener("click", () => setCategory(cat.id));
+                filtersEl.appendChild(btn);
+            });
         }
-    });
-}
 
-function setupSearchAndFiltering() {
-    const filtersContainer = document.getElementById("faq-filters");
-    const searchInput = document.getElementById("faq-search");
-    const emptyState = document.getElementById("faq-empty-state");
-    const items = Array.prototype.slice.call(document.querySelectorAll(".faq-item"));
+        function setCategory(catId) {
+            activeCategory = catId;
 
-    if (!filtersContainer) return;
+            // active class
+            filtersEl.querySelectorAll(".faq-filter-btn").forEach(btn => {
+                if (btn.dataset.category === catId) {
+                    btn.classList.add("active");
+                } else {
+                    btn.classList.remove("active");
+                }
+            });
 
-    let currentCategory = "all";
-    let currentSearch = "";
+            render();
+        }
 
-    // Filter-knoppen
-    filtersContainer.addEventListener("click", function (e) {
-        const btn = e.target.closest(".faq-filter-btn");
-        if (!btn) return;
+        function setSearch(term) {
+            searchTerm = term.toLowerCase();
+            render();
+        }
 
-        currentCategory = btn.dataset.category || "all";
+        function render() {
+            mainEl.innerHTML = "";
+            const allQuestions = getAllQuestions();
 
-        // Active state wisselen
-        const allButtons = filtersContainer.querySelectorAll(".faq-filter-btn");
-        allButtons.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
+            let filtered = allQuestions;
 
-        applyFilters(items, currentCategory, currentSearch, emptyState);
-    });
+            if (activeCategory !== "all") {
+                filtered = filtered.filter(q => q.categoryId === activeCategory);
+            }
 
-    // Zoekbalk
-    if (searchInput) {
-        searchInput.addEventListener("input", function () {
-            currentSearch = (searchInput.value || "").trim().toLowerCase();
-            applyFilters(items, currentCategory, currentSearch, emptyState);
+            if (searchTerm.trim() !== "") {
+                filtered = filtered.filter(q => {
+                    const haystack = (q.question + " " + q.answer + " " + (q.tags || []).join(" ")).toLowerCase();
+                    return haystack.includes(searchTerm);
+                });
+            }
+
+            if (filtered.length === 0) {
+                if (emptyState) emptyState.style.display = "block";
+                return;
+            } else {
+                if (emptyState) emptyState.style.display = "none";
+            }
+
+            // Groeperen per categorie (voor mooie blokken)
+            const byCategory = {};
+            filtered.forEach(q => {
+                if (!byCategory[q.categoryId]) {
+                    byCategory[q.categoryId] = {
+                        label: q.categoryLabel,
+                        items: []
+                    };
+                }
+                byCategory[q.categoryId].items.push(q);
+            });
+
+            Object.keys(byCategory).forEach(catId => {
+                const block = document.createElement("section");
+                block.className = "faq-category-block";
+
+                const title = document.createElement("h3");
+                title.className = "faq-category-title";
+                title.textContent = byCategory[catId].label;
+                block.appendChild(title);
+
+                byCategory[catId].items.forEach(item => {
+                    block.appendChild(createFaqItemElement(item));
+                });
+
+                mainEl.appendChild(block);
+            });
+        }
+
+        // Listeners
+        if (searchInput) {
+            searchInput.addEventListener("input", (e) => {
+                setSearch(e.target.value || "");
+            });
+        }
+
+        buildFilters();
+        render();
+    }
+
+    /**
+     * Korte FAQ op hoe-werkt-het.html
+     * options.limit = max aantal vragen
+     */
+    function renderFaqShort(targetId, options = {}) {
+        const container = document.getElementById(targetId);
+        if (!container) return;
+
+        const limit = options.limit || 4;
+        const allQuestions = getAllQuestions();
+
+        // simpele selectie: eerste X relevante items
+        const selected = allQuestions.slice(0, limit);
+
+        container.innerHTML = "";
+        selected.forEach(item => {
+            const el = createFaqItemElement(item);
+            container.appendChild(el);
         });
     }
 
-    // Starttoestand
-    applyFilters(items, currentCategory, currentSearch, emptyState);
-}
+    // Export naar window zodat we vanuit HTML scripts kunnen aanroepen
+    window.renderFaqFull = renderFaqFull;
+    window.renderFaqShort = renderFaqShort;
 
-function applyFilters(items, category, searchTerm, emptyStateElement) {
-    let visibleCount = 0;
-
-    items.forEach(item => {
-        const itemCat = item.dataset.category;
-        const haystack = item.dataset.search || "";
-
-        const categoryMatch = category === "all" || itemCat === category;
-        const searchMatch = !searchTerm || haystack.indexOf(searchTerm) !== -1;
-
-        if (categoryMatch && searchMatch) {
-            item.style.display = "block";
-            visibleCount++;
-        } else {
-            item.style.display = "none";
+    // Auto-init: als we op faq.html zitten (faq-main bestaat) => volledige FAQ renderen
+    document.addEventListener("DOMContentLoaded", () => {
+        if (document.getElementById("faq-main")) {
+            renderFaqFull();
         }
     });
-
-    if (emptyStateElement) {
-        emptyStateElement.style.display = visibleCount === 0 ? "block" : "none";
-    }
-}
+})();
