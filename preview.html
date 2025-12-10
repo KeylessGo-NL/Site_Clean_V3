@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview: Hoe werkt KeylessGo Interactief</title>
+    
+    <!-- Tailwind CSS (via CDN voor deze losse preview) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome (via CDN) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Google Fonts: Montserrat (Huisstijl) -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* Huisstijl Variabelen simulatie */
+        :root {
+            --primary-blue: #1a2c49;
+            --accent-orange: #ff7a00;
+            --text-dark: #1a2c49;
+            --text-light: #666666;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--text-dark);
+            background-color: #f8fafc;
+        }
+
+        /* Animaties voor de visuals */
+        .scene-visual {
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transform: scale(0.95) translateY(20px);
+            pointer-events: none;
+        }
+
+        .scene-visual.active {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            z-index: 10;
+            pointer-events: auto;
+        }
+
+        /* Navigatie items (links) */
+        .step-nav-item {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .step-nav-item.active {
+            background-color: #ffffff;
+            border-left-color: var(--accent-orange);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
+        }
+
+        .step-nav-item.active .step-number {
+            background-color: var(--accent-orange);
+            color: #ffffff;
+            border-color: var(--accent-orange);
+        }
+
+        .step-nav-item:hover:not(.active) {
+            background-color: rgba(255,255,255,0.6);
+        }
+
+        /* Voortgangsbalkje in mobiel */
+        .progress-bar-mobile {
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header simulatie -->
+    <header class="bg-[#1a2c49] text-white py-4 px-6 mb-12 shadow-md">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="font-bold text-xl flex items-center gap-2">
+                <img src="img/partner/keylessgo-logo.png" alt="Logo" class="h-8 bg-white/10 p-1 rounded"> 
+                <span>Preview Modus</span>
+            </div>
+            <a href="#" class="text-sm opacity-70 hover:opacity-100">Terug naar editor</a>
+        </div>
+    </header>
+
+    <main>
+        
+        <!-- START INTERACTIEVE SECTIE -->
+        <section id="interactive-explainer" class="py-16 lg:py-24 relative overflow-hidden">
+            
+            <div class="container mx-auto px-6 max-w-7xl relative z-10">
+                
+                <!-- Intro Tekst (Scene 1) -->
+                <div class="text-center mb-16 max-w-3xl mx-auto animate-fade-in-up">
+                    <span class="text-[#ff7a00] font-bold tracking-wider uppercase text-sm mb-2 block">Zo werkt het</span>
+                    <h2 class="text-3xl md:text-5xl font-extrabold text-[#1a2c49] mb-6 leading-tight">
+                        Altijd een auto in de buurt.<br>Helemaal keyless.
+                    </h2>
+                    <p class="text-lg text-slate-600 leading-relaxed">
+                        Geen balie, geen wachtrijen en geen sleutels. Ontdek hoe je binnen enkele minuten op weg bent met KeylessGo in 3 simpele stappen.
+                    </p>
+                </div>
+
+                <div class="flex flex-col lg:flex-row gap-8 lg:gap-16 items-start">
+                    
+                    <!-- LINKER KANT: Interactieve Stappen -->
+                    <div class="w-full lg:w-5/12 flex flex-col gap-4 relative" id="step-triggers">
+                        
+                        <!-- Mobiele Progress Bar (Alleen zichtbaar op klein scherm) -->
+                        <div class="lg:hidden w-full h-1 bg-gray-200 rounded-full mb-6 overflow-hidden">
+                            <div id="mobile-progress" class="h-full bg-[#ff7a00] w-1/3 progress-bar-mobile"></div>
+                        </div>
+
+                        <!-- Stap 1: Zoek & Boek (Scene 2 & 3) -->
+                        <div class="step-nav-item active cursor-pointer p-6 rounded-2xl group" onclick="switchScene(1)">
+                            <div class="flex items-start gap-5">
+                                <div class="step-number w-10 h-10 rounded-full border-2 border-slate-300 text-slate-400 flex items-center justify-center font-bold text-lg flex-shrink-0 transition-colors duration-300 mt-1">1</div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-[#1a2c49] mb-2 group-hover:text-[#ff7a00] transition-colors">Zoek & boek online</h3>
+                                    <p class="text-slate-600 text-sm leading-relaxed">
+                                        Open de SnappCar app en kies een voertuig in jouw buurt. Selecteer je tijdslot en zie direct de <strong>all-in prijs</strong> en voorwaarden. Met één klik is je reservering rond.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Stap 2: Check-in & Openen (Scene 4 & 5) -->
+                        <div class="step-nav-item cursor-pointer p-6 rounded-2xl group" onclick="switchScene(2)">
+                            <div class="flex items-start gap-5">
+                                <div class="step-number w-10 h-10 rounded-full border-2 border-slate-300 text-slate-400 flex items-center justify-center font-bold text-lg flex-shrink-0 transition-colors duration-300 mt-1">2</div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-[#1a2c49] mb-2 group-hover:text-[#ff7a00] transition-colors">Keyless check-in</h3>
+                                    <p class="text-slate-600 text-sm leading-relaxed">
+                                        Loop naar de auto en start de check-in via de app. Maak een paar foto's van de buitenkant en klik op <strong>'Open Auto'</strong>. De deuren gaan direct voor je open.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Stap 3: Rijden & Inleveren (Scene 6 & 7) -->
+                        <div class="step-nav-item cursor-pointer p-6 rounded-2xl group" onclick="switchScene(3)">
+                            <div class="flex items-start gap-5">
+                                <div class="step-number w-10 h-10 rounded-full border-2 border-slate-300 text-slate-400 flex items-center justify-center font-bold text-lg flex-shrink-0 transition-colors duration-300 mt-1">3</div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-[#1a2c49] mb-2 group-hover:text-[#ff7a00] transition-colors">Rijden & Inleveren</h3>
+                                    <p class="text-slate-600 text-sm leading-relaxed">
+                                        Start de auto en ga op pad. Klaar? Parkeer terug op de vaste plek, tank of laad hem vol, en sluit af met de app. Kosten worden <strong>automatisch verrekend</strong>.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Extra Info Blok (Scene 8 - Veiligheid) -->
+                        <div class="mt-6 p-5 bg-white border border-slate-200 rounded-xl shadow-sm flex items-center gap-4 animate-pulse-slow">
+                            <div class="bg-blue-50 p-3 rounded-full text-blue-600">
+                                <i class="fa-solid fa-shield-halved text-xl"></i>
+                            </div>
+                            <div>
+                                <strong class="text-[#1a2c49] block text-sm">Veilig & Verzekerd</strong>
+                                <span class="text-xs text-slate-500">Elke rit is all-risk verzekerd via Allianz & SnappCar.</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- RECHTER KANT: Visuele Scenes (Sticky Container) -->
+                    <div class="w-full lg:w-7/12 relative h-[450px] md:h-[550px] lg:h-[600px] sticky top-8">
+                        
+                        <!-- Visual Scene 1: App & Zoeken -->
+                        <div id="visual-1" class="scene-visual active">
+                            <div class="bg-white rounded-3xl shadow-2xl overflow-hidden h-full border border-slate-200 relative group">
+                                <!-- Placeholder Image: Gebruik je eigen 'keylessgo-keyless-huren-app.png' hier -->
+                                <img src="img/partner/keylessgo-keyless-huren-app.png" alt="App Boeken" class="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105">
+                                
+                                <!-- Overlay Card -->
+                                <div class="absolute top-8 right-8 bg-white/90 backdrop-blur-md p-4 rounded-xl shadow-lg max-w-[220px] transform translate-y-0 opacity-100 transition-all delay-300">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <i class="fa-solid fa-calendar-check text-[#ff7a00]"></i>
+                                        <span class="font-bold text-xs text-[#1a2c49] uppercase">Direct Beschikbaar</span>
+                                    </div>
+                                    <p class="text-xs text-slate-600">Zie live welke auto's er nu in jouw buurt staan.</p>
+                                </div>
+
+                                <!-- Gradient Overlay Bottom -->
+                                <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-[#1a2c49]/90 to-transparent flex flex-col justify-end p-8 text-white">
+                                    <h4 class="text-2xl font-bold mb-1">Kies & Boek</h4>
+                                    <p class="text-slate-200 text-sm">Transparante prijzen, geen verborgen kosten.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Visual Scene 2: Openen & Foto's -->
+                        <div id="visual-2" class="scene-visual">
+                            <div class="bg-white rounded-3xl shadow-2xl overflow-hidden h-full border border-slate-200 relative group">
+                                <!-- Placeholder Image: Gebruik 'keylessgo-medium-busje-huren.png' -->
+                                <img src="img/partner/keylessgo-medium-busje-huren.png" alt="Keyless Openen" class="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105">
+                                
+                                <!-- Interactieve Unlock Knop Simulatie -->
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="bg-[#ff7a00] text-white w-24 h-24 rounded-full flex flex-col items-center justify-center shadow-2xl animate-bounce cursor-pointer hover:bg-[#e06b00] transition-colors border-4 border-white/30 backdrop-blur-sm">
+                                        <i class="fa-solid fa-lock-open text-2xl mb-1"></i>
+                                        <span class="text-[10px] font-bold uppercase tracking-wider">Open</span>
+                                    </div>
+                                </div>
+
+                                <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-[#1a2c49]/90 to-transparent flex flex-col justify-end p-8 text-white">
+                                    <h4 class="text-2xl font-bold mb-1">Jouw telefoon is de sleutel</h4>
+                                    <p class="text-slate-200 text-sm">Via 4G en Bluetooth verbinding.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Visual Scene 3: Rijden & Vloot -->
+                        <div id="visual-3" class="scene-visual">
+                            <div class="bg-white rounded-3xl shadow-2xl overflow-hidden h-full border border-slate-200 relative group">
+                                <!-- Placeholder Image: Gebruik 'fleet/all-vehicles.jpg' -->
+                                <img src="img/fleet/all-vehicles.jpg" alt="Rijden en Inleveren" class="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105">
+                                
+                                <!-- Status Badge -->
+                                <div class="absolute top-8 left-8 bg-[#1a2c49] text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
+                                    <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                                    <span class="text-xs font-bold">Rit actief</span>
+                                </div>
+
+                                <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-[#1a2c49]/90 to-transparent flex flex-col justify-end p-8 text-white">
+                                    <h4 class="text-2xl font-bold mb-1">Simpel retourneren</h4>
+                                    <p class="text-slate-200 text-sm">Parkeren, afsluiten en de rit beëindigen in de app.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Scene 9: Call to Action -->
+                <div class="mt-16 text-center">
+                    <a href="zoek-en-boek.html" class="inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-200 bg-[#ff7a00] border border-transparent rounded-lg hover:bg-[#e06b00] hover:shadow-lg hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#ff7a00]">
+                        Start nu met huren <i class="fa-solid fa-arrow-right ml-3"></i>
+                    </a>
+                    <p class="mt-4 text-sm text-slate-500">
+                        Zoek direct een KeylessGo voertuig in de SnappCar app
+                    </p>
+                </div>
+
+            </div>
+        </section>
+        <!-- EINDE INTERACTIEVE SECTIE -->
+
+    </main>
+
+    <!-- Simpele Footer -->
+    <footer class="bg-slate-100 py-8 text-center text-slate-500 text-sm">
+        <p>&copy; 2025 KeylessGo Preview. Images used for demonstration.</p>
+    </footer>
+
+    <!-- JavaScript Logica -->
+    <script>
+        // State management
+        let currentStep = 1;
+        let autoRotateTimer;
+        const totalSteps = 3;
+
+        function switchScene(stepNumber) {
+            // Update state
+            currentStep = stepNumber;
+            
+            // 1. Update Visuals
+            document.querySelectorAll('.scene-visual').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.getElementById(`visual-${stepNumber}`).classList.add('active');
+
+            // 2. Update Nav Items (Left side)
+            const navItems = document.querySelectorAll('.step-nav-item');
+            navItems.forEach((item, index) => {
+                if (index + 1 === stepNumber) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+
+            // 3. Update Mobile Progress Bar
+            const progress = document.getElementById('mobile-progress');
+            if (progress) {
+                const percentage = (stepNumber / totalSteps) * 100;
+                progress.style.width = `${percentage}%`;
+            }
+
+            // Stop auto-rotation if user interacts manually
+            if (autoRotateTimer) {
+                clearInterval(autoRotateTimer);
+                autoRotateTimer = null;
+            }
+        }
+
+        // Auto-rotation logic (wisselt elke 5 seconden)
+        function startAutoRotation() {
+            autoRotateTimer = setInterval(() => {
+                let next = currentStep + 1;
+                if (next > totalSteps) next = 1;
+                switchSceneWithoutStoppingTimer(next);
+            }, 5000);
+        }
+
+        // Helper: Switch scene zonder timer te stoppen (voor auto-loop)
+        function switchSceneWithoutStoppingTimer(stepNumber) {
+            currentStep = stepNumber;
+            
+            document.querySelectorAll('.scene-visual').forEach(el => el.classList.remove('active'));
+            document.getElementById(`visual-${stepNumber}`).classList.add('active');
+
+            const navItems = document.querySelectorAll('.step-nav-item');
+            navItems.forEach((item, index) => {
+                if (index + 1 === stepNumber) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+
+            const progress = document.getElementById('mobile-progress');
+            if(progress) progress.style.width = `${(stepNumber / totalSteps) * 100}%`;
+        }
+
+        // Start bij laden
+        document.addEventListener('DOMContentLoaded', () => {
+            startAutoRotation();
+        });
+    </script>
+
+</body>
+</html>

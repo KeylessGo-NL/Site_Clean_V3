@@ -1494,7 +1494,7 @@ footer {
 
 .hero-vehicle {
     width: 100%;
-    max-width: 680px;
+    max-width:1360px;
     position: relative;
     z-index: 2;
     transform: translateX(20px);
