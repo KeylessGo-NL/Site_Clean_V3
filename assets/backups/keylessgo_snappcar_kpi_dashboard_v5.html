@@ -1,0 +1,1766 @@
+<!DOCTYPE html>
+<html lang="nl" class="h-full scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KeylessGo – SnappCar KPI Dashboard (v5)</title>
+  <meta name="description" content="KPI-dashboard v3 voor KeylessGo/SnappCar: omzet, boekingen, huurdagen, km, kosten→resultaat, bezettingsgraad, winst per maand, heatmaps, exports.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { kgo: { blue: '#1A2C49', orange: '#FF7A00', ink: '#0B1220' } },
+          boxShadow: { soft: '0 10px 30px rgba(0,0,0,.08)', glow: '0 8px 30px rgba(255,122,0,.20)' }
+        }
+      }
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <style>
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-thumb { background: rgba(26,44,73,.35); border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(26,44,73,.55); }
+    .card { border: 1px solid rgba(15,23,42,.10); }
+    .glass { background: rgba(255,255,255,.75); backdrop-filter: blur(10px); }
+    .mono { font-variant-numeric: tabular-nums; }
+    th.sortable { cursor:pointer; user-select:none; }
+    th.sortable:hover { background: rgba(15,23,42,.04); }
+    .pill { border: 1px solid rgba(15,23,42,.10); }
+    .heat td { width: clamp(20px, 2.2vw, 28px); height: clamp(20px, 2.2vw, 28px); text-align:center; font-size:11px; border-radius:10px; }
+    .heat .label { width:auto; font-weight:700; font-size:12px; color:#0f172a; }
+    .heat .label2 { width:auto; font-weight:700; font-size:12px; color:#64748b; }
+    .kbd { font-size: 11px; padding: 2px 8px; border-radius: 999px; border:1px solid rgba(15,23,42,.15); background:#fff; }
+  </style>
+</head>
+
+<body class="h-full bg-slate-50 text-slate-900">
+  <header class="sticky top-0 z-40 border-b border-slate-200/70 bg-white/70 backdrop-blur">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between py-4">
+        <div class="flex items-center gap-3">
+          <div class="h-10 w-10 rounded-2xl bg-white grid place-items-center shadow-soft border border-slate-200 overflow-hidden">
+            <img src="img/partner/keylessgo-logo.png" alt="KeylessGo" class="h-9 w-9 object-contain"
+                 onerror="this.style.display='none'; this.parentElement.classList.add('bg-kgo-blue'); this.parentElement.classList.remove('bg-white'); this.parentElement.classList.remove('border'); this.parentElement.innerHTML='<span class=&quot;font-extrabold text-white&quot;>K</span>';">
+          </div>
+          <div>
+            <h1 class="text-lg sm:text-xl font-extrabold tracking-tight text-kgo-blue">KeylessGo – SnappCar KPI Dashboard</h1>
+            <p class="text-xs sm:text-sm text-slate-500">v5 • extra insight tables • heatmaps zonder scroll • branding • exports</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button id="btnUseDemo" class="hidden sm:inline-flex items-center gap-2 rounded-xl bg-slate-900 px-3 py-2 text-sm font-semibold text-white shadow-soft hover:opacity-95">
+            <span>Demo laden</span>
+          </button>
+          <label class="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-kgo-blue px-3 py-2 text-sm font-semibold text-white shadow-soft hover:opacity-95">
+            <input id="fileInput" type="file" accept=".xlsx,.xls" class="hidden"/>
+            <span>Excel upload</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+    <div id="alert" class="mb-6 hidden rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+      <span class="font-semibold">Let op:</span>
+      <span id="alertText"></span>
+    </div>
+
+    <!-- Filters -->
+    <section class="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-12">
+      <div class="card glass rounded-2xl p-4 shadow-soft lg:col-span-9">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div class="flex-1">
+            <h2 class="text-sm font-bold text-slate-700">Filters & keuzes</h2>
+            <p class="text-xs text-slate-500">Presets + filters + kostenmodel. Alles rekent live. Exports nemen gefilterde data.</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button id="btnPresetYTD" class="pill rounded-xl bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">YTD</button>
+            <button id="btnPreset90" class="pill rounded-xl bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">Laatste 90 dagen</button>
+            <button id="btnPreset30" class="pill rounded-xl bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">Laatste 30 dagen</button>
+            <button id="btnReset" class="pill rounded-xl bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">Reset</button>
+            <button id="btnExportCsv" class="pill rounded-xl bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">Export CSV</button>
+            <button id="btnExportJson" class="pill rounded-xl bg-kgo-blue px-3 py-2 text-xs font-semibold text-white hover:opacity-95">Export JSON</button>
+          </div>
+        </div>
+
+        <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-6">
+          <div class="lg:col-span-2">
+            <label class="text-xs font-semibold text-slate-600">Periode</label>
+            <div class="mt-1 grid grid-cols-2 gap-2">
+              <input id="fromDate" type="date" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-kgo-orange/40"/>
+              <input id="toDate" type="date" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-kgo-orange/40"/>
+            </div>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-slate-600">Hotspot</label>
+            <select id="hotspotSel" class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-kgo-orange/40"></select>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-slate-600">Type</label>
+            <select id="typeSel" class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-kgo-orange/40"></select>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-slate-600">Voertuig</label>
+            <select id="vehicleSel" class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-kgo-orange/40"></select>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-slate-600">Min rating</label>
+            <select id="minRatingSel" class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-kgo-orange/40">
+              <option value="0" selected>Geen</option>
+              <option value="4">≥ 4.0</option>
+              <option value="4.5">≥ 4.5</option>
+              <option value="4.8">≥ 4.8</option>
+              <option value="4.9">≥ 4.9</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-6">
+          <div class="lg:col-span-2">
+            <label class="text-xs font-semibold text-slate-600">Zoek</label>
+            <input id="searchInput" placeholder="Zoek: booking, voertuig, hotspot, model..." class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-kgo-orange/40"/>
+          </div>
+
+          <div>
+            <label class="text-xs font-semibold text-slate-600">Min huurdagen</label>
+            <select id="minDaysSel" class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-kgo-orange/40">
+              <option value="0" selected>Geen</option>
+              <option value="1">≥ 1</option>
+              <option value="2">≥ 2</option>
+              <option value="3">≥ 3</option>
+              <option value="4">≥ 4</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-xs font-semibold text-slate-600">Sortering (dataset)</label>
+            <select id="sortSel" class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm">
+              <option value="start_desc" selected>Startdatum (nieuw→oud)</option>
+              <option value="start_asc">Startdatum (oud→nieuw)</option>
+              <option value="profit_desc">Resultaat (hoog→laag)</option>
+              <option value="netto_desc">Netto omzet (hoog→laag)</option>
+              <option value="days_desc">Huurdagen (hoog→laag)</option>
+              <option value="rating_desc">Rating (hoog→laag)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-xs font-semibold text-slate-600">Toon regels</label>
+            <select id="limitSel" class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm">
+              <option value="50">50</option>
+              <option value="100" selected>100</option>
+              <option value="250">250</option>
+              <option value="999999">Alles</option>
+            </select>
+          </div>
+
+          <div class="lg:col-span-2">
+            <label class="text-xs font-semibold text-slate-600">Kostenmodel (dashboard)</label>
+            <div class="mt-1 grid grid-cols-3 gap-2">
+              <input id="feePct" type="number" step="0.1" value="18" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm" title="Platform fee % (SnappCar + verwerking)"/>
+              <input id="varPerDay" type="number" step="0.1" value="6.5" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm" title="Variabele kosten per huurdag"/>
+              <input id="fixedPerVeh" type="number" step="1" value="460" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm" title="Vaste kosten per voertuig per maand"/>
+            </div>
+            <div class="mt-1 text-[11px] text-slate-500">
+              <span class="kbd">fee%</span> maakt bruto↔netto groter • <span class="kbd">var/dag</span> + <span class="kbd">vast/veh/mnd</span> → resultaat.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card glass rounded-2xl p-4 shadow-soft lg:col-span-3">
+        <h2 class="text-sm font-bold text-slate-700">Data status</h2>
+        <p id="dataStatus" class="mt-1 text-xs text-slate-500">Nog geen data geladen.</p>
+
+        <div class="mt-4 grid grid-cols-2 gap-3">
+          <div class="rounded-2xl bg-white p-3 shadow-soft">
+            <div class="text-xs text-slate-500">Records</div>
+            <div id="statRecords" class="mono text-xl font-extrabold text-slate-900">—</div>
+          </div>
+          <div class="rounded-2xl bg-white p-3 shadow-soft">
+            <div class="text-xs text-slate-500">Voertuigen</div>
+            <div id="statVehicles" class="mono text-xl font-extrabold text-slate-900">—</div>
+          </div>
+        </div>
+
+        <div class="mt-3 rounded-2xl bg-kgo-blue p-3 text-white shadow-glow">
+          <div class="text-xs text-white/80">Bezetting (definitie)</div>
+          <div class="mt-1 text-xs">
+            Bezetting = <span class="font-extrabold">Booked days</span> / <span class="font-extrabold">dagen in periode</span> (per voertuig).<br/>
+            Dagen in periode gebaseerd op jouw datumfilters.
+          </div>
+        </div>
+
+        <div class="mt-3 text-xs text-slate-500">
+          <span class="font-semibold">Heatmap:</span> als je geen tijdstempel hebt, toont het dashboard <b>dag-van-week</b>. Met <span class="kbd">StartHour</span> of <span class="kbd">StartTime</span> komt ook uur-heatmap.
+        </div>
+      </div>
+    </section>
+
+    <!-- KPI cards -->
+    <section class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-8">
+      <div class="card rounded-2xl bg-white p-4 shadow-soft xl:col-span-2">
+        <div class="text-xs text-slate-500">Boekingen</div>
+        <div id="kpiBookings" class="mono mt-1 text-2xl font-extrabold">—</div>
+        <div id="kpiBookingsSub" class="mt-2 text-xs text-slate-500">—</div>
+      </div>
+
+      <div class="card rounded-2xl bg-white p-4 shadow-soft xl:col-span-2">
+        <div class="text-xs text-slate-500">Huurdagen</div>
+        <div id="kpiDays" class="mono mt-1 text-2xl font-extrabold">—</div>
+        <div id="kpiDaysSub" class="mt-2 text-xs text-slate-500">—</div>
+      </div>
+
+      <div class="card rounded-2xl bg-white p-4 shadow-soft xl:col-span-2">
+        <div class="text-xs text-slate-500">KM totaal</div>
+        <div id="kpiKm" class="mono mt-1 text-2xl font-extrabold">—</div>
+        <div id="kpiKmSub" class="mt-2 text-xs text-slate-500">—</div>
+      </div>
+
+      <div class="card rounded-2xl bg-white p-4 shadow-soft xl:col-span-2">
+        <div class="text-xs text-slate-500">Bezetting (gem.)</div>
+        <div id="kpiOcc" class="mono mt-1 text-2xl font-extrabold">—</div>
+        <div id="kpiOccSub" class="mt-2 text-xs text-slate-500">—</div>
+      </div>
+
+      <div class="card rounded-2xl bg-white p-4 shadow-soft xl:col-span-2">
+        <div class="text-xs text-slate-500">Bruto omzet</div>
+        <div id="kpiBruto" class="mono mt-1 text-2xl font-extrabold">—</div>
+        <div class="mt-2 text-xs text-slate-500">Huurdagen × dagprijs</div>
+      </div>
+
+      <div class="card rounded-2xl bg-white p-4 shadow-soft xl:col-span-2">
+        <div class="text-xs text-slate-500">Netto omzet (na fee)</div>
+        <div id="kpiNetto" class="mono mt-1 text-2xl font-extrabold">—</div>
+        <div id="kpiFee" class="mt-2 text-xs text-slate-500">—</div>
+      </div>
+
+      <div class="card rounded-2xl bg-slate-900 p-4 text-white shadow-soft xl:col-span-2">
+        <div class="text-xs text-white/70">Kosten (filtered)</div>
+        <div id="kpiCosts" class="mono mt-1 text-2xl font-extrabold">—</div>
+        <div id="kpiCostsSub" class="mt-2 text-xs text-white/70">—</div>
+      </div>
+
+      <div class="card rounded-2xl bg-kgo-blue p-4 text-white shadow-glow xl:col-span-2">
+        <div class="text-xs text-white/80">Resultaat (na kosten)</div>
+        <div id="kpiResult" class="mono mt-1 text-2xl font-extrabold">—</div>
+        <div id="kpiResultSub" class="mt-2 text-xs text-white/80">—</div>
+      </div>
+    </section>
+
+    <!-- Charts -->
+    <section class="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-12">
+      <div class="card rounded-2xl bg-white p-4 shadow-soft xl:col-span-8">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-sm font-extrabold text-slate-800">Omzet, resultaat & boekingen over tijd</h3>
+            <p class="text-xs text-slate-500">Per maand/week. Resultaat bevat vaste + variabele allocatie.</p>
+          </div>
+          <select id="granularitySel" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700">
+            <option value="month" selected>Maand</option>
+            <option value="week">Week</option>
+          </select>
+        </div>
+        <div class="mt-3">
+          <canvas id="chartTime" height="110"></canvas>
+        </div>
+      </div>
+
+      <div class="card rounded-2xl bg-white p-4 shadow-soft xl:col-span-4">
+        <h3 class="text-sm font-extrabold text-slate-800">Bezetting per voertuig (Top 10)</h3>
+        <p class="text-xs text-slate-500">Booked days / dagen in periode.</p>
+        <div class="mt-3"><canvas id="chartOccVehicles" height="220"></canvas></div>
+      </div>
+
+      <div class="card rounded-2xl bg-white p-4 shadow-soft xl:col-span-6">
+        <h3 class="text-sm font-extrabold text-slate-800">Winst per maand – per voertuig (Top 8)</h3>
+        <p class="text-xs text-slate-500">Resultaat per maand per voertuig (line chart).</p>
+        <div class="mt-3"><canvas id="chartProfitVeh" height="170"></canvas></div>
+      </div>
+
+      <div class="card rounded-2xl bg-white p-4 shadow-soft xl:col-span-6">
+        <h3 class="text-sm font-extrabold text-slate-800">Hotspots</h3>
+        <p class="text-xs text-slate-500">Netto omzet + boekingen per hotspot.</p>
+        <div class="mt-3"><canvas id="chartHotspots" height="170"></canvas></div>
+      </div>
+
+      <div class="card rounded-2xl bg-white p-4 shadow-soft xl:col-span-4">
+        <h3 class="text-sm font-extrabold text-slate-800">Mix: type</h3>
+        <p class="text-xs text-slate-500">Netto omzet + boekingen per type.</p>
+        <div class="mt-3"><canvas id="chartType" height="220"></canvas></div>
+      </div>
+
+      <div class="card rounded-2xl bg-white p-4 shadow-soft xl:col-span-8">
+        <h3 class="text-sm font-extrabold text-slate-800">Voertuigen</h3>
+        <p class="text-xs text-slate-500">Top 10 op netto omzet + boekingen.</p>
+        <div class="mt-3"><canvas id="chartVehicles" height="150"></canvas></div>
+      </div>
+    </section>
+
+    <!-- Heatmaps -->
+    <section class="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-12">
+      <div class="card rounded-2xl bg-white p-4 shadow-soft xl:col-span-6">
+        <h3 class="text-sm font-extrabold text-slate-800">Heatmap: boekingen per dag (ma–zo)</h3>
+        <div class="mt-2 flex items-center gap-3">
+          <div class="h-3 w-44 rounded-full border border-slate-200" style="background: linear-gradient(90deg, rgba(26,44,73,.25), rgba(26,44,73,.70), rgba(255,122,0,.85));"></div>
+          <div class="text-[11px] text-slate-500">laag → hoog (KeylessGo blauw → oranje)</div>
+        </div>
+        <p class="text-xs text-slate-500">Intensiteit = aantal boekingen. Hover voor waarde.</p>
+        <div class="mt-3">
+          <table class="heat border-separate border-spacing-2">
+            <tbody id="heatDow"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card rounded-2xl bg-white p-4 shadow-soft xl:col-span-6">
+        <h3 class="text-sm font-extrabold text-slate-800">Heatmap: boekingen per uur (0–23)</h3>
+        <p class="text-xs text-slate-500">Werkt als je Excel een tijdveld heeft: <span class="kbd">StartHour</span> of <span class="kbd">StartTime</span>.</p>
+        <div class="mt-3">
+          <table class="heat border-separate border-spacing-2">
+            <tbody id="heatHour"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Combo table -->
+    <section class="mt-6 card rounded-2xl bg-white p-4 shadow-soft">
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h3 class="text-sm font-extrabold text-slate-800">Hotspot × voertuig (combi’s)</h3>
+          <p class="text-xs text-slate-500">Top combi’s op resultaat. (netto, resultaat, boekingen, dagen, km)</p>
+        </div>
+      </div>
+      <div class="mt-3 overflow-auto rounded-2xl border border-slate-200">
+        <table class="min-w-full text-left text-sm">
+          <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+            <tr>
+              <th class="px-3 py-3">Combi</th>
+              <th class="px-3 py-3 text-right">Boekingen</th>
+              <th class="px-3 py-3 text-right">Dagen</th>
+              <th class="px-3 py-3 text-right">KM</th>
+              <th class="px-3 py-3 text-right">Netto</th>
+              <th class="px-3 py-3 text-right">Resultaat</th>
+              <th class="px-3 py-3 text-right">Bezetting</th>
+            </tr>
+          </thead>
+          <tbody id="comboTbody" class="divide-y divide-slate-100"></tbody>
+        </table>
+      </div>
+    
+    <!-- Hotspot × voertuig (kenteken) -->
+    <section class="mt-6 card rounded-2xl bg-white p-4 shadow-soft">
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h3 class="text-sm font-extrabold text-slate-800">Hotspot × voertuig (kenteken)</h3>
+          <p class="text-xs text-slate-500">Zelfde output, maar nu op kenteken (handig voor operationele performance per voertuig).</p>
+        </div>
+      </div>
+      <div class="mt-3 overflow-auto rounded-2xl border border-slate-200">
+        <table class="min-w-full text-left text-sm">
+          <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+            <tr>
+              <th class="px-3 py-3">Combi</th>
+              <th class="px-3 py-3 text-right">Boekingen</th>
+              <th class="px-3 py-3 text-right">Dagen</th>
+              <th class="px-3 py-3 text-right">KM</th>
+              <th class="px-3 py-3 text-right">Netto</th>
+              <th class="px-3 py-3 text-right">Resultaat</th>
+              <th class="px-3 py-3 text-right">Bezetting</th>
+            </tr>
+          </thead>
+          <tbody id="comboKentekenTbody" class="divide-y divide-slate-100"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- KPI per type -->
+    <section class="mt-6 card rounded-2xl bg-white p-4 shadow-soft">
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h3 class="text-sm font-extrabold text-slate-800">KPI’s per type</h3>
+          <p class="text-xs text-slate-500">Bus / Auto / EV – netto, resultaat, boekingen, huurdagen, km.</p>
+        </div>
+      </div>
+      <div class="mt-3 overflow-auto rounded-2xl border border-slate-200">
+        <table class="min-w-full text-left text-sm">
+          <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+            <tr>
+              <th class="px-3 py-3">Type</th>
+              <th class="px-3 py-3 text-right">Boekingen</th>
+              <th class="px-3 py-3 text-right">Dagen</th>
+              <th class="px-3 py-3 text-right">KM</th>
+              <th class="px-3 py-3 text-right">Netto</th>
+              <th class="px-3 py-3 text-right">Resultaat</th>
+              <th class="px-3 py-3 text-right">Netto/boeking</th>
+              <th class="px-3 py-3 text-right">Resultaat/boeking</th>
+            </tr>
+          </thead>
+          <tbody id="typeKpiTbody" class="divide-y divide-slate-100"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- KPI per rit_type -->
+    <section class="mt-6 card rounded-2xl bg-white p-4 shadow-soft">
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h3 class="text-sm font-extrabold text-slate-800">KPI’s per rit_type</h3>
+          <p class="text-xs text-slate-500">Particulier vs Zakelijk – inzicht in mix, winst en intensiteit.</p>
+        </div>
+      </div>
+      <div class="mt-3 overflow-auto rounded-2xl border border-slate-200">
+        <table class="min-w-full text-left text-sm">
+          <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+            <tr>
+              <th class="px-3 py-3">Rit_type</th>
+              <th class="px-3 py-3 text-right">Boekingen</th>
+              <th class="px-3 py-3 text-right">Dagen</th>
+              <th class="px-3 py-3 text-right">KM</th>
+              <th class="px-3 py-3 text-right">Netto</th>
+              <th class="px-3 py-3 text-right">Resultaat</th>
+              <th class="px-3 py-3 text-right">Netto/boeking</th>
+              <th class="px-3 py-3 text-right">Resultaat/boeking</th>
+            </tr>
+          </thead>
+          <tbody id="ritTypeTbody" class="divide-y divide-slate-100"></tbody>
+        </table>
+      </div>
+    </section>
+
+
+    </section>
+
+    <!-- Bookings table -->
+    <section class="mt-6 card rounded-2xl bg-white p-4 shadow-soft">
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h3 class="text-sm font-extrabold text-slate-800">Boekingen (filtered)</h3>
+          <p class="text-xs text-slate-500">Klik op kolomkop om te sorteren. Klik op rij voor details.</p>
+        </div>
+        <div class="text-xs text-slate-500">
+          Tip: voeg later echte velden toe: <span class="kbd">DistanceKM</span>, <span class="kbd">StartHour</span>, <span class="kbd">Accepted</span>, <span class="kbd">ResponseTimeSec</span>.
+        </div>
+      </div>
+
+      <div class="mt-4 overflow-auto rounded-2xl border border-slate-200">
+        <table class="min-w-full text-left text-sm">
+          <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+            <tr>
+              <th class="sortable px-3 py-3" data-sort="Booking_ID">Booking</th>
+              <th class="sortable px-3 py-3" data-sort="Vehicle_ID">Vehicle</th><th class="sortable px-3 py-3" data-sort="Merk_Model">Merk/Model</th><th class="sortable px-3 py-3" data-sort="Kenteken">Kenteken</th>
+              <th class="sortable px-3 py-3" data-sort="Type">Type</th>
+              <th class="sortable px-3 py-3" data-sort="Hotspot">Hotspot</th>
+              <th class="sortable px-3 py-3" data-sort="Startdatum">Start</th><th class="sortable px-3 py-3" data-sort="Starttijd">Starttijd</th>
+              <th class="sortable px-3 py-3" data-sort="Einddatum">Eind</th><th class="sortable px-3 py-3" data-sort="Eindtijd">Eindtijd</th>
+              <th class="sortable px-3 py-3 text-right" data-sort="Huurdagen">Dagen</th>
+              <th class="sortable px-3 py-3 text-right" data-sort="KM">KM</th>
+              <th class="sortable px-3 py-3 text-right" data-sort="Netto">Netto</th>
+              <th class="sortable px-3 py-3 text-right" data-sort="Resultaat">Resultaat</th>
+              <th class="sortable px-3 py-3" data-sort="Rit_type">Rit_type</th><th class="sortable px-3 py-3 text-right" data-sort="Occ">Bezetting</th>
+              <th class="sortable px-3 py-3 text-right" data-sort="Rating">Rating</th>
+            </tr>
+          </thead>
+          <tbody id="bookingsTbody" class="divide-y divide-slate-100 bg-white"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="mt-8 pb-10 text-center text-xs text-slate-500">
+      <div class="inline-flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2">
+        <span class="font-semibold text-slate-700">Export JSON</span>
+        <span>is bedoeld om direct te koppelen aan je</span>
+        <span class="font-semibold">AutoFleet map</span>
+        <span>(hotspots / voertuigen / KPI’s).</span>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Modal -->
+  <div id="modal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/40"></div>
+    <div class="relative mx-auto mt-16 w-[95vw] max-w-2xl rounded-3xl bg-white p-5 shadow-soft">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h4 class="text-base font-extrabold text-slate-900">Boeking details</h4>
+          <p id="modalSub" class="mt-1 text-xs text-slate-500"></p>
+        </div>
+        <button id="modalClose" class="rounded-xl bg-slate-100 px-3 py-2 text-sm font-bold text-slate-700 hover:bg-slate-200">Sluiten</button>
+      </div>
+      <div id="modalBody" class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2"></div>
+    </div>
+  </div>
+
+  <script>
+    // =============================
+    // State
+    // =============================
+    const REQUIRED_SHEETS = ["Vehicles", "Bookings_Year1"];
+    let vehicles = [];
+    let bookings = []; // raw bookings
+    let filtered = []; // enriched filtered bookings
+    let filteredForTable = [];
+    let tableSort = { key: "Startdatum", dir: "desc" };
+
+    const charts = { time:null, type:null, hotspots:null, vehicles:null, occVehicles:null, profitVeh:null };
+
+    // =============================
+    // Utils
+    // =============================
+    const fmtEUR = (n) => new Intl.NumberFormat("nl-NL",{style:"currency",currency:"EUR"}).format(Number(n||0));
+    const fmtInt = (n) => new Intl.NumberFormat("nl-NL").format(Number(n||0));
+    const fmt0 = (n) => new Intl.NumberFormat("nl-NL").format(Math.round(Number(n||0)));
+    const fmt1 = (n) => (n===null || n===undefined || Number.isNaN(n)) ? "—" : (Math.round(n*10)/10).toFixed(1);
+    const toISODate = (d) => {
+      if (!d) return null;
+      const dt = (d instanceof Date) ? d : new Date(d);
+      if (Number.isNaN(dt.getTime())) return null;
+      return dt.toISOString().slice(0,10);
+    };
+    const safeNum = (v) => {
+      if (v === null || v === undefined || v === "") return 0;
+      const n = Number(String(v).replace(",", "."));
+      return Number.isFinite(n) ? n : 0;
+    };
+    const uniq = (arr) => Array.from(new Set(arr)).filter(v => v !== null && v !== undefined && v !== "");
+    function escapeHtml(str) {
+      return String(str).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+    }
+    function showAlert(msg) { document.getElementById("alertText").textContent = " " + msg; document.getElementById("alert").classList.remove("hidden"); }
+    function hideAlert(){ document.getElementById("alert").classList.add("hidden"); }
+
+    function excelDateToJS(v) {
+      if (v instanceof Date) return v;
+      if (typeof v === "number") {
+        const epoch = new Date(Date.UTC(1899, 11, 30));
+        return new Date(epoch.getTime() + v * 86400000);
+      }
+      const d = new Date(v);
+      return Number.isNaN(d.getTime()) ? null : d;
+    }
+
+    function getVehicleById(id) { return vehicles.find(v => v.Vehicle_ID === id) || null; }
+
+    // =============================
+    // KM estimation
+    // =============================
+    function estimateKm(veh, days) {
+      let base = 60;
+      if (!veh) base = 55;
+      else if (veh.Brandstof === "EV") base = 55;
+      else if (veh.Type === "Bus") base = 45;
+      const jitter = 0.75 + Math.random() * 0.70;
+      return Math.max(10, Math.round(base * days * jitter));
+    }
+
+    // =============================
+    // Time helpers
+    // =============================
+    function estimateMonthSpan(from, to) {
+      const a = from ? new Date(from) : new Date(Math.min(...bookings.map(b=>b.Startdatum.getTime())));
+      const b = to ? new Date(to) : new Date(Math.max(...bookings.map(b=>b.Startdatum.getTime())));
+      const months = (b.getFullYear()-a.getFullYear())*12 + (b.getMonth()-a.getMonth()) + 1;
+      return Math.max(1, months);
+    }
+    function estimateDaySpan(from, to) {
+      const a = from ? new Date(from) : new Date(Math.min(...bookings.map(b=>b.Startdatum.getTime())));
+      const b = to ? new Date(to) : new Date(Math.max(...bookings.map(b=>b.Startdatum.getTime())));
+      const ms = (new Date(b.getFullYear(), b.getMonth(), b.getDate()+1)).getTime() - (new Date(a.getFullYear(), a.getMonth(), a.getDate())).getTime();
+      return Math.max(1, Math.round(ms / 86400000));
+    }
+    function periodKey(d, gran) {
+      if (gran === "week") {
+        const tmp = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+        const dayNum = tmp.getUTCDay() || 7;
+        tmp.setUTCDate(tmp.getUTCDate() + 4 - dayNum);
+        const yearStart = new Date(Date.UTC(tmp.getUTCFullYear(),0,1));
+        const weekNo = Math.ceil((((tmp - yearStart) / 86400000) + 1)/7);
+        return `${tmp.getUTCFullYear()}-W${String(weekNo).padStart(2,"0")}`;
+      }
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
+    }
+
+    // =============================
+    // Demo data
+    // =============================
+    function loadDemo() {
+      hideAlert();
+      vehicles = [
+        {Vehicle_ID:1, Type:"Auto", Merk_Model:"VW Golf", Kenteken:"AB-123-C", Bouwjaar:2020, Brandstof:"Benzine", Hotspot:"Utrecht Centrum", Dagprijs:69},
+        {Vehicle_ID:2, Type:"Auto", Merk_Model:"Toyota Corolla Hybrid", Kenteken:"CD-456-D", Bouwjaar:2020, Brandstof:"Hybride", Hotspot:"Utrecht Centrum", Dagprijs:65},
+        {Vehicle_ID:3, Type:"Auto", Merk_Model:"Skoda Octavia", Kenteken:"EF-789-G", Bouwjaar:2019, Brandstof:"Benzine", Hotspot:"Utrecht Oost", Dagprijs:72},
+        {Vehicle_ID:4, Type:"Auto", Merk_Model:"Hyundai Kona EV", Kenteken:"HJ-012-K", Bouwjaar:2021, Brandstof:"EV", Hotspot:"Utrecht Oost", Dagprijs:75},
+        {Vehicle_ID:5, Type:"Bus", Merk_Model:"VW Caddy", Kenteken:"LM-345-N", Bouwjaar:2019, Brandstof:"Diesel", Hotspot:"Houten", Dagprijs:92},
+        {Vehicle_ID:6, Type:"Bus", Merk_Model:"VW Transporter", Kenteken:"PR-678-S", Bouwjaar:2018, Brandstof:"Diesel", Hotspot:"Houten", Dagprijs:125},
+        {Vehicle_ID:7, Type:"Bus", Merk_Model:"Opel Vivaro", Kenteken:"TU-901-V", Bouwjaar:2020, Brandstof:"Diesel", Hotspot:"Houten", Dagprijs:105},
+      ];
+
+      bookings = [];
+      const start = new Date("2026-01-01T00:00:00");
+      let id = 1;
+
+      function seasonMultiplier(d){
+        const m = d.getMonth()+1;
+        if ([4,5,6,7,8,9].includes(m)) return 1.18;
+        if ([11,12].includes(m)) return 1.10;
+        return 0.92;
+      }
+
+      for (let day=0; day<365; day++) {
+        const dt = new Date(start); dt.setDate(start.getDate()+day);
+        const dow = dt.getDay();
+        const weekendBoost = (dow===5 || dow===6) ? 1.20 : 1.0;
+
+        for (const v of vehicles) {
+          let baseP = 0.11;
+          if (v.Type === "Bus") baseP = 0.14;
+          if (v.Brandstof === "EV") baseP = 0.115;
+          const p = baseP * seasonMultiplier(dt) * weekendBoost;
+
+          if (Math.random() < p) {
+            const huur = [1,2,2,3,4,5][Math.floor(Math.random()*6)];
+            const end = new Date(dt); end.setDate(dt.getDate()+huur);
+            const dayPrice = v.Dagprijs * ((v.Type==="Bus" && weekendBoost>1.0) ? 1.05 : 1.0);
+            const bruto = huur * dayPrice;
+            // Synthetic hour distribution (if no hour column in Excel)
+            const hour = (Math.random()<0.65) ? (8 + Math.floor(Math.random()*10)) : Math.floor(Math.random()*24);
+
+            bookings.push({
+              Booking_ID: id++,
+              Vehicle_ID: v.Vehicle_ID,
+              Startdatum: new Date(dt),
+              Einddatum: end,
+              Huurdagen: huur,
+              Dagprijs: Math.round(dayPrice*100)/100,
+              Bruto: bruto,
+              Rating: [5,5,5,4.9,4.8,4.7,4.5,4.0][Math.floor(Math.random()*8)],
+              KM: estimateKm(v, huur),
+              StartHour: hour,
+              Starttijd: `${String(hour).padStart(2,'0')}:00`,
+              Eindtijd: `${String((hour + 2 + Math.floor(Math.random()*9))%24).padStart(2,'0')}:00`,
+              Rit_type: (Math.random()<0.35 ? 'Zakelijk' : 'Particulier')
+            });
+          }
+        }
+      }
+      while (bookings.length < 950) {
+        const v = vehicles[Math.floor(Math.random()*vehicles.length)];
+        const dt = new Date(start); dt.setDate(start.getDate()+Math.floor(Math.random()*365));
+        const huur = [1,2,2,3,4,5][Math.floor(Math.random()*6)];
+        const end = new Date(dt); end.setDate(dt.getDate()+huur);
+        bookings.push({
+          Booking_ID: id++,
+          Vehicle_ID: v.Vehicle_ID,
+          Startdatum: dt,
+          Einddatum: end,
+          Huurdagen: huur,
+          Dagprijs: v.Dagprijs,
+          Bruto: huur * v.Dagprijs,
+          Rating: [5,4.9,4.8,4.7,4.5,4.0][Math.floor(Math.random()*6)],
+          KM: estimateKm(v, huur),
+          StartHour: (Math.random()<0.65) ? (8 + Math.floor(Math.random()*10)) : Math.floor(Math.random()*24),
+          Starttijd: '',
+          Eindtijd: '',
+          Rit_type: (Math.random()<0.35 ? 'Zakelijk' : 'Particulier')
+        });
+      }
+
+      document.getElementById("dataStatus").textContent = "Demo-data geladen (synthetisch + patroon + uurverdeling).";
+      hydrateFilters(true);
+      applyFiltersAndRender();
+    }
+
+    // =============================
+    // Excel loader
+    // =============================
+    async function handleFile(file) {
+      hideAlert();
+      if (!file) return;
+
+      const buf = await file.arrayBuffer();
+      const wb = XLSX.read(buf, { type: "array", cellDates: true });
+      const sheetNames = wb.SheetNames || [];
+      for (const s of REQUIRED_SHEETS) {
+        if (!sheetNames.includes(s)) { showAlert(`Sheet '${s}' niet gevonden. Vereist: ${REQUIRED_SHEETS.join(", ")}.`); return; }
+      }
+
+      const rawV = XLSX.utils.sheet_to_json(wb.Sheets["Vehicles"], { defval: "" });
+      vehicles = rawV.map(r => ({
+        Vehicle_ID: safeNum(r["Vehicle_ID"]),
+        Merk: String(r["Merk"] || "").trim(),
+        Model: String(r["Model"] || "").trim(),
+        Merk_Model: String(r["Merk_Model"] || r["Merk/Model"] || `${String(r["Merk"]||"").trim()} ${String(r["Model"]||"").trim()}` ).trim(),
+        Kenteken: String(r["Kenteken"] || "").trim(),
+        Type: String(r["Type"] || "").trim(),
+        Bouwjaar: safeNum(r["Bouwjaar"]),
+        Brandstof: String(r["Brandstof"] || "").trim(),
+        Hotspot: String(r["Hotspot"] || "").trim(),
+        Dagprijs: safeNum(r["Dagprijs"]),
+        Kosten_vast_pm: safeNum(r["Kosten_vast_pm"] || r["Kosten_vast_pmnd"] || "")
+      })).filter(v => v.Vehicle_ID);
+
+      const rawB = XLSX.utils.sheet_to_json(wb.Sheets["Bookings_Year1"], { defval: "" });
+
+      bookings = rawB.map(r => {
+        const sd = excelDateToJS(r["Startdatum"]);
+        const ed = excelDateToJS(r["Einddatum"]);
+        const vehId = safeNum(r["Vehicle_ID"]);
+        const veh = vehicles.find(v=>v.Vehicle_ID===vehId) || null;
+
+        const days = safeNum(r["Huurdagen"]);
+        const dayPrice = safeNum(r["Dagprijs"]);
+        const bruto = safeNum(r["Bruto omzet"]) || safeNum(r["Bruto_omzet"]) || (days * dayPrice);
+
+        const kmProvided =
+          safeNum(r["DistanceKM"]) || safeNum(r["Distance_km"]) || safeNum(r["KM"]) || safeNum(r["Km"]) || safeNum(r["Kilometers"]) || 0;
+
+        // hour: StartHour numeric or StartTime string "HH:MM"
+        let startHour = safeNum(r["StartHour"]);
+        if (!startHour && r["StartTime"]) {
+          const s = String(r["StartTime"]);
+          const m = s.match(/(\d{1,2}):(\d{2})/);
+          if (m) startHour = Number(m[1]);
+        }
+
+        return ({
+          Booking_ID: safeNum(r["Booking_ID"]),
+          Vehicle_ID: vehId,
+          Startdatum: sd,
+          Starttijd: String(r["Starttijd"] || r["StartTime"] || "").trim(),
+          Einddatum: ed,
+          Eindtijd: String(r["Eindtijd"] || r["EndTime"] || "").trim(),
+          Huurdagen: days,
+          Dagprijs: dayPrice,
+          Bruto: bruto,
+          Rating: safeNum(r["Rating"]),
+          KM: kmProvided > 0 ? kmProvided : estimateKm(veh, days),
+          StartHour: (startHour>=0 && startHour<=23) ? startHour : null,
+          Rit_type: String(r["Rit_type"] || r["TripType"] || "").trim()
+        });
+      }).filter(b => b.Booking_ID && b.Vehicle_ID && b.Startdatum);
+
+      document.getElementById("dataStatus").textContent = `Excel geladen: ${file.name}`;
+      hydrateFilters(true);
+      applyFiltersAndRender();
+    }
+
+    // =============================
+    // Filters hydrate
+    // =============================
+    function hydrateFilters(setDates=false) {
+      const hotspotSel = document.getElementById("hotspotSel");
+      const typeSel = document.getElementById("typeSel");
+      const vehicleSel = document.getElementById("vehicleSel");
+
+      const hotspots = ["(Alle)"].concat(uniq(vehicles.map(v => v.Hotspot)).sort());
+      const types = ["(Alle)"].concat(uniq(vehicles.map(v => (v.Brandstof==="EV" ? "EV" : v.Type))).sort());
+      const vehicleOptions = ["(Alle)"].concat(vehicles.slice().sort((a,b)=>a.Vehicle_ID-b.Vehicle_ID).map(v => `${v.Vehicle_ID} – ${v.Merk_Model}`));
+
+      hotspotSel.innerHTML = hotspots.map(v => `<option>${escapeHtml(v)}</option>`).join("");
+      typeSel.innerHTML = types.map(v => `<option>${escapeHtml(v)}</option>`).join("");
+      vehicleSel.innerHTML = vehicleOptions.map(v => `<option>${escapeHtml(v)}</option>`).join("");
+
+      document.getElementById("statVehicles").textContent = fmtInt(vehicles.length);
+      document.getElementById("statRecords").textContent = fmtInt(bookings.length);
+
+      if (bookings.length) {
+        const minD = new Date(Math.min(...bookings.map(b=>b.Startdatum.getTime())));
+        const maxD = new Date(Math.max(...bookings.map(b=>b.Startdatum.getTime())));
+        if (setDates || !document.getElementById("fromDate").value) {
+          document.getElementById("fromDate").value = toISODate(minD);
+          document.getElementById("toDate").value = toISODate(maxD);
+        }
+      }
+    }
+
+    // =============================
+    // Apply filters + compute KPIs/derived
+    // =============================
+    function applyFiltersAndRender() {
+      if (!vehicles.length || !bookings.length) { showAlert("Laad demo-data of upload Excel (Vehicles + Bookings_Year1)."); return; }
+      hideAlert();
+
+      const from = document.getElementById("fromDate").value ? new Date(document.getElementById("fromDate").value) : null;
+      const to = document.getElementById("toDate").value ? new Date(document.getElementById("toDate").value) : null;
+      if (to) to.setHours(23,59,59,999);
+
+      const hotspot = document.getElementById("hotspotSel").value;
+      const type = document.getElementById("typeSel").value;
+      const vehicle = document.getElementById("vehicleSel").value;
+      const minRating = Number(document.getElementById("minRatingSel").value || 0);
+      const minDays = Number(document.getElementById("minDaysSel").value || 0);
+      const q = document.getElementById("searchInput").value.trim().toLowerCase();
+
+      const feePct = Number(document.getElementById("feePct").value || 0) / 100;
+      const varPerDay = Number(document.getElementById("varPerDay").value || 0);
+      const fixedPerVeh = Number(document.getElementById("fixedPerVeh").value || 0);
+
+      const vehicleIdFilter = (vehicle && vehicle !== "(Alle)") ? Number(vehicle.split("–")[0].trim()) : null;
+
+      // Enrich + filter
+      filtered = bookings.map(b => {
+        const v = getVehicleById(b.Vehicle_ID);
+        const vType = v ? (v.Brandstof==="EV" ? "EV" : v.Type) : "—";
+        const vHotspot = v ? v.Hotspot : "—";
+        const fee = b.Bruto * feePct;
+        const netto = b.Bruto - fee;
+        const varCost = b.Huurdagen * varPerDay;
+        return { ...b, Type:vType, Hotspot:vHotspot, Merk_Model:(v?.Merk_Model||b.Merk_Model||""), Kenteken:(v?.Kenteken||""), Starttijd:(b.Starttijd||""), Eindtijd:(b.Eindtijd||""), Rit_type:(b.Rit_type||""), Fee:fee, Netto:netto, VarCost:varCost };
+      }).filter(b => {
+        if (from && b.Startdatum < from) return false;
+        if (to && b.Startdatum > to) return false;
+        if (hotspot !== "(Alle)" && b.Hotspot !== hotspot) return false;
+        if (type !== "(Alle)" && b.Type !== type) return false;
+        if (vehicleIdFilter && b.Vehicle_ID !== vehicleIdFilter) return false;
+        if (minDays && b.Huurdagen < minDays) return false;
+        if (minRating && b.Rating < minRating) return false;
+        if (q) {
+          const hay = `${b.Booking_ID} ${b.Vehicle_ID} ${b.Type} ${b.Hotspot} ${b.Merk_Model}`.toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+
+      // Dataset sort
+      const sortSel = document.getElementById("sortSel").value;
+      const sorters = {
+        start_desc: (a,b)=> b.Startdatum - a.Startdatum,
+        start_asc: (a,b)=> a.Startdatum - b.Startdatum,
+        profit_desc: (a,b)=> (b.Netto - b.VarCost) - (a.Netto - a.VarCost),
+        netto_desc: (a,b)=> b.Netto - a.Netto,
+        days_desc: (a,b)=> b.Huurdagen - a.Huurdagen,
+        rating_desc: (a,b)=> b.Rating - a.Rating
+      };
+      filtered.sort(sorters[sortSel] || sorters.start_desc);
+
+      // Period spans
+      const daySpan = estimateDaySpan(from, to);
+      const monthSpan = estimateMonthSpan(from, to);
+
+      // Totals
+      const totalBookings = filtered.length;
+      const bruto = filtered.reduce((s,b)=>s + b.Bruto, 0);
+      const feeSum = filtered.reduce((s,b)=>s + b.Fee, 0);
+      const netto = filtered.reduce((s,b)=>s + b.Netto, 0);
+      const days = filtered.reduce((s,b)=>s + b.Huurdagen, 0);
+      const km = filtered.reduce((s,b)=>s + (b.KM||0), 0);
+      const varCost = filtered.reduce((s,b)=>s + b.VarCost, 0);
+
+      const uniqueVeh = uniq(filtered.map(b=>b.Vehicle_ID));
+      const fixedCost = uniqueVeh.length * fixedPerVeh * monthSpan;
+      const totalCost = feeSum + varCost + fixedCost;
+      const result = bruto - totalCost; // start from gross, subtract everything (fee included)
+      // NOTE: Result = Bruto - (fee+var+fixed). Equivalent to Netto - var - fixed.
+
+      // Occupancy per vehicle (booked days/daySpan)
+      const occByVeh = new Map(); // vid -> bookedDays
+      for (const b of filtered) occByVeh.set(b.Vehicle_ID, (occByVeh.get(b.Vehicle_ID)||0) + b.Huurdagen);
+      const occVals = Array.from(occByVeh.values()).map(d => d / daySpan);
+      const avgOcc = occVals.length ? (occVals.reduce((s,x)=>s+x,0)/occVals.length) : 0;
+
+      // KPI text
+      document.getElementById("kpiBookings").textContent = fmtInt(totalBookings);
+      document.getElementById("kpiBookingsSub").textContent = totalBookings ? `≈ ${fmt1(totalBookings / Math.max(1, monthSpan))} boekingen / maand (in selectie)` : "—";
+
+      document.getElementById("kpiDays").textContent = fmtInt(days);
+      document.getElementById("kpiDaysSub").textContent = totalBookings ? `Gemiddeld ${fmt1(days/totalBookings)} dagen / boeking` : "—";
+
+      document.getElementById("kpiKm").textContent = fmt0(km);
+      document.getElementById("kpiKmSub").textContent = totalBookings ? `≈ ${fmt0(km/totalBookings)} km / boeking • ${fmt0(km/Math.max(1,monthSpan))} km / maand` : "—";
+
+      document.getElementById("kpiOcc").textContent = `${fmt1(avgOcc*100)}%`;
+      document.getElementById("kpiOccSub").textContent = uniqueVeh.length ? `Gemiddelde bezetting over ${uniqueVeh.length} voertuigen • periode: ${daySpan} dagen` : "—";
+
+      document.getElementById("kpiBruto").textContent = fmtEUR(bruto);
+      document.getElementById("kpiNetto").textContent = fmtEUR(netto);
+      document.getElementById("kpiFee").textContent = `Fees ~ ${fmtEUR(feeSum)} (${fmt1((feeSum/Math.max(1,bruto))*100)}%)`;
+
+      document.getElementById("kpiCosts").textContent = fmtEUR(totalCost);
+      document.getElementById("kpiCostsSub").textContent = `fee ${fmtEUR(feeSum)} + var ${fmtEUR(varCost)} + vast ${fmtEUR(fixedCost)} (allocatie)`;
+
+      document.getElementById("kpiResult").textContent = fmtEUR(result);
+      document.getElementById("kpiResultSub").textContent = `Resultaat = Bruto − (fee + var + vast)`;
+
+      // Charts
+      renderTimeChart(fixedPerVeh, daySpan, monthSpan);
+      renderTypeChart();
+      renderHotspotsChart();
+      renderVehiclesChart();
+      renderOccVehiclesChart(daySpan);
+      renderProfitVehChart(fixedPerVeh);
+
+      // Heatmaps
+      renderHeatmaps();
+
+      // Table and combo: allocate fixed to bookings by day share
+      const fixedPerDay = days ? (fixedCost / days) : 0;
+      filteredForTable = filtered.map(b => {
+        const fixedAlloc = b.Huurdagen * fixedPerDay;
+        const res = b.Netto - b.VarCost - fixedAlloc; // booking-level result
+        const occ = b.Huurdagen / daySpan;
+        return { ...b, FixedAlloc: fixedAlloc, Resultaat: res, Occ: occ };
+      });
+
+      applyTableSort();
+      renderTable();
+      renderComboTable(fixedPerVeh, monthSpan, daySpan);
+      renderKentekenComboTable(fixedPerVeh, monthSpan, daySpan);
+      renderTypeKpiTable();
+      renderRitTypeKpiTable();
+    }
+
+    // =============================
+    // Charts
+    // =============================
+    function ensureDestroy(key){ if(charts[key]){ charts[key].destroy(); charts[key]=null; } }
+
+    function renderTimeChart(fixedPerVeh, daySpan, monthSpan) {
+      const gran = document.getElementById("granularitySel").value;
+      const sumsNetto = new Map();
+      const sumsVar = new Map();
+      const counts = new Map();
+      const vehSet = new Map(); // k -> set of vehicles
+
+      for (const b of filtered) {
+        const k = periodKey(b.Startdatum, gran);
+        sumsNetto.set(k, (sumsNetto.get(k)||0) + b.Netto);
+        sumsVar.set(k, (sumsVar.get(k)||0) + b.VarCost);
+        counts.set(k, (counts.get(k)||0) + 1);
+        if (!vehSet.has(k)) vehSet.set(k, new Set());
+        vehSet.get(k).add(b.Vehicle_ID);
+      }
+
+      const labels = Array.from(sumsNetto.keys()).sort();
+      const periodFixed = labels.map(k => {
+        const vehCount = vehSet.get(k)?.size || 0;
+        if (gran === "month") return vehCount * fixedPerVeh;
+        return (vehCount * fixedPerVeh) / 4.345;
+      });
+
+      const nettoSeries = labels.map(k => sumsNetto.get(k)||0);
+      const resultSeries = labels.map((k, i) => (sumsNetto.get(k)||0) - (sumsVar.get(k)||0) - periodFixed[i]);
+      const countSeries = labels.map(k => counts.get(k)||0);
+
+      ensureDestroy("time");
+      charts.time = new Chart(document.getElementById("chartTime"), {
+        data: {
+          labels,
+          datasets: [
+            { type:'bar', label:'Netto omzet', data: nettoSeries, yAxisID:'y' },
+            { type:'bar', label:'Resultaat', data: resultSeries, yAxisID:'y' },
+            { type:'line', label:'Boekingen', data: countSeries, yAxisID:'y2', tension:0.25 }
+          ]
+        },
+        options: {
+          plugins: {
+            legend: { position:'top' },
+            tooltip: { callbacks: {
+              label: (ctx)=> ctx.dataset.label==="Boekingen" ? `Boekingen: ${fmtInt(ctx.parsed.y)}` : `${ctx.dataset.label}: ${fmtEUR(ctx.parsed.y)}`
+            }}
+          },
+          scales: {
+            y: { ticks: { callback:(v)=> fmtEUR(v) } },
+            y2: { position:'right', grid:{ drawOnChartArea:false }, ticks:{ callback:(v)=> fmtInt(v) } }
+          }
+        }
+      });
+    }
+
+    function renderTypeChart() {
+      const m = new Map();
+      for (const b of filtered) {
+        const k = b.Type || "Onbekend";
+        if (!m.has(k)) m.set(k, {netto:0, count:0});
+        const o = m.get(k); o.netto += b.Netto; o.count += 1;
+      }
+      const rows = Array.from(m.entries()).sort((a,b)=> b[1].netto - a[1].netto);
+      ensureDestroy("type");
+      charts.type = new Chart(document.getElementById("chartType"), {
+        data: {
+          labels: rows.map(r=>r[0]),
+          datasets: [
+            { type:'bar', label:'Netto omzet', data: rows.map(r=>r[1].netto), yAxisID:'y' },
+            { type:'line', label:'Boekingen', data: rows.map(r=>r[1].count), yAxisID:'y2', tension:0.25 }
+          ]
+        },
+        options: {
+          plugins: { legend:{ position:'top' }, tooltip:{ callbacks:{
+            label:(ctx)=> ctx.dataset.label==="Boekingen" ? `Boekingen: ${fmtInt(ctx.parsed.y)}` : `Netto: ${fmtEUR(ctx.parsed.y)}`
+          }}},
+          scales: {
+            y: { ticks:{ callback:(v)=> fmtEUR(v) } },
+            y2:{ position:'right', grid:{ drawOnChartArea:false }, ticks:{ callback:(v)=> fmtInt(v) } }
+          }
+        }
+      });
+    }
+
+    function renderHotspotsChart() {
+      const m = new Map();
+      for (const b of filtered) {
+        const k = b.Hotspot || "Onbekend";
+        if (!m.has(k)) m.set(k, {netto:0, count:0});
+        const o = m.get(k); o.netto += b.Netto; o.count += 1;
+      }
+      const rows = Array.from(m.entries()).sort((a,b)=> b[1].netto - a[1].netto).slice(0,10);
+      ensureDestroy("hotspots");
+      charts.hotspots = new Chart(document.getElementById("chartHotspots"), {
+        data: {
+          labels: rows.map(r=>r[0]),
+          datasets: [
+            { type:'bar', label:'Netto omzet', data: rows.map(r=>r[1].netto), yAxisID:'y' },
+            { type:'line', label:'Boekingen', data: rows.map(r=>r[1].count), yAxisID:'y2', tension:0.25 }
+          ]
+        },
+        options: {
+          indexAxis:'y',
+          plugins: { legend:{ position:'top' }, tooltip:{ callbacks:{
+            label:(ctx)=> ctx.dataset.label==="Boekingen" ? `Boekingen: ${fmtInt(ctx.parsed.x)}` : `Netto: ${fmtEUR(ctx.parsed.x)}`
+          }}},
+          scales: {
+            x: { ticks:{ callback:(v)=> fmtEUR(v) } },
+            y2:{ position:'right', grid:{ drawOnChartArea:false }, ticks:{ callback:(v)=> fmtInt(v) } }
+          }
+        }
+      });
+    }
+
+    function renderVehiclesChart() {
+      const m = new Map();
+      for (const b of filtered) {
+        const k = b.Vehicle_ID;
+        if (!m.has(k)) m.set(k, {netto:0, count:0});
+        const o = m.get(k); o.netto += b.Netto; o.count += 1;
+      }
+      const rows = Array.from(m.entries()).map(([vid,obj]) => {
+        const v = getVehicleById(vid);
+        return [`${vid} – ${v?.Merk_Model || ""}`.trim(), obj.netto, obj.count];
+      }).sort((a,b)=> b[1]-a[1]).slice(0,10);
+
+      ensureDestroy("vehicles");
+      charts.vehicles = new Chart(document.getElementById("chartVehicles"), {
+        data: {
+          labels: rows.map(r=>r[0]),
+          datasets: [
+            { type:'bar', label:'Netto omzet', data: rows.map(r=>r[1]), yAxisID:'y' },
+            { type:'line', label:'Boekingen', data: rows.map(r=>r[2]), yAxisID:'y2', tension:0.25 }
+          ]
+        },
+        options: {
+          plugins:{ legend:{ position:'top' }, tooltip:{ callbacks:{
+            label:(ctx)=> ctx.dataset.label==="Boekingen" ? `Boekingen: ${fmtInt(ctx.parsed.y)}` : `Netto: ${fmtEUR(ctx.parsed.y)}`
+          }}},
+          scales:{
+            y:{ ticks:{ callback:(v)=> fmtEUR(v) } },
+            y2:{ position:'right', grid:{ drawOnChartArea:false }, ticks:{ callback:(v)=> fmtInt(v) } }
+          }
+        }
+      });
+    }
+
+    function renderOccVehiclesChart(daySpan) {
+      const m = new Map();
+      for (const b of filtered) m.set(b.Vehicle_ID, (m.get(b.Vehicle_ID)||0) + b.Huurdagen);
+      const rows = Array.from(m.entries()).map(([vid, days]) => {
+        const v = getVehicleById(vid);
+        return [`${vid} – ${v?.Merk_Model||""}`.trim(), days/daySpan, days];
+      }).sort((a,b)=> b[1]-a[1]).slice(0,10);
+
+      ensureDestroy("occVehicles");
+      charts.occVehicles = new Chart(document.getElementById("chartOccVehicles"), {
+        type:'bar',
+        data:{ labels: rows.map(r=>r[0]), datasets:[{ label:'Bezetting', data: rows.map(r=> Math.round(r[1]*1000)/10) }] },
+        options:{
+          plugins:{ legend:{ display:false }, tooltip:{ callbacks:{ label:(ctx)=> `Bezetting: ${fmt1(ctx.parsed.y)}%` } } },
+          scales:{ y:{ ticks:{ callback:(v)=> `${v}%` } } }
+        }
+      });
+    }
+
+    function renderProfitVehChart(fixedPerVeh) {
+      // profit per month per vehicle (top 8 vehicles by total profit)
+      const months = uniq(filtered.map(b => periodKey(b.Startdatum, "month"))).sort();
+      const varPerMonthVeh = new Map(); // key "vid|month" -> {netto,var}
+      const vehInMonth = new Map(); // month -> set vids
+      for (const b of filtered) {
+        const m = periodKey(b.Startdatum, "month");
+        const key = `${b.Vehicle_ID}|${m}`;
+        if (!varPerMonthVeh.has(key)) varPerMonthVeh.set(key, {netto:0, var:0});
+        const o = varPerMonthVeh.get(key);
+        o.netto += b.Netto;
+        o.var += b.VarCost;
+
+        if (!vehInMonth.has(m)) vehInMonth.set(m, new Set());
+        vehInMonth.get(m).add(b.Vehicle_ID);
+      }
+
+      // compute profit per month per vehicle: net - var - fixedPerVeh (for vehicles that appear that month)
+      const profitByVeh = new Map(); // vid -> total profit
+      const seriesByVeh = new Map(); // vid -> array over months
+      for (const m of months) {
+        const set = vehInMonth.get(m) || new Set();
+        for (const vid of set) {
+          const key = `${vid}|${m}`;
+          const o = varPerMonthVeh.get(key) || {netto:0,var:0};
+          const prof = o.netto - o.var - fixedPerVeh; // monthly fixed
+          profitByVeh.set(vid, (profitByVeh.get(vid)||0) + prof);
+        }
+      }
+
+      const topVeh = Array.from(profitByVeh.entries()).sort((a,b)=> b[1]-a[1]).slice(0,8).map(x=>x[0]);
+      for (const vid of topVeh) {
+        const arr = months.map(m => {
+          const key = `${vid}|${m}`;
+          const o = varPerMonthVeh.get(key);
+          if (!o) return 0;
+          return o.netto - o.var - fixedPerVeh;
+        });
+        seriesByVeh.set(vid, arr);
+      }
+
+      const datasets = topVeh.map(vid => {
+        const v = getVehicleById(vid);
+        return { label: `${vid} – ${v?.Merk_Model||""}`.trim(), data: seriesByVeh.get(vid) || [], tension: 0.25 };
+      });
+
+      ensureDestroy("profitVeh");
+      charts.profitVeh = new Chart(document.getElementById("chartProfitVeh"), {
+        type:'line',
+        data:{ labels: months, datasets },
+        options:{
+          plugins:{ legend:{ position:'top' }, tooltip:{ callbacks:{ label:(ctx)=> `${ctx.dataset.label}: ${fmtEUR(ctx.parsed.y)}` } } },
+          scales:{ y:{ ticks:{ callback:(v)=> fmtEUR(v) } } }
+        }
+      });
+    }
+
+    // =============================
+    // Heatmaps
+    // =============================
+    function colorScale(val, max) {
+      // Stronger contrast: blue (low) -> deep blue (mid) -> orange (high)
+      if (max <= 0) return "rgba(15,23,42,.06)";
+      const t = Math.max(0, Math.min(1, val / max));
+      // Alpha: higher so it pops more (also better for colorblind users)
+      const a = 0.18 + 0.78 * t;
+
+      // Interpolate RGB between KeylessGo blue and orange
+      const b = { r: 26, g: 44,  b: 73  };   // #1A2C49
+      const o = { r: 255,g: 122, b: 0   };   // #FF7A00
+
+      // Non-linear curve: more separation at higher values
+      const tt = Math.pow(t, 0.75);
+      const r = Math.round(b.r + (o.r - b.r) * tt);
+      const g = Math.round(b.g + (o.g - b.g) * tt);
+      const bb = Math.round(b.b + (o.b - b.b) * tt);
+
+      return `rgba(${r}, ${g}, ${bb}, ${a.toFixed(3)})`;
+    }
+
+    function readableTextColor(val, max){
+      if (max <= 0) return "#0f172a";
+      const t = Math.max(0, Math.min(1, val / max));
+      // Switch to white on dark/high-intensity cells
+      return t > 0.58 ? "#ffffff" : "#0f172a";
+    }
+
+    function renderHeatmaps() {
+      // DOW heatmap: counts per day-of-week for each month (rows=months, cols=Mon..Sun)
+      // + best/worst day per month + bottom averages per weekday
+      const days = ["Ma","Di","Wo","Do","Vr","Za","Zo"];
+      const months = uniq(filtered.map(b => periodKey(b.Startdatum, "month"))).sort();
+
+      const dowCounts = new Map(); // key month|dow -> count
+      const monthTotals = new Map(); // month -> total
+      for (const b of filtered) {
+        const m = periodKey(b.Startdatum, "month");
+        // JS: 0 Sun .. 6 Sat; convert to Mon=0..Sun=6
+        const js = b.Startdatum.getDay();
+        const dow = (js === 0) ? 6 : (js - 1);
+        const key = `${m}|${dow}`;
+        dowCounts.set(key, (dowCounts.get(key)||0) + 1);
+        monthTotals.set(m, (monthTotals.get(m)||0) + 1);
+      }
+      let maxDow = 0;
+      for (const v of dowCounts.values()) maxDow = Math.max(maxDow, v);
+
+      // Column totals for averages
+      const colTotals = Array(7).fill(0);
+      const colMonthsWithAny = Array(7).fill(0);
+      for (const m of months) {
+        for (let dow=0; dow<7; dow++) {
+          const c = dowCounts.get(`${m}|${dow}`) || 0;
+          colTotals[dow] += c;
+          colMonthsWithAny[dow] += 1;
+        }
+      }
+      const colAvgs = colTotals.map((sum,i) => sum / Math.max(1, colMonthsWithAny[i]));
+      const maxAvg = Math.max(...colAvgs, 0);
+
+      const heatDow = document.getElementById("heatDow");
+      const header = `<tr>${
+        ['<td class="label2"></td>']
+          .concat(days.map(d=>`<td class="label2">${d}</td>`))
+          .concat(['<td class="label2">Beste</td>','<td class="label2">Slechtste</td>'])
+          .join("")
+      }</tr>`;
+
+      const rows = months.map(m => {
+        const cells = [];
+        const vals = [];
+        for (let dow=0; dow<7; dow++) vals.push(dowCounts.get(`${m}|${dow}`) || 0);
+        const monthAvg = (monthTotals.get(m)||0) / 7;
+
+        const bestVal = Math.max(...vals);
+        const worstVal = Math.min(...vals);
+        const bestIdx = vals.indexOf(bestVal);
+        const worstIdx = vals.indexOf(worstVal);
+
+        for (let dow=0; dow<7; dow++) {
+          const c = vals[dow];
+          const bg = colorScale(c, maxDow);
+          const tc = readableTextColor(c, maxDow);
+          const pct = monthAvg > 0 ? ((c - monthAvg) / monthAvg) * 100 : 0;
+          const sign = pct >= 0 ? "+" : "";
+          const title = `${m} • ${days[dow]}: ${c}
+Maandgem.: ${monthAvg.toFixed(1)} (${sign}${pct.toFixed(0)}%)`;
+          const isBest = dow === bestIdx;
+          const isWorst = dow === worstIdx;
+          const outline = isBest ? "box-shadow: inset 0 0 0 2px rgba(255,122,0,.95);" : (isWorst ? "box-shadow: inset 0 0 0 2px rgba(26,44,73,.95);" : "");
+          const badge = isBest ? "★" : (isWorst ? "•" : "");
+          cells.push(`<td title="${title.replaceAll('"','&quot;')}" style="background:${bg}; color:${tc}; ${outline}">${c || ""}${badge ? `<span style="font-size:10px; margin-left:3px;">${badge}</span>` : ""}</td>`);
+        }
+
+        const bestCell = `<td class="label" title="Beste dag: ${days[bestIdx]}">${days[bestIdx]} (${bestVal})</td>`;
+        const worstCell = `<td class="label" title="Slechtste dag: ${days[worstIdx]}">${days[worstIdx]} (${worstVal})</td>`;
+
+        return `<tr><td class="label">${m}</td>${cells.join("")}${bestCell}${worstCell}</tr>`;
+      }).join("");
+
+      const avgRowCells = colAvgs.map((avg, i) => {
+        const bg = colorScale(avg, maxAvg);
+        const tc = readableTextColor(avg, maxAvg);
+        return `<td title="Gemiddeld ${days[i]} over ${months.length} maanden: ${avg.toFixed(1)}" style="background:${bg}; color:${tc}; font-weight:800;">${avg.toFixed(1)}</td>`;
+      }).join("");
+      const avgRow = `<tr><td class="label2">Gem.</td>${avgRowCells}<td class="label2" colspan="2"></td></tr>`;
+
+      heatDow.innerHTML = header + rows + avgRow;
+
+      // Hour heatmap redesigned: 2-hour bins to fit without horizontal scrolling (12 cols)
+      const hourBins = Array.from({length:12}, (_,i)=> ({ label:`${i*2}-${i*2+1}`, from:i*2, to:i*2+1 }));
+      const binCounts = new Map(); // key month|bin -> count
+      let hasHours = false;
+
+      for (const b of filtered) {
+        if (b.StartHour === null || b.StartHour === undefined) continue;
+        hasHours = true;
+        const m = periodKey(b.Startdatum, "month");
+        const bin = Math.floor(b.StartHour / 2);
+        const key = `${m}|${bin}`;
+        binCounts.set(key, (binCounts.get(key)||0) + 1);
+      }
+
+      let maxBin = 0;
+      for (const v of binCounts.values()) maxBin = Math.max(maxBin, v);
+
+      const heatHour = document.getElementById("heatHour");
+      const hdr2 = `<tr><td class="label2"></td>${hourBins.map(b=>`<td class="label2">${b.label}</td>`).join("")}</tr>`;
+
+      if (!hasHours) {
+        heatHour.innerHTML = hdr2 + `<tr><td class="label">—</td><td colspan="${hourBins.length}" class="text-xs text-slate-500" style="padding:8px 10px;">Geen uurdata gevonden. Voeg <b>StartHour</b> (0–23) of <b>StartTime</b> (HH:MM) toe aan je Excel om dit te activeren.</td></tr>`;
+        return;
+      }
+
+      // bottom averages for bins
+      const binTotals = Array(hourBins.length).fill(0);
+      const binMonths = Array(hourBins.length).fill(0);
+      for (const m of months) {
+        for (let i=0; i<hourBins.length; i++) {
+          binTotals[i] += (binCounts.get(`${m}|${i}`) || 0);
+          binMonths[i] += 1;
+        }
+      }
+      const binAvgs = binTotals.map((s,i)=> s / Math.max(1,binMonths[i]));
+      const maxBinAvg = Math.max(...binAvgs, 0);
+
+      const rows2 = months.map(m => {
+        const monthSum = (monthTotals.get(m)||0);
+        const monthAvg = monthSum / Math.max(1, hourBins.length);
+        const cells = hourBins.map((bin, i) => {
+          const c = binCounts.get(`${m}|${i}`) || 0;
+          const bg = colorScale(c, maxBin);
+          const tc = readableTextColor(c, maxBin);
+          const pct = monthAvg > 0 ? ((c - monthAvg) / monthAvg) * 100 : 0;
+          const sign = pct >= 0 ? "+" : "";
+          return `<td title="${m} • ${bin.label}: ${c}
+Maand-bin gem.: ${monthAvg.toFixed(1)} (${sign}${pct.toFixed(0)}%)" style="background:${bg}; color:${tc}">${c || ""}</td>`;
+        }).join("");
+        return `<tr><td class="label">${m}</td>${cells}</tr>`;
+      }).join("");
+
+      const avgRow2 = `<tr><td class="label2">Gem.</td>${
+        binAvgs.map((avg,i)=>{
+          const bg = colorScale(avg, maxBinAvg);
+          const tc = readableTextColor(avg, maxBinAvg);
+          return `<td title="Gemiddeld ${hourBins[i].label}: ${avg.toFixed(1)}" style="background:${bg}; color:${tc}; font-weight:800;">${avg.toFixed(1)}</td>`;
+        }).join("")
+      }</tr>`;
+
+      heatHour.innerHTML = hdr2 + rows2 + avgRow2;
+    }
+// =============================
+    // Combo table
+    // =============================
+    function renderComboTable(fixedPerVeh, monthSpan, daySpan) {
+      const tbody = document.getElementById("comboTbody");
+      const agg = new Map();
+
+      const daysTotal = filtered.reduce((s,b)=>s + b.Huurdagen, 0);
+      const uniqueVeh = uniq(filtered.map(b=>b.Vehicle_ID));
+      const fixedCost = uniqueVeh.length * fixedPerVeh * monthSpan;
+      const fixedPerDay = daysTotal ? (fixedCost / daysTotal) : 0;
+
+      // occupancy per vehicle already in daySpan; for combo use same daySpan
+      for (const b of filtered) {
+        const v = getVehicleById(b.Vehicle_ID);
+        const combi = `${b.Hotspot} • ${b.Vehicle_ID} – ${v?.Merk_Model||""}`.trim();
+        if (!agg.has(combi)) agg.set(combi, {count:0, days:0, km:0, netto:0, res:0});
+        const o = agg.get(combi);
+        o.count += 1;
+        o.days += b.Huurdagen;
+        o.km += (b.KM||0);
+        o.netto += b.Netto;
+        o.res += (b.Netto - b.VarCost - (b.Huurdagen * fixedPerDay));
+      }
+
+      const rows = Array.from(agg.entries())
+        .map(([k,o]) => [k, o.count, o.days, o.km, o.netto, o.res, o.days/daySpan])
+        .sort((a,b)=> b[5]-a[5])
+        .slice(0, 15);
+
+      tbody.innerHTML = rows.map(r => `
+        <tr class="hover:bg-slate-50">
+          <td class="px-3 py-3 font-semibold text-slate-800">${escapeHtml(r[0])}</td>
+          <td class="px-3 py-3 text-right mono">${escapeHtml(fmtInt(r[1]))}</td>
+          <td class="px-3 py-3 text-right mono">${escapeHtml(fmtInt(r[2]))}</td>
+          <td class="px-3 py-3 text-right mono">${escapeHtml(fmt0(r[3]))}</td>
+          <td class="px-3 py-3 text-right mono font-semibold">${escapeHtml(fmtEUR(r[4]))}</td>
+          <td class="px-3 py-3 text-right mono font-semibold">${escapeHtml(fmtEUR(r[5]))}</td>
+          <td class="px-3 py-3 text-right mono font-semibold">${escapeHtml(fmt1(r[6]*100))}%</td>
+        </tr>
+      `).join("");
+    }
+
+    // =============================
+    // Extra insight tables
+    // =============================
+    function renderKentekenComboTable(fixedPerVeh, monthSpan, daySpan) {
+      const tbody = document.getElementById("comboKentekenTbody");
+      if (!tbody) return;
+
+      const agg = new Map();
+
+      const daysTotal = filtered.reduce((s,b)=>s + b.Huurdagen, 0);
+      const uniqueVeh = uniq(filtered.map(b=>b.Vehicle_ID));
+      const fixedCost = uniqueVeh.length * fixedPerVeh * monthSpan;
+      const fixedPerDay = daysTotal ? (fixedCost / daysTotal) : 0;
+
+      for (const b of filtered) {
+        const v = getVehicleById(b.Vehicle_ID);
+        const kent = (v?.Kenteken || b.Kenteken || "—");
+        const combi = `${b.Hotspot} • ${kent} • ${b.Vehicle_ID} – ${v?.Merk_Model||b.Merk_Model||""}`.trim();
+        if (!agg.has(combi)) agg.set(combi, {count:0, days:0, km:0, netto:0, res:0});
+        const o = agg.get(combi);
+        o.count += 1;
+        o.days += b.Huurdagen;
+        o.km += (b.KM||0);
+        o.netto += b.Netto;
+        o.res += (b.Netto - b.VarCost - (b.Huurdagen * fixedPerDay));
+      }
+
+      const rows = Array.from(agg.entries())
+        .map(([k,o]) => [k, o.count, o.days, o.km, o.netto, o.res, o.days/daySpan])
+        .sort((a,b)=> b[5]-a[5])
+        .slice(0, 20);
+
+      tbody.innerHTML = rows.map(r => `
+        <tr class="hover:bg-slate-50">
+          <td class="px-3 py-3 font-semibold text-slate-800">${escapeHtml(r[0])}</td>
+          <td class="px-3 py-3 text-right mono">${escapeHtml(fmtInt(r[1]))}</td>
+          <td class="px-3 py-3 text-right mono">${escapeHtml(fmtInt(r[2]))}</td>
+          <td class="px-3 py-3 text-right mono">${escapeHtml(fmt0(r[3]))}</td>
+          <td class="px-3 py-3 text-right mono font-semibold">${escapeHtml(fmtEUR(r[4]))}</td>
+          <td class="px-3 py-3 text-right mono font-semibold">${escapeHtml(fmtEUR(r[5]))}</td>
+          <td class="px-3 py-3 text-right mono font-semibold">${escapeHtml(fmt1(r[6]*100))}%</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderTypeKpiTable() {
+      const tbody = document.getElementById("typeKpiTbody");
+      if (!tbody) return;
+
+      const agg = new Map();
+      for (const b of filteredForTable) {
+        const k = b.Type || "Onbekend";
+        if (!agg.has(k)) agg.set(k, {count:0, days:0, km:0, netto:0, profit:0});
+        const o = agg.get(k);
+        o.count += 1;
+        o.days += b.Huurdagen;
+        o.km += (b.KM||0);
+        o.netto += b.Netto;
+        o.profit += b.Resultaat;
+      }
+
+      const rows = Array.from(agg.entries())
+        .map(([k,o]) => [k, o.count, o.days, o.km, o.netto, o.profit, (o.netto/Math.max(1,o.count)), (o.profit/Math.max(1,o.count))])
+        .sort((a,b)=> b[5]-a[5]);
+
+      tbody.innerHTML = rows.map(r => `
+        <tr class="hover:bg-slate-50">
+          <td class="px-3 py-3 font-semibold text-slate-800">${escapeHtml(r[0])}</td>
+          <td class="px-3 py-3 text-right mono">${escapeHtml(fmtInt(r[1]))}</td>
+          <td class="px-3 py-3 text-right mono">${escapeHtml(fmtInt(r[2]))}</td>
+          <td class="px-3 py-3 text-right mono">${escapeHtml(fmt0(r[3]))}</td>
+          <td class="px-3 py-3 text-right mono font-semibold">${escapeHtml(fmtEUR(r[4]))}</td>
+          <td class="px-3 py-3 text-right mono font-semibold">${escapeHtml(fmtEUR(r[5]))}</td>
+          <td class="px-3 py-3 text-right mono">${escapeHtml(fmtEUR(r[6]))}</td>
+          <td class="px-3 py-3 text-right mono">${escapeHtml(fmtEUR(r[7]))}</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderRitTypeKpiTable() {
+      const tbody = document.getElementById("ritTypeTbody");
+      if (!tbody) return;
+
+      const agg = new Map();
+      for (const b of filteredForTable) {
+        const k = (b.Rit_type && b.Rit_type.trim()) ? b.Rit_type.trim() : "Onbekend";
+        if (!agg.has(k)) agg.set(k, {count:0, days:0, km:0, netto:0, profit:0});
+        const o = agg.get(k);
+        o.count += 1;
+        o.days += b.Huurdagen;
+        o.km += (b.KM||0);
+        o.netto += b.Netto;
+        o.profit += b.Resultaat;
+      }
+
+      const rows = Array.from(agg.entries())
+        .map(([k,o]) => [k, o.count, o.days, o.km, o.netto, o.profit, (o.netto/Math.max(1,o.count)), (o.profit/Math.max(1,o.count))])
+        .sort((a,b)=> b[5]-a[5]);
+
+      tbody.innerHTML = rows.map(r => `
+        <tr class="hover:bg-slate-50">
+          <td class="px-3 py-3 font-semibold text-slate-800">${escapeHtml(r[0])}</td>
+          <td class="px-3 py-3 text-right mono">${escapeHtml(fmtInt(r[1]))}</td>
+          <td class="px-3 py-3 text-right mono">${escapeHtml(fmtInt(r[2]))}</td>
+          <td class="px-3 py-3 text-right mono">${escapeHtml(fmt0(r[3]))}</td>
+          <td class="px-3 py-3 text-right mono font-semibold">${escapeHtml(fmtEUR(r[4]))}</td>
+          <td class="px-3 py-3 text-right mono font-semibold">${escapeHtml(fmtEUR(r[5]))}</td>
+          <td class="px-3 py-3 text-right mono">${escapeHtml(fmtEUR(r[6]))}</td>
+          <td class="px-3 py-3 text-right mono">${escapeHtml(fmtEUR(r[7]))}</td>
+        </tr>
+      `).join("");
+    }
+
+
+    // =============================
+    // Table sorting + rendering
+    // =============================
+    function applyTableSort() {
+      const {key, dir} = tableSort;
+      const getVal = (b) => {
+        if (key === "Booking_ID") return b.Booking_ID;
+        if (key === "Vehicle_ID") return b.Vehicle_ID;
+        if (key === "Type") return b.Type;
+        if (key === "Merk_Model") return b.Merk_Model || "";
+        if (key === "Kenteken") return b.Kenteken || "";
+        if (key === "Hotspot") return b.Hotspot;
+        if (key === "Startdatum") return b.Startdatum?.getTime?.() || 0;
+        if (key === "Starttijd") return String(b.Starttijd||"");
+        if (key === "Einddatum") return b.Einddatum?.getTime?.() || 0;
+        if (key === "Eindtijd") return String(b.Eindtijd||"");
+        if (key === "Huurdagen") return b.Huurdagen;
+        if (key === "KM") return b.KM || 0;
+        if (key === "Netto") return b.Netto;
+        if (key === "Resultaat") return b.Resultaat;
+        if (key === "Rit_type") return String(b.Rit_type||"");
+        if (key === "Occ") return b.Occ;
+        if (key === "Rating") return b.Rating;
+        return 0;
+      };
+      filteredForTable.sort((a,b) => {
+        const av = getVal(a), bv = getVal(b);
+        if (typeof av === "string") return dir==="asc" ? av.localeCompare(bv) : bv.localeCompare(av);
+        return dir==="asc" ? (av-bv) : (bv-av);
+      });
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById("bookingsTbody");
+      const limit = Number(document.getElementById("limitSel").value || 100);
+      const rows = filteredForTable.slice(0, limit);
+
+      tbody.innerHTML = rows.map(b => `
+        <tr class="hover:bg-slate-50 cursor-pointer" data-id="${b.Booking_ID}">
+          <td class="px-3 py-3 font-semibold text-slate-800">${escapeHtml(String(b.Booking_ID))}</td>
+          <td class="px-3 py-3 text-slate-700">${escapeHtml(String(b.Vehicle_ID))}</td><td class="px-3 py-3">${escapeHtml(String(b.Merk_Model||"—"))}</td><td class="px-3 py-3">${escapeHtml(String(b.Kenteken||"—"))}</td>
+          <td class="px-3 py-3">${escapeHtml(String(b.Type||"—"))}</td>
+          <td class="px-3 py-3">${escapeHtml(String(b.Hotspot||"—"))}</td>
+          <td class="px-3 py-3">${escapeHtml(toISODate(b.Startdatum)||"—")}</td><td class="px-3 py-3">${escapeHtml(String(b.Starttijd||"—"))}</td>
+          <td class="px-3 py-3">${escapeHtml(toISODate(b.Einddatum)||"—")}</td><td class="px-3 py-3">${escapeHtml(String(b.Eindtijd||"—"))}</td>
+          <td class="px-3 py-3 text-right mono">${escapeHtml(String(b.Huurdagen))}</td>
+          <td class="px-3 py-3 text-right mono">${escapeHtml(fmt0(b.KM||0))}</td>
+          <td class="px-3 py-3 text-right mono font-semibold">${escapeHtml(fmtEUR(b.Netto))}</td>
+          <td class="px-3 py-3 text-right mono font-semibold">${escapeHtml(fmtEUR(b.Resultaat))}</td>
+          <td class="px-3 py-3">${escapeHtml(String(b.Rit_type||"—"))}</td>
+          <td class="px-3 py-3 text-right mono font-semibold">${escapeHtml(fmt1(b.Occ*100))}%</td>
+          <td class="px-3 py-3 text-right mono">${escapeHtml(fmt1(b.Rating))}</td>
+        </tr>
+      `).join("");
+
+      [...tbody.querySelectorAll("tr")].forEach(tr => {
+        tr.addEventListener("click", () => {
+          const id = Number(tr.getAttribute("data-id"));
+          const b = filteredForTable.find(x=>x.Booking_ID===id);
+          if (b) openModal(b);
+        });
+      });
+    }
+
+    // =============================
+    // Modal
+    // =============================
+    function openModal(b) {
+      const v = getVehicleById(b.Vehicle_ID);
+      const fields = [
+        ["Booking_ID", b.Booking_ID],
+        ["Vehicle_ID", b.Vehicle_ID],
+        ["Merk/Model", v?.Merk_Model || "—"],
+        ["Type", b.Type || "—"],
+        ["Hotspot", b.Hotspot || "—"],
+        ["Start", toISODate(b.Startdatum)],
+        ["Eind", toISODate(b.Einddatum)],
+        ["Huurdagen", b.Huurdagen],
+        ["KM", fmt0(b.KM||0)],
+        ["Bruto omzet", fmtEUR(b.Bruto)],
+        ["Fees", fmtEUR(b.Fee)],
+        ["Netto omzet", fmtEUR(b.Netto)],
+        ["Variabele kosten", fmtEUR(b.VarCost)],
+        ["Vast allocatie (booking)", fmtEUR(b.FixedAlloc)],
+        ["Resultaat (booking)", fmtEUR(b.Resultaat)],
+        ["Bezetting (booking)", `${fmt1(b.Occ*100)}%`],
+        ["Rating", fmt1(b.Rating)]
+      ];
+      document.getElementById("modalSub").textContent = `Voertuig ${b.Vehicle_ID}${v ? " – "+v.Merk_Model : ""} • ${b.Hotspot || ""}`;
+      document.getElementById("modalBody").innerHTML = fields.map(([k,val]) => `
+        <div class="rounded-2xl border border-slate-200 bg-white p-3">
+          <div class="text-xs text-slate-500">${escapeHtml(String(k))}</div>
+          <div class="mono mt-1 text-sm font-extrabold text-slate-900">${escapeHtml(String(val ?? "—"))}</div>
+        </div>
+      `).join("");
+      document.getElementById("modal").classList.remove("hidden");
+    }
+    function closeModal(){ document.getElementById("modal").classList.add("hidden"); }
+
+    // =============================
+    // Export CSV + JSON
+    // =============================
+    function exportFilteredCsv() {
+      if (!filteredForTable.length) return;
+      const rows = filteredForTable.map(b => {
+        const v = getVehicleById(b.Vehicle_ID) || {};
+        return {
+          Booking_ID: b.Booking_ID,
+          Vehicle_ID: b.Vehicle_ID,
+          Type: b.Type,
+          Hotspot: b.Hotspot,
+          Merk_Model: v.Merk_Model || "",
+          Startdatum: toISODate(b.Startdatum),
+          Einddatum: toISODate(b.Einddatum),
+          Huurdagen: b.Huurdagen,
+          KM: b.KM || 0,
+          Dagprijs: b.Dagprijs,
+          Bruto_omzet: b.Bruto,
+          Fees: b.Fee,
+          Netto_omzet: b.Netto,
+          Var_cost: b.VarCost,
+          Fixed_alloc: b.FixedAlloc,
+          Resultaat: b.Resultaat,
+          Bezetting: b.Occ,
+          Rating: b.Rating,
+          StartHour: b.StartHour
+        };
+      });
+      const header = Object.keys(rows[0]);
+      const csv = [header.join(","), ...rows.map(r => header.map(h => `"${String(r[h]??"").replaceAll('"','""')}"`).join(","))].join("\n");
+      downloadBlob(csv, "text/csv;charset=utf-8;", "keylessgo_kpi_filtered_v3.csv");
+    }
+
+    function exportFilteredJson() {
+      if (!filteredForTable.length) return;
+
+      // Aggregations for AutoFleet: hotspots + vehicles + monthly
+      const gran = "month";
+      const months = uniq(filteredForTable.map(b => periodKey(b.Startdatum, gran))).sort();
+
+      const hotspots = new Map();
+      const vehiclesAgg = new Map();
+      const monthly = new Map();
+
+      for (const b of filteredForTable) {
+        // hotspot agg
+        if (!hotspots.has(b.Hotspot)) hotspots.set(b.Hotspot, { hotspot:b.Hotspot, bookings:0, days:0, km:0, netto:0, profit:0 });
+        const h = hotspots.get(b.Hotspot);
+        h.bookings += 1; h.days += b.Huurdagen; h.km += (b.KM||0); h.netto += b.Netto; h.profit += b.Resultaat;
+
+        // vehicle agg
+        if (!vehiclesAgg.has(b.Vehicle_ID)) {
+          const v = getVehicleById(b.Vehicle_ID) || {};
+          vehiclesAgg.set(b.Vehicle_ID, { vehicle_id:b.Vehicle_ID, model:v.Merk_Model||"", type:b.Type, hotspot:b.Hotspot, bookings:0, days:0, km:0, netto:0, profit:0 });
+        }
+        const vA = vehiclesAgg.get(b.Vehicle_ID);
+        vA.bookings += 1; vA.days += b.Huurdagen; vA.km += (b.KM||0); vA.netto += b.Netto; vA.profit += b.Resultaat;
+
+        // monthly agg
+        const m = periodKey(b.Startdatum, gran);
+        if (!monthly.has(m)) monthly.set(m, { month:m, bookings:0, days:0, km:0, netto:0, profit:0 });
+        const mo = monthly.get(m);
+        mo.bookings += 1; mo.days += b.Huurdagen; mo.km += (b.KM||0); mo.netto += b.Netto; mo.profit += b.Resultaat;
+      }
+
+      const payload = {
+        meta: {
+          exported_at: new Date().toISOString(),
+          branding: "KeylessGo",
+          logo_path: "img/partner/keylessgo-logo.png",
+          filters: collectFilters(),
+          costs: {
+            feePct: Number(document.getElementById("feePct").value || 0),
+            varPerDay: Number(document.getElementById("varPerDay").value || 0),
+            fixedPerVeh: Number(document.getElementById("fixedPerVeh").value || 0)
+          }
+        },
+        vehicles: vehiclesAgg.size ? Array.from(vehiclesAgg.values()).sort((a,b)=>b.profit-a.profit) : [],
+        hotspots: hotspots.size ? Array.from(hotspots.values()).sort((a,b)=>b.profit-a.profit) : [],
+        monthly: monthly.size ? Array.from(monthly.values()).sort((a,b)=>a.month.localeCompare(b.month)) : [],
+        bookings: filteredForTable.map(b => ({
+          booking_id: b.Booking_ID,
+          vehicle_id: b.Vehicle_ID,
+          type: b.Type,
+          hotspot: b.Hotspot,
+          start_date: toISODate(b.Startdatum),
+          end_date: toISODate(b.Einddatum),
+          days: b.Huurdagen,
+          km: b.KM || 0,
+          bruto: b.Bruto,
+          fee: b.Fee,
+          netto: b.Netto,
+          var_cost: b.VarCost,
+          fixed_alloc: b.FixedAlloc,
+          profit: b.Resultaat,
+          occupancy: b.Occ,
+          rating: b.Rating,
+          start_hour: b.StartHour
+        }))
+      };
+
+      downloadBlob(JSON.stringify(payload, null, 2), "application/json;charset=utf-8;", "keylessgo_kpi_export_v3.json");
+    }
+
+    function collectFilters() {
+      return {
+        fromDate: document.getElementById("fromDate").value,
+        toDate: document.getElementById("toDate").value,
+        hotspot: document.getElementById("hotspotSel").value,
+        type: document.getElementById("typeSel").value,
+        vehicle: document.getElementById("vehicleSel").value,
+        minRating: document.getElementById("minRatingSel").value,
+        minDays: document.getElementById("minDaysSel").value,
+        query: document.getElementById("searchInput").value,
+        sortSel: document.getElementById("sortSel").value,
+        granularity: document.getElementById("granularitySel").value
+      };
+    }
+
+    function downloadBlob(content, mime, filename) {
+      const blob = new Blob([content], { type: mime });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    // =============================
+    // Presets + events
+    // =============================
+    function setPresetDays(days) {
+      const to = new Date(document.getElementById("toDate").value || new Date());
+      const from = new Date(to);
+      from.setDate(to.getDate() - (days-1));
+      document.getElementById("fromDate").value = toISODate(from);
+      applyFiltersAndRender();
+    }
+    function setPresetYTD() {
+      const to = new Date(document.getElementById("toDate").value || new Date());
+      const from = new Date(to.getFullYear(), 0, 1);
+      document.getElementById("fromDate").value = toISODate(from);
+      applyFiltersAndRender();
+    }
+
+    document.getElementById("btnUseDemo").addEventListener("click", loadDemo);
+    document.getElementById("fileInput").addEventListener("change", (e)=>handleFile(e.target.files?.[0]));
+
+    document.getElementById("btnPreset30").addEventListener("click", ()=>setPresetDays(30));
+    document.getElementById("btnPreset90").addEventListener("click", ()=>setPresetDays(90));
+    document.getElementById("btnPresetYTD").addEventListener("click", setPresetYTD);
+
+    document.getElementById("btnReset").addEventListener("click", () => {
+      document.getElementById("hotspotSel").value = "(Alle)";
+      document.getElementById("typeSel").value = "(Alle)";
+      document.getElementById("vehicleSel").value = "(Alle)";
+      document.getElementById("minRatingSel").value = "0";
+      document.getElementById("minDaysSel").value = "0";
+      document.getElementById("searchInput").value = "";
+      document.getElementById("sortSel").value = "start_desc";
+      applyFiltersAndRender();
+    });
+
+    document.getElementById("btnExportCsv").addEventListener("click", exportFilteredCsv);
+    document.getElementById("btnExportJson").addEventListener("click", exportFilteredJson);
+
+    ["fromDate","toDate","hotspotSel","typeSel","vehicleSel","minRatingSel","minDaysSel","granularitySel","searchInput","limitSel","sortSel","feePct","varPerDay","fixedPerVeh"].forEach(id => {
+      document.getElementById(id).addEventListener("input", applyFiltersAndRender);
+      document.getElementById(id).addEventListener("change", applyFiltersAndRender);
+    });
+
+    document.querySelectorAll("th.sortable").forEach(th => {
+      th.addEventListener("click", () => {
+        const key = th.getAttribute("data-sort");
+        if (tableSort.key === key) tableSort.dir = (tableSort.dir === "asc" ? "desc" : "asc");
+        else { tableSort.key = key; tableSort.dir = (key==="Startdatum" ? "desc" : "desc"); }
+        applyTableSort();
+        renderTable();
+      });
+    });
+
+    document.getElementById("modalClose").addEventListener("click", closeModal);
+    document.getElementById("modal").addEventListener("click", (e)=>{ if(e.target.id==="modal") closeModal(); });
+
+    // Kickoff
+    document.getElementById("btnUseDemo").classList.remove("hidden");
+    loadDemo();
+  </script>
+</body>
+</html>

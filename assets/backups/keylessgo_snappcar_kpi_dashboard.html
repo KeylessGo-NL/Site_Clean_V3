@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="nl" class="h-full scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KeylessGo – SnappCar KPI Dashboard</title>
+  <meta name="description" content="Interactief KPI-dashboard voor SnappCar/KeylessGo. Upload Excel (Bookings_Year1) of werk met demo-data.">
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            kgo: {
+              blue: '#1A2C49',
+              orange: '#FF7A00',
+              ink: '#0B1220'
+            }
+          },
+          boxShadow: {
+            soft: '0 10px 30px rgba(0,0,0,.08)',
+            glow: '0 8px 30px rgba(255,122,0,.20)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- SheetJS (XLSX) -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <style>
+    /* Nice scrollbar */
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-thumb { background: rgba(26,44,73,.35); border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(26,44,73,.55); }
+    .card { border: 1px solid rgba(15,23,42,.10); }
+    .chip { border: 1px solid rgba(15,23,42,.12); }
+    .glass { background: rgba(255,255,255,.75); backdrop-filter: blur(10px); }
+    .mono { font-variant-numeric: tabular-nums; }
+  </style>
+</head>
+
+<body class="h-full bg-slate-50 text-slate-900">
+  <!-- Topbar -->
+  <header class="sticky top-0 z-40 border-b border-slate-200/70 bg-white/70 backdrop-blur">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between py-4">
+        <div class="flex items-center gap-3">
+          <div class="h-10 w-10 rounded-2xl bg-kgo-blue text-white grid place-items-center shadow-soft">
+            <span class="font-extrabold">K</span>
+          </div>
+          <div>
+            <h1 class="text-lg sm:text-xl font-extrabold tracking-tight text-kgo-blue">KeylessGo – SnappCar KPI Dashboard</h1>
+            <p class="text-xs sm:text-sm text-slate-500">Upload je Excel of gebruik demo-data • filters • charts • export</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button id="btnUseDemo" class="hidden sm:inline-flex items-center gap-2 rounded-xl bg-slate-900 px-3 py-2 text-sm font-semibold text-white shadow-soft hover:opacity-95">
+            <span>Demo laden</span>
+          </button>
+          <label class="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-kgo-blue px-3 py-2 text-sm font-semibold text-white shadow-soft hover:opacity-95">
+            <input id="fileInput" type="file" accept=".xlsx,.xls" class="hidden"/>
+            <span>Excel upload</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+    <!-- Alert -->
+    <div id="alert" class="mb-6 hidden rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+      <span class="font-semibold">Let op:</span>
+      <span id="alertText"></span>
+    </div>
+
+    <!-- Control bar -->
+    <section class="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-12">
+      <div class="card glass rounded-2xl p-4 shadow-soft lg:col-span-8">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div class="flex-1">
+            <h2 class="text-sm font-bold text-slate-700">Filters</h2>
+            <p class="text-xs text-slate-500">Filter op periode, hotspot, type, voertuig. Dashboard rekent live.</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button id="btnReset" class="chip rounded-xl bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">Reset</button>
+            <button id="btnExportCsv" class="chip rounded-xl bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">Export CSV (filtered)</button>
+          </div>
+        </div>
+
+        <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div>
+            <label class="text-xs font-semibold text-slate-600">Periode</label>
+            <div class="mt-1 grid grid-cols-2 gap-2">
+              <input id="fromDate" type="date" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-kgo-orange/40"/>
+              <input id="toDate" type="date" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-kgo-orange/40"/>
+            </div>
+          </div>
+
+          <div>
+            <label class="text-xs font-semibold text-slate-600">Hotspot</label>
+            <select id="hotspotSel" class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-kgo-orange/40"></select>
+          </div>
+
+          <div>
+            <label class="text-xs font-semibold text-slate-600">Type</label>
+            <select id="typeSel" class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-kgo-orange/40"></select>
+          </div>
+
+          <div>
+            <label class="text-xs font-semibold text-slate-600">Voertuig</label>
+            <select id="vehicleSel" class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-kgo-orange/40"></select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card glass rounded-2xl p-4 shadow-soft lg:col-span-4">
+        <h2 class="text-sm font-bold text-slate-700">Data status</h2>
+        <p id="dataStatus" class="mt-1 text-xs text-slate-500">Nog geen data geladen.</p>
+
+        <div class="mt-4 grid grid-cols-2 gap-3">
+          <div class="rounded-2xl bg-white p-3 shadow-soft">
+            <div class="text-xs text-slate-500">Records</div>
+            <div id="statRecords" class="mono text-xl font-extrabold text-slate-900">—</div>
+          </div>
+          <div class="rounded-2xl bg-white p-3 shadow-soft">
+            <div class="text-xs text-slate-500">Voertuigen</div>
+            <div id="statVehicles" class="mono text-xl font-extrabold text-slate-900">—</div>
+          </div>
+        </div>
+
+        <div class="mt-3 rounded-2xl bg-kgo-blue p-3 text-white shadow-glow">
+          <div class="text-xs text-white/80">Partner+ targets (richting)</div>
+          <div class="mt-1 grid grid-cols-2 gap-2 text-xs">
+            <div class="rounded-xl bg-white/10 p-2">
+              <div class="text-white/70">Avg rating</div>
+              <div class="mono font-extrabold">≥ 4.8</div>
+            </div>
+            <div class="rounded-xl bg-white/10 p-2">
+              <div class="text-white/70">Bookings / maand</div>
+              <div class="mono font-extrabold">↑ groei</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KPI cards -->
+    <section class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div class="card rounded-2xl bg-white p-4 shadow-soft">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-xs text-slate-500">Totale boekingen</div>
+            <div id="kpiBookings" class="mono mt-1 text-2xl font-extrabold text-slate-900">—</div>
+          </div>
+          <div class="h-11 w-11 rounded-2xl bg-slate-100 grid place-items-center">
+            <span class="text-slate-700 font-black">#</span>
+          </div>
+        </div>
+        <div class="mt-3 text-xs text-slate-500">Doel: consistent volume → ranking & reviews.</div>
+      </div>
+
+      <div class="card rounded-2xl bg-white p-4 shadow-soft">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-xs text-slate-500">Bruto omzet</div>
+            <div id="kpiBruto" class="mono mt-1 text-2xl font-extrabold text-slate-900">—</div>
+          </div>
+          <div class="h-11 w-11 rounded-2xl bg-slate-100 grid place-items-center">
+            <span class="text-slate-700 font-black">€</span>
+          </div>
+        </div>
+        <div class="mt-3 text-xs text-slate-500">Som van huurdagen × dagprijs.</div>
+      </div>
+
+      <div class="card rounded-2xl bg-white p-4 shadow-soft">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-xs text-slate-500">Netto omzet</div>
+            <div id="kpiNetto" class="mono mt-1 text-2xl font-extrabold text-slate-900">—</div>
+          </div>
+          <div class="h-11 w-11 rounded-2xl bg-slate-100 grid place-items-center">
+            <span class="text-slate-700 font-black">⇣</span>
+          </div>
+        </div>
+        <div class="mt-3 text-xs text-slate-500">Na SnappCar fee (indicatief).</div>
+      </div>
+
+      <div class="card rounded-2xl bg-white p-4 shadow-soft">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-xs text-slate-500">Gem. rating</div>
+            <div id="kpiRating" class="mono mt-1 text-2xl font-extrabold text-slate-900">—</div>
+          </div>
+          <div class="h-11 w-11 rounded-2xl bg-slate-100 grid place-items-center">
+            <span class="text-slate-700 font-black">★</span>
+          </div>
+        </div>
+        <div class="mt-3 text-xs text-slate-500">Beïnvloedt ranking + vertrouwen.</div>
+      </div>
+    </section>
+
+    <!-- Charts -->
+    <section class="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-12">
+      <div class="card rounded-2xl bg-white p-4 shadow-soft xl:col-span-8">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-sm font-extrabold text-slate-800">Omzet over tijd</h3>
+            <p class="text-xs text-slate-500">Netto per maand + boekingen.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <select id="granularitySel" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700">
+              <option value="month" selected>Maand</option>
+              <option value="week">Week</option>
+            </select>
+          </div>
+        </div>
+        <div class="mt-3">
+          <canvas id="chartRevenue" height="110"></canvas>
+        </div>
+      </div>
+
+      <div class="card rounded-2xl bg-white p-4 shadow-soft xl:col-span-4">
+        <h3 class="text-sm font-extrabold text-slate-800">Mix: omzet per type</h3>
+        <p class="text-xs text-slate-500">Auto vs Bus vs EV (netto).</p>
+        <div class="mt-3">
+          <canvas id="chartType" height="220"></canvas>
+        </div>
+      </div>
+
+      <div class="card rounded-2xl bg-white p-4 shadow-soft xl:col-span-6">
+        <h3 class="text-sm font-extrabold text-slate-800">Hotspots</h3>
+        <p class="text-xs text-slate-500">Netto omzet per hotspot.</p>
+        <div class="mt-3">
+          <canvas id="chartHotspots" height="170"></canvas>
+        </div>
+      </div>
+
+      <div class="card rounded-2xl bg-white p-4 shadow-soft xl:col-span-6">
+        <h3 class="text-sm font-extrabold text-slate-800">Top voertuigen</h3>
+        <p class="text-xs text-slate-500">Netto omzet per voertuig (top 10).</p>
+        <div class="mt-3">
+          <canvas id="chartVehicles" height="170"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Table -->
+    <section class="mt-6 card rounded-2xl bg-white p-4 shadow-soft">
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h3 class="text-sm font-extrabold text-slate-800">Boekingen (filtered)</h3>
+          <p class="text-xs text-slate-500">Klik op een regel voor details. Sortering: datum desc.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <input id="searchInput" placeholder="Zoek: Booking_ID, Vehicle_ID, hotspot..." class="w-full sm:w-72 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-kgo-orange/40"/>
+          <select id="limitSel" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm">
+            <option value="50">50</option>
+            <option value="100" selected>100</option>
+            <option value="250">250</option>
+            <option value="999999">Alles</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mt-4 overflow-auto rounded-2xl border border-slate-200">
+        <table class="min-w-full text-left text-sm">
+          <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+            <tr>
+              <th class="px-3 py-3">Booking</th>
+              <th class="px-3 py-3">Vehicle</th>
+              <th class="px-3 py-3">Type</th>
+              <th class="px-3 py-3">Hotspot</th>
+              <th class="px-3 py-3">Start</th>
+              <th class="px-3 py-3">Eind</th>
+              <th class="px-3 py-3 text-right">Dagen</th>
+              <th class="px-3 py-3 text-right">Netto</th>
+              <th class="px-3 py-3 text-right">Rating</th>
+            </tr>
+          </thead>
+          <tbody id="bookingsTbody" class="divide-y divide-slate-100 bg-white"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="mt-8 pb-10 text-center text-xs text-slate-500">
+      <div class="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2">
+        <span class="font-semibold text-slate-700">Tip:</span>
+        <span>Upload jouw</span>
+        <span class="font-semibold">KeylessGo_SnappCar_KPI_Dashboard_Demo.xlsx</span>
+        <span>of laat demo-data draaien.</span>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Details modal -->
+  <div id="modal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/40"></div>
+    <div class="relative mx-auto mt-16 w-[95vw] max-w-2xl rounded-3xl bg-white p-5 shadow-soft">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h4 class="text-base font-extrabold text-slate-900">Boeking details</h4>
+          <p id="modalSub" class="mt-1 text-xs text-slate-500"></p>
+        </div>
+        <button id="modalClose" class="rounded-xl bg-slate-100 px-3 py-2 text-sm font-bold text-slate-700 hover:bg-slate-200">Sluiten</button>
+      </div>
+      <div id="modalBody" class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2"></div>
+      <div class="mt-4 rounded-2xl bg-slate-50 p-3 text-xs text-slate-600">
+        <span class="font-semibold">Koppeltip:</span> voeg in je echte export later velden toe zoals <span class="font-semibold">ResponseTimeSec</span>, <span class="font-semibold">Accepted</span>, <span class="font-semibold">CancelledByHost</span> voor echte Partner+ KPI’s.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // -----------------------------
+    // Config / schema mapping
+    // -----------------------------
+    const REQUIRED_SHEETS = ["Vehicles", "Bookings_Year1"];
+    const SCHEMA = {
+      vehicles: ["Vehicle_ID","Type","Merk_Model","Bouwjaar","Brandstof","Hotspot","Dagprijs"],
+      bookings: ["Booking_ID","Vehicle_ID","Startdatum","Einddatum","Huurdagen","Dagprijs","Bruto omzet","SnappCar fee","Netto omzet","Rating"]
+    };
+
+    // State
+    let vehicles = [];
+    let bookings = [];
+    let filtered = [];
+
+    let charts = {
+      revenue: null,
+      type: null,
+      hotspots: null,
+      vehicles: null,
+    };
+
+    // -----------------------------
+    // Utilities
+    // -----------------------------
+    const fmtEUR = (n) => new Intl.NumberFormat("nl-NL",{style:"currency",currency:"EUR"}).format(Number(n||0));
+    const fmtInt = (n) => new Intl.NumberFormat("nl-NL").format(Number(n||0));
+    const fmt1 = (n) => (n===null || n===undefined || Number.isNaN(n)) ? "—" : (Math.round(n*10)/10).toFixed(1);
+    const toISODate = (d) => {
+      if (!d) return null;
+      const dt = (d instanceof Date) ? d : new Date(d);
+      if (Number.isNaN(dt.getTime())) return null;
+      return dt.toISOString().slice(0,10);
+    };
+
+    const safeNum = (v) => {
+      if (v === null || v === undefined || v === "") return 0;
+      const n = Number(String(v).replace(",", "."));
+      return Number.isFinite(n) ? n : 0;
+    };
+
+    function showAlert(msg) {
+      const a = document.getElementById("alert");
+      const t = document.getElementById("alertText");
+      t.textContent = " " + msg;
+      a.classList.remove("hidden");
+    }
+    function hideAlert() {
+      document.getElementById("alert").classList.add("hidden");
+    }
+
+    // Parse Excel date values
+    function excelDateToJS(v) {
+      if (v instanceof Date) return v;
+      // SheetJS may give a number for Excel serial date
+      if (typeof v === "number") {
+        // Excel date serial to JS date (1900 system)
+        const epoch = new Date(Date.UTC(1899, 11, 30));
+        const ms = v * 86400000;
+        return new Date(epoch.getTime() + ms);
+      }
+      // string
+      const d = new Date(v);
+      return Number.isNaN(d.getTime()) ? null : d;
+    }
+
+    function uniq(arr) {
+      return Array.from(new Set(arr)).filter(v => v !== null && v !== undefined && v !== "");
+    }
+
+    function groupSum(items, keyFn, valFn) {
+      const m = new Map();
+      for (const it of items) {
+        const k = keyFn(it);
+        const v = valFn(it);
+        m.set(k, (m.get(k) || 0) + v);
+      }
+      return Array.from(m.entries()).sort((a,b) => b[1]-a[1]);
+    }
+
+    // -----------------------------
+    // Demo data generator (fast)
+    // -----------------------------
+    function loadDemo() {
+      hideAlert();
+      vehicles = [
+        {Vehicle_ID:1, Type:"Auto", Merk_Model:"VW Golf", Bouwjaar:2020, Brandstof:"Benzine", Hotspot:"Utrecht Centrum", Dagprijs:65},
+        {Vehicle_ID:2, Type:"Auto", Merk_Model:"Toyota Corolla Hybrid", Bouwjaar:2020, Brandstof:"Hybride", Hotspot:"Utrecht Centrum", Dagprijs:62},
+        {Vehicle_ID:3, Type:"Auto", Merk_Model:"Skoda Octavia", Bouwjaar:2019, Brandstof:"Benzine", Hotspot:"Utrecht Oost", Dagprijs:68},
+        {Vehicle_ID:4, Type:"Auto", Merk_Model:"Hyundai Kona EV", Bouwjaar:2021, Brandstof:"EV", Hotspot:"Utrecht Oost", Dagprijs:70},
+        {Vehicle_ID:5, Type:"Bus", Merk_Model:"VW Caddy", Bouwjaar:2019, Brandstof:"Diesel", Hotspot:"Houten", Dagprijs:85},
+        {Vehicle_ID:6, Type:"Bus", Merk_Model:"VW Transporter", Bouwjaar:2018, Brandstof:"Diesel", Hotspot:"Houten", Dagprijs:110},
+        {Vehicle_ID:7, Type:"Bus", Merk_Model:"Opel Vivaro", Bouwjaar:2020, Brandstof:"Diesel", Hotspot:"Houten", Dagprijs:95},
+      ];
+
+      bookings = [];
+      const start = new Date("2026-01-01T00:00:00");
+      let id = 1;
+      // realistic seasonal + weekend bias
+      function seasonMultiplier(d){
+        const m = d.getMonth()+1;
+        if ([4,5,6,7,8,9].includes(m)) return 1.15; // spring/summer peak
+        if ([11,12].includes(m)) return 1.05; // holiday / moves
+        return 0.95;
+      }
+      for (let day=0; day<365; day++) {
+        const dt = new Date(start); dt.setDate(start.getDate()+day);
+        const dow = dt.getDay(); // 0 Sun
+        const weekendBoost = (dow===5 || dow===6) ? 1.15 : 1.0;
+
+        for (const v of vehicles) {
+          let baseP = 0.10; // average
+          if (v.Type === "Bus") baseP = 0.13;
+          if (v.Brandstof === "EV") baseP = 0.11;
+          // more bookings at hotspots in peak months
+          const p = baseP * seasonMultiplier(dt) * weekendBoost;
+
+          if (Math.random() < p) {
+            const huur = [1,2,2,3,4][Math.floor(Math.random()*5)];
+            const end = new Date(dt); end.setDate(dt.getDate()+huur);
+            const bruto = huur * v.Dagprijs * (v.Type==="Bus" ? 1.02 : 1.0);
+            const fee = bruto * 0.15;
+            const netto = bruto - fee;
+            const rating = [5,5,5,5,4.5,4.8,4.9,4.7,4.0][Math.floor(Math.random()*9)];
+
+            bookings.push({
+              Booking_ID: id++,
+              Vehicle_ID: v.Vehicle_ID,
+              Startdatum: new Date(dt),
+              Einddatum: end,
+              Huurdagen: huur,
+              Dagprijs: v.Dagprijs,
+              "Bruto omzet": bruto,
+              "SnappCar fee": fee,
+              "Netto omzet": netto,
+              Rating: rating
+            });
+          }
+        }
+      }
+
+      // ensure some volume
+      if (bookings.length < 900) {
+        // add random bookings to reach a good demo volume
+        while (bookings.length < 900) {
+          const v = vehicles[Math.floor(Math.random()*vehicles.length)];
+          const dt = new Date(start); dt.setDate(start.getDate()+Math.floor(Math.random()*365));
+          const huur = [1,2,2,3,4][Math.floor(Math.random()*5)];
+          const end = new Date(dt); end.setDate(dt.getDate()+huur);
+          const bruto = huur * v.Dagprijs;
+          const fee = bruto * 0.15;
+          bookings.push({
+            Booking_ID: id++,
+            Vehicle_ID: v.Vehicle_ID,
+            Startdatum: dt,
+            Einddatum: end,
+            Huurdagen: huur,
+            Dagprijs: v.Dagprijs,
+            "Bruto omzet": bruto,
+            "SnappCar fee": fee,
+            "Netto omzet": bruto-fee,
+            Rating: [5,5,4.8,4.9,4.5,4.7][Math.floor(Math.random()*6)]
+          });
+        }
+      }
+
+      document.getElementById("dataStatus").textContent = "Demo-data geladen (synthetisch, realistisch patroon).";
+      hydrateFilters();
+      applyFiltersAndRender();
+    }
+
+    // -----------------------------
+    // Excel loader
+    // -----------------------------
+    async function handleFile(file) {
+      hideAlert();
+      if (!file) return;
+
+      const buf = await file.arrayBuffer();
+      const wb = XLSX.read(buf, { type: "array", cellDates: true });
+
+      // validate sheets
+      const sheetNames = wb.SheetNames || [];
+      for (const s of REQUIRED_SHEETS) {
+        if (!sheetNames.includes(s)) {
+          showAlert(`Sheet '${s}' niet gevonden. Vereist: ${REQUIRED_SHEETS.join(", ")}. Gebruik je demo Excel: KeylessGo_SnappCar_KPI_Dashboard_Demo.xlsx`);
+          return;
+        }
+      }
+
+      // Vehicles
+      const wsV = wb.Sheets["Vehicles"];
+      const rawV = XLSX.utils.sheet_to_json(wsV, { defval: "" });
+      // Best effort mapping (expect exact headers from our template)
+      vehicles = rawV.map(r => ({
+        Vehicle_ID: safeNum(r["Vehicle_ID"]),
+        Type: String(r["Type"] || "").trim(),
+        Merk_Model: String(r["Merk_Model"] || "").trim(),
+        Bouwjaar: safeNum(r["Bouwjaar"]),
+        Brandstof: String(r["Brandstof"] || "").trim(),
+        Hotspot: String(r["Hotspot"] || "").trim(),
+        Dagprijs: safeNum(r["Dagprijs"])
+      })).filter(v => v.Vehicle_ID);
+
+      // Bookings
+      const wsB = wb.Sheets["Bookings_Year1"];
+      const rawB = XLSX.utils.sheet_to_json(wsB, { defval: "" });
+      bookings = rawB.map(r => {
+        const sd = excelDateToJS(r["Startdatum"]);
+        const ed = excelDateToJS(r["Einddatum"]);
+        return ({
+          Booking_ID: safeNum(r["Booking_ID"]),
+          Vehicle_ID: safeNum(r["Vehicle_ID"]),
+          Startdatum: sd,
+          Einddatum: ed,
+          Huurdagen: safeNum(r["Huurdagen"]),
+          Dagprijs: safeNum(r["Dagprijs"]),
+          "Bruto omzet": safeNum(r["Bruto omzet"]),
+          "SnappCar fee": safeNum(r["SnappCar fee"]),
+          "Netto omzet": safeNum(r["Netto omzet"]),
+          Rating: safeNum(r["Rating"])
+        });
+      }).filter(b => b.Booking_ID && b.Vehicle_ID && b.Startdatum);
+
+      document.getElementById("dataStatus").textContent = `Excel geladen: ${file.name}`;
+      hydrateFilters(true);
+      applyFiltersAndRender();
+    }
+
+    // -----------------------------
+    // Filters
+    // -----------------------------
+    function hydrateFilters(setDates = false) {
+      const hotspotSel = document.getElementById("hotspotSel");
+      const typeSel = document.getElementById("typeSel");
+      const vehicleSel = document.getElementById("vehicleSel");
+
+      // options
+      const hotspots = ["(Alle)"].concat(uniq(vehicles.map(v => v.Hotspot)).sort());
+      const types = ["(Alle)"].concat(uniq(vehicles.map(v => v.Type)).sort());
+      const vehicleOptions = ["(Alle)"].concat(vehicles
+        .slice()
+        .sort((a,b)=>a.Vehicle_ID-b.Vehicle_ID)
+        .map(v => `${v.Vehicle_ID} – ${v.Merk_Model}`));
+
+      hotspotSel.innerHTML = hotspots.map(v => `<option>${escapeHtml(v)}</option>`).join("");
+      typeSel.innerHTML = types.map(v => `<option>${escapeHtml(v)}</option>`).join("");
+      vehicleSel.innerHTML = vehicleOptions.map(v => `<option>${escapeHtml(v)}</option>`).join("");
+
+      document.getElementById("statVehicles").textContent = fmtInt(vehicles.length);
+      document.getElementById("statRecords").textContent = fmtInt(bookings.length);
+
+      if (setDates && bookings.length) {
+        const minD = new Date(Math.min(...bookings.map(b=>b.Startdatum.getTime())));
+        const maxD = new Date(Math.max(...bookings.map(b=>b.Startdatum.getTime())));
+        document.getElementById("fromDate").value = toISODate(minD);
+        document.getElementById("toDate").value = toISODate(maxD);
+      } else if (!document.getElementById("fromDate").value && bookings.length) {
+        // default full range
+        const minD = new Date(Math.min(...bookings.map(b=>b.Startdatum.getTime())));
+        const maxD = new Date(Math.max(...bookings.map(b=>b.Startdatum.getTime())));
+        document.getElementById("fromDate").value = toISODate(minD);
+        document.getElementById("toDate").value = toISODate(maxD);
+      }
+    }
+
+    function getVehicleById(id) {
+      return vehicles.find(v => v.Vehicle_ID === id) || null;
+    }
+
+    function applyFiltersAndRender() {
+      if (!vehicles.length || !bookings.length) {
+        showAlert("Laad demo-data of upload de Excel. Vereiste sheets: Vehicles + Bookings_Year1.");
+        return;
+      }
+      hideAlert();
+
+      const from = document.getElementById("fromDate").value ? new Date(document.getElementById("fromDate").value) : null;
+      const to = document.getElementById("toDate").value ? new Date(document.getElementById("toDate").value) : null;
+      if (to) to.setHours(23,59,59,999);
+
+      const hotspot = document.getElementById("hotspotSel").value;
+      const type = document.getElementById("typeSel").value;
+      const vehicle = document.getElementById("vehicleSel").value;
+      const q = document.getElementById("searchInput").value.trim().toLowerCase();
+
+      const vehicleIdFilter = (vehicle && vehicle !== "(Alle)") ? Number(vehicle.split("–")[0].trim()) : null;
+
+      filtered = bookings.filter(b => {
+        if (from && b.Startdatum < from) return false;
+        if (to && b.Startdatum > to) return false;
+
+        const v = getVehicleById(b.Vehicle_ID);
+        if (!v) return false;
+
+        if (hotspot !== "(Alle)" && v.Hotspot !== hotspot) return false;
+        if (type !== "(Alle)" && v.Type !== type) return false;
+        if (vehicleIdFilter && b.Vehicle_ID !== vehicleIdFilter) return false;
+
+        if (q) {
+          const hay = `${b.Booking_ID} ${b.Vehicle_ID} ${v.Type} ${v.Hotspot} ${v.Merk_Model}`.toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+
+      // sort by start date desc
+      filtered.sort((a,b)=>b.Startdatum - a.Startdatum);
+
+      // KPIs
+      const totalBookings = filtered.length;
+      const bruto = filtered.reduce((s,b)=>s + safeNum(b["Bruto omzet"]), 0);
+      const netto = filtered.reduce((s,b)=>s + safeNum(b["Netto omzet"]), 0);
+      const ratingVals = filtered.map(b=>safeNum(b.Rating)).filter(x=>x>0);
+      const avgRating = ratingVals.length ? (ratingVals.reduce((s,x)=>s+x,0) / ratingVals.length) : null;
+
+      document.getElementById("kpiBookings").textContent = fmtInt(totalBookings);
+      document.getElementById("kpiBruto").textContent = fmtEUR(bruto);
+      document.getElementById("kpiNetto").textContent = fmtEUR(netto);
+      document.getElementById("kpiRating").textContent = avgRating ? fmt1(avgRating) : "—";
+
+      // Charts + table
+      renderRevenueChart();
+      renderTypeChart();
+      renderHotspotsChart();
+      renderVehiclesChart();
+      renderTable();
+    }
+
+    // -----------------------------
+    // Charts
+    // -----------------------------
+    function ensureChartDestroy(key) {
+      if (charts[key]) {
+        charts[key].destroy();
+        charts[key] = null;
+      }
+    }
+
+    function renderRevenueChart() {
+      const gran = document.getElementById("granularitySel").value;
+      const keyFn = (b) => {
+        const d = b.Startdatum;
+        if (gran === "week") {
+          // ISO week-ish
+          const tmp = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+          const dayNum = tmp.getUTCDay() || 7;
+          tmp.setUTCDate(tmp.getUTCDate() + 4 - dayNum);
+          const yearStart = new Date(Date.UTC(tmp.getUTCFullYear(),0,1));
+          const weekNo = Math.ceil((((tmp - yearStart) / 86400000) + 1)/7);
+          return `${tmp.getUTCFullYear()}-W${String(weekNo).padStart(2,"0")}`;
+        }
+        return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
+      };
+
+      const sums = new Map();
+      const counts = new Map();
+      for (const b of filtered) {
+        const k = keyFn(b);
+        sums.set(k, (sums.get(k)||0) + safeNum(b["Netto omzet"]));
+        counts.set(k, (counts.get(k)||0) + 1);
+      }
+
+      const labels = Array.from(sums.keys()).sort();
+      const dataNetto = labels.map(l => sums.get(l)||0);
+      const dataCount = labels.map(l => counts.get(l)||0);
+
+      ensureChartDestroy("revenue");
+      const ctx = document.getElementById("chartRevenue");
+      charts.revenue = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [
+            { type: 'bar', label: 'Netto omzet', data: dataNetto, yAxisID: 'y' },
+            { type: 'line', label: 'Boekingen', data: dataCount, yAxisID: 'y2', tension: 0.25 }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'top' },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => ctx.dataset.label === "Netto omzet"
+                  ? `${ctx.dataset.label}: ${fmtEUR(ctx.parsed.y)}`
+                  : `${ctx.dataset.label}: ${fmtInt(ctx.parsed.y)}`
+              }
+            }
+          },
+          scales: {
+            y: { ticks: { callback: (v)=> fmtEUR(v) } },
+            y2: { position: 'right', grid: { drawOnChartArea: false }, ticks: { callback: (v)=> fmtInt(v) } }
+          }
+        }
+      });
+    }
+
+    function renderTypeChart() {
+      const rows = groupSum(filtered,
+        (b) => {
+          const v = getVehicleById(b.Vehicle_ID);
+          if (!v) return "Onbekend";
+          if (v.Brandstof === "EV") return "EV";
+          return v.Type;
+        },
+        (b)=> safeNum(b["Netto omzet"])
+      );
+
+      const labels = rows.map(r=>r[0]);
+      const data = rows.map(r=>r[1]);
+
+      ensureChartDestroy("type");
+      charts.type = new Chart(document.getElementById("chartType"), {
+        type: 'doughnut',
+        data: { labels, datasets: [{ label: 'Netto omzet', data }] },
+        options: {
+          plugins: {
+            tooltip: { callbacks: { label: (ctx)=> `${ctx.label}: ${fmtEUR(ctx.parsed)}` } }
+          }
+        }
+      });
+    }
+
+    function renderHotspotsChart() {
+      const rows = groupSum(filtered,
+        (b)=> (getVehicleById(b.Vehicle_ID)?.Hotspot || "Onbekend"),
+        (b)=> safeNum(b["Netto omzet"])
+      ).slice(0, 10);
+
+      ensureChartDestroy("hotspots");
+      charts.hotspots = new Chart(document.getElementById("chartHotspots"), {
+        type: 'bar',
+        data: { labels: rows.map(r=>r[0]), datasets: [{ label: 'Netto omzet', data: rows.map(r=>r[1]) }] },
+        options: {
+          indexAxis: 'y',
+          plugins: { tooltip: { callbacks: { label: (ctx)=> `${fmtEUR(ctx.parsed.x)}` } }, legend: { display: false } },
+          scales: { x: { ticks: { callback: (v)=> fmtEUR(v) } } }
+        }
+      });
+    }
+
+    function renderVehiclesChart() {
+      const rows = groupSum(filtered,
+        (b)=> {
+          const v = getVehicleById(b.Vehicle_ID);
+          return v ? `${v.Vehicle_ID} – ${v.Merk_Model}` : String(b.Vehicle_ID);
+        },
+        (b)=> safeNum(b["Netto omzet"])
+      ).slice(0, 10);
+
+      ensureChartDestroy("vehicles");
+      charts.vehicles = new Chart(document.getElementById("chartVehicles"), {
+        type: 'bar',
+        data: { labels: rows.map(r=>r[0]), datasets: [{ label: 'Netto omzet', data: rows.map(r=>r[1]) }] },
+        options: {
+          plugins: { tooltip: { callbacks: { label: (ctx)=> `${fmtEUR(ctx.parsed.y)}` } }, legend: { display: false } },
+          scales: { y: { ticks: { callback: (v)=> fmtEUR(v) } } }
+        }
+      });
+    }
+
+    // -----------------------------
+    // Table + modal
+    // -----------------------------
+    function renderTable() {
+      const tbody = document.getElementById("bookingsTbody");
+      const limit = Number(document.getElementById("limitSel").value || 100);
+      const rows = filtered.slice(0, limit);
+
+      tbody.innerHTML = rows.map(b => {
+        const v = getVehicleById(b.Vehicle_ID);
+        const type = v ? (v.Brandstof==="EV" ? "EV" : v.Type) : "—";
+        const hotspot = v ? v.Hotspot : "—";
+        return `
+          <tr class="hover:bg-slate-50 cursor-pointer" data-id="${b.Booking_ID}">
+            <td class="px-3 py-3 font-semibold text-slate-800">${escapeHtml(String(b.Booking_ID))}</td>
+            <td class="px-3 py-3 text-slate-700">${escapeHtml(String(b.Vehicle_ID))}</td>
+            <td class="px-3 py-3">${escapeHtml(type)}</td>
+            <td class="px-3 py-3">${escapeHtml(hotspot)}</td>
+            <td class="px-3 py-3">${escapeHtml(toISODate(b.Startdatum)||"—")}</td>
+            <td class="px-3 py-3">${escapeHtml(toISODate(b.Einddatum)||"—")}</td>
+            <td class="px-3 py-3 text-right mono">${escapeHtml(String(b.Huurdagen))}</td>
+            <td class="px-3 py-3 text-right mono font-semibold">${escapeHtml(fmtEUR(b["Netto omzet"]))}</td>
+            <td class="px-3 py-3 text-right mono">${escapeHtml(fmt1(b.Rating))}</td>
+          </tr>
+        `;
+      }).join("");
+
+      // click handlers
+      [...tbody.querySelectorAll("tr")].forEach(tr => {
+        tr.addEventListener("click", () => {
+          const id = Number(tr.getAttribute("data-id"));
+          const b = filtered.find(x=>x.Booking_ID===id);
+          if (b) openModal(b);
+        });
+      });
+    }
+
+    function openModal(b) {
+      const v = getVehicleById(b.Vehicle_ID);
+      const fields = [
+        ["Booking_ID", b.Booking_ID],
+        ["Vehicle_ID", b.Vehicle_ID],
+        ["Merk/Model", v?.Merk_Model || "—"],
+        ["Type", v ? (v.Brandstof==="EV" ? "EV" : v.Type) : "—"],
+        ["Hotspot", v?.Hotspot || "—"],
+        ["Start", toISODate(b.Startdatum)],
+        ["Eind", toISODate(b.Einddatum)],
+        ["Huurdagen", b.Huurdagen],
+        ["Dagprijs", fmtEUR(b.Dagprijs)],
+        ["Bruto omzet", fmtEUR(b["Bruto omzet"])],
+        ["SnappCar fee", fmtEUR(b["SnappCar fee"])],
+        ["Netto omzet", fmtEUR(b["Netto omzet"])],
+        ["Rating", fmt1(b.Rating)]
+      ];
+
+      document.getElementById("modalSub").textContent =
+        `Voertuig ${b.Vehicle_ID}${v ? " – "+v.Merk_Model : ""} • ${v?.Hotspot || ""}`;
+
+      const body = document.getElementById("modalBody");
+      body.innerHTML = fields.map(([k,val]) => `
+        <div class="rounded-2xl border border-slate-200 bg-white p-3">
+          <div class="text-xs text-slate-500">${escapeHtml(String(k))}</div>
+          <div class="mono mt-1 text-sm font-extrabold text-slate-900">${escapeHtml(String(val ?? "—"))}</div>
+        </div>
+      `).join("");
+
+      document.getElementById("modal").classList.remove("hidden");
+    }
+    function closeModal() {
+      document.getElementById("modal").classList.add("hidden");
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    // -----------------------------
+    // Export CSV
+    // -----------------------------
+    function exportFilteredCsv() {
+      if (!filtered.length) return;
+
+      const rows = filtered.map(b => {
+        const v = getVehicleById(b.Vehicle_ID) || {};
+        return {
+          Booking_ID: b.Booking_ID,
+          Vehicle_ID: b.Vehicle_ID,
+          Type: v.Brandstof==="EV" ? "EV" : (v.Type || ""),
+          Hotspot: v.Hotspot || "",
+          Merk_Model: v.Merk_Model || "",
+          Startdatum: toISODate(b.Startdatum),
+          Einddatum: toISODate(b.Einddatum),
+          Huurdagen: b.Huurdagen,
+          Dagprijs: b.Dagprijs,
+          Bruto_omzet: b["Bruto omzet"],
+          SnappCar_fee: b["SnappCar fee"],
+          Netto_omzet: b["Netto omzet"],
+          Rating: b.Rating
+        };
+      });
+
+      const header = Object.keys(rows[0]);
+      const csv = [
+        header.join(","),
+        ...rows.map(r => header.map(h => {
+          const val = r[h];
+          // escape commas/quotes
+          const s = (val===null || val===undefined) ? "" : String(val);
+          return `"${s.replaceAll('"','""')}"`;
+        }).join(","))
+      ].join("\n");
+
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "keylessgo_snappcar_bookings_filtered.csv";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    // -----------------------------
+    // Event wiring
+    // -----------------------------
+    document.getElementById("btnUseDemo").addEventListener("click", loadDemo);
+    document.getElementById("fileInput").addEventListener("change", (e) => handleFile(e.target.files?.[0]));
+
+    document.getElementById("btnReset").addEventListener("click", () => {
+      document.getElementById("hotspotSel").value = "(Alle)";
+      document.getElementById("typeSel").value = "(Alle)";
+      document.getElementById("vehicleSel").value = "(Alle)";
+      document.getElementById("searchInput").value = "";
+      // keep date range as-is
+      applyFiltersAndRender();
+    });
+
+    document.getElementById("btnExportCsv").addEventListener("click", exportFilteredCsv);
+
+    ["fromDate","toDate","hotspotSel","typeSel","vehicleSel","granularitySel","searchInput","limitSel"].forEach(id => {
+      document.getElementById(id).addEventListener("input", () => applyFiltersAndRender());
+      document.getElementById(id).addEventListener("change", () => applyFiltersAndRender());
+    });
+
+    document.getElementById("modalClose").addEventListener("click", closeModal);
+    document.getElementById("modal").addEventListener("click", (e) => {
+      if (e.target.id === "modal") closeModal();
+    });
+
+    // Kickoff: auto demo
+    document.getElementById("btnUseDemo").classList.remove("hidden");
+    loadDemo();
+  </script>
+</body>
+</html>

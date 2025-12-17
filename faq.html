@@ -3,52 +3,331 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KeylessGo – Veelgestelde vragen (FAQ)</title>
+    <meta name="description" content="Antwoorden op al je vragen over KeylessGo, huren via SnappCar, verzekering en onze voertuigen.">
+    <title>Veelgestelde vragen (FAQ) | KeylessGo</title>
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <!-- Algemene stylesheet (in assets/css/) -->
     <link rel="stylesheet" href="assets/css/styles.css">
+
+    <style>
+        /* FAQ Page Specific Styles */
+        html { scroll-behavior: smooth; }
+
+        .faq-hero {
+            padding-top: calc(var(--header-height) + 60px);
+            padding-bottom: 60px;
+            background: linear-gradient(115deg, rgba(26,44,73,0.97) 0%, rgba(26,44,73,0.85) 100%);
+            border-bottom: none;
+            text-align: center;
+        }
+
+        .faq-hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+
+        .faq-hero .section-sub {
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            color: #e5e7eb;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .faq-hero .btn-secondary {
+            background-color: transparent;
+            color: #ffffff;
+            border-color: #ffffff;
+        }
+
+        .faq-hero .btn-secondary:hover {
+            background-color: #ffffff;
+            color: var(--primary-blue);
+        }
+
+        .faq-content-section {
+            padding: 60px 0 80px;
+            background-color: #ffffff;
+            scroll-margin-top: 100px; /* Zorgt dat de header niet over de content valt bij scrollen */
+        }
+
+        .faq-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        /* Sidebar */
+        .faq-sidebar {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            position: sticky;
+            top: 120px;
+        }
+
+        .faq-sidebar h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--primary-blue);
+        }
+
+        .faq-sidebar-text {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .faq-search-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .faq-search-input:focus {
+            border-color: var(--accent-orange);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.1);
+        }
+
+        .faq-filters {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .faq-filters button {
+            text-align: left;
+            padding: 12px 16px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-dark);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .faq-filters button:hover {
+            border-color: var(--accent-orange);
+            color: var(--accent-orange);
+        }
+
+        .faq-filters button.active {
+            background-color: var(--accent-orange);
+            color: #ffffff;
+            border-color: var(--accent-orange);
+        }
+
+        .faq-help-box {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .faq-help-box h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .faq-help-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .faq-help-box ul li {
+            margin-bottom: 6px;
+        }
+
+        .faq-help-link {
+            display: inline-block;
+            margin-top: 10px;
+            color: var(--accent-orange);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+
+        /* Main Content */
+        .faq-category-block {
+            margin-bottom: 50px;
+        }
+
+        .faq-category-title {
+            font-size: 1.75rem;
+            color: var(--primary-blue);
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .faq-item {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            transition: box-shadow 0.2s;
+        }
+
+        .faq-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .faq-question {
+            width: 100%;
+            text-align: left;
+            padding: 20px 24px;
+            background: none;
+            border: none;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--primary-blue);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-question::after {
+            content: '\f078'; /* FontAwesome chevron-down */
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            font-size: 0.8rem;
+            transition: transform 0.3s;
+            color: #94a3b8;
+        }
+
+        .faq-item.open .faq-question::after {
+            transform: rotate(180deg);
+            color: var(--accent-orange);
+        }
+
+        .faq-item.open .faq-question {
+            color: var(--accent-orange);
+        }
+
+        .faq-answer {
+            padding: 0 24px 24px;
+            color: var(--text-light);
+            line-height: 1.7;
+            display: none; /* JS handles toggle */
+        }
+        
+        .faq-item.open .faq-answer {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .faq-empty-state {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.1rem;
+            color: var(--text-light);
+            background: #f8fafc;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 992px) {
+            .faq-layout {
+                grid-template-columns: 1fr;
+            }
+            .faq-sidebar {
+                position: static;
+                margin-bottom: 40px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Header (eventueel vervangen door jouw bestaande header) -->
-    <header class="kg-header">
-        <div class="kg-header-inner">
-            <div class="kg-logo">
-                <a href="index.html">KeylessGo</a>
-            </div>
-            <nav class="kg-nav">
-                <a href="index.html">Home</a>
-                <a href="hoe-werkt-het.html">Hoe werkt het</a>
-                <a href="zoek-en-boek.html">Zoek & boek</a>
-                <a href="waarom-keylessgo.html">Waarom KeylessGo</a>
-                <a href="faq.html" class="active">FAQ</a>
-                <a href="contact.html">Contact</a>
+    <!-- HEADER -->
+    <header>
+        <div class="container header-content">
+            <a href="index.html" class="logo" aria-label="KeylessGo home">
+                <img src="img/partner/keylessgo-logo.png" alt="KeylessGo logo">
+            </a>
+
+            <nav class="nav-menu">
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="zoek-en-boek.html">Zoek &amp; Boek</a></li>
+
+                    <li class="has-submenu">
+                        <a href="index.html#onze-vloot">Voertuigen</a>
+                        <ul class="submenu">
+                            <li><a href="index.html#onze-vloot">Busjes</a></li>
+                            <li><a href="index.html#onze-vloot">Auto's</a></li>
+                            <li><a href="index.html#onze-vloot">Elektrisch</a></li>
+                        </ul>
+                    </li>
+
+                    <li><a href="hoe-werkt-het.html">Hoe het werkt</a></li>
+                    <li><a href="waarom-keylessgo.html">Waarom KeylessGo</a></li>
+                    <li><a href="faq.html" class="active">FAQ</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+
+                <a href="https://www.snappcar.nl" target="_blank" rel="noopener" class="btn btn-primary nav-cta">
+                    Direct huren via SnappCar
+                </a>
             </nav>
+
+            <button class="hamburger" id="hamburger" aria-label="Menu openen" aria-expanded="false">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
         </div>
     </header>
 
     <main class="faq-page">
         <!-- HERO / INTRO -->
         <section class="faq-hero">
-            <div class="faq-hero-inner">
-                <p class="faq-kicker">Support & uitleg</p>
+            <div class="container">
+                <span class="text-accent font-bold tracking-wide uppercase text-sm mb-2 block" style="color: var(--accent-orange); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Support &amp; uitleg</span>
                 <h1>Veelgestelde vragen over KeylessGo</h1>
-                <p class="faq-subtitle">
+                <p class="section-sub">
                     Hier vind je snelle antwoorden op de meest gestelde vragen over boeken, gebruik, kosten en verzekering.
                     Staat jouw vraag er niet tussen? Neem dan gerust contact met ons op.
                 </p>
-                <div class="faq-hero-actions">
-                    <a href="#faq-content" class="btn-primary">Bekijk FAQ</a>
-                    <a href="contact.html" class="btn-secondary">Neem contact op</a>
+                <div class="flex justify-center gap-4" style="display: flex; justify-content: center; gap: 16px;">
+                    <a href="#faq-content" class="btn btn-primary">Bekijk FAQ</a>
+                    <a href="contact.html" class="btn btn-secondary">Neem contact op</a>
                 </div>
             </div>
         </section>
 
         <!-- FAQ LAYOUT -->
         <section class="faq-content-section" id="faq-content">
-            <div class="faq-layout">
+            <div class="container faq-layout">
                 <!-- SIDEBAR -->
                 <aside class="faq-sidebar">
                     <h2>Filter & zoek</h2>
@@ -95,14 +374,69 @@
     </main>
 
     <!-- FOOTER -->
-    <footer class="kg-footer">
-        <div class="kg-footer-inner">
-            <p>© <span id="year"></span> KeylessGo. Alle rechten voorbehouden.</p>
+    <footer>
+        <div class="container footer-grid">
+            <div>
+                <div class="footer-logo">KeylessGo</div>
+                <p class="footer-text">
+                    Moderne deelauto's en busjes met keyless toegang. 
+                    Vlootbeheer door KeylessGo, boekingen via SnappCar.
+                </p>
+            </div>
+            <div class="footer-col">
+                <h4>Menu</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="zoek-en-boek.html">Zoek &amp; Boek</a></li>
+                    <li><a href="index.html#onze-vloot">Onze vloot</a></li>
+                    <li><a href="hoe-werkt-het.html">Hoe het werkt</a></li>
+                    <li><a href="waarom-keylessgo.html">Waarom KeylessGo</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <ul>
+                    <li><a href="mailto:info@keylessgo.nl">info@keylessgo.nl</a></li>
+                    <li><a href="contact.html">Contactformulier</a></li>
+                    <li><a href="privacy.html">Privacy &amp; cookies</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            © <span id="year"></span> KeylessGo. Boekingen, verificatie en verzekering verlopen via SnappCar.
         </div>
     </footer>
 
     <!-- Scripts: eerst data, dan logica (in assets/js/) -->
     <script src="assets/js/faqData.js"></script>
     <script src="assets/js/faq.js"></script>
+
+    <script>
+        // jaar in footer
+        document.getElementById("year").textContent = new Date().getFullYear();
+
+        // hamburger menu
+        const hamburger = document.getElementById("hamburger");
+        const navMenu = document.querySelector(".nav-menu");
+
+        if (hamburger && navMenu) {
+            hamburger.addEventListener("click", () => {
+                const isActive = navMenu.classList.toggle("active");
+                hamburger.classList.toggle("open", isActive);
+                document.body.classList.toggle("nav-open", isActive);
+                hamburger.setAttribute("aria-expanded", isActive ? "true" : "false");
+            });
+        }
+
+        // mobile submenu toggle
+        document.querySelectorAll(".has-submenu > a").forEach(link => {
+            link.addEventListener("click", (e) => {
+                if (window.innerWidth > 768) return; // desktop: hover
+                e.preventDefault();
+                link.parentElement.classList.toggle("open");
+            });
+        });
+    </script>
 </body>
 </html>
